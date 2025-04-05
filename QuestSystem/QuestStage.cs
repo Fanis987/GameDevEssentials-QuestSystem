@@ -15,6 +15,10 @@ public abstract class QuestStage
     public bool IsCompleted { get; protected set; }
     
     // Complex Getters
+    public IReadOnlyList<string> ObjectiveProgress => GetProgressOfStageObjectives();
+
+
+    public abstract string StageProgress { get; }
     public int CompletedObjectiveCount => GetCompletedTaskCount();
 
     protected QuestStage(string stageDescription)
@@ -53,5 +57,14 @@ public abstract class QuestStage
             if (task.IsCompleted) count++;
         }
         return count;
+    }
+    
+    /// <summary>
+    /// Gets the progress for each of the objectives of this stage
+    /// </summary>
+    /// <returns></returns>
+    /// <exception cref="NotImplementedException"></exception>
+    private List<string> GetProgressOfStageObjectives() {
+        return Objectives.Select(objective => objective.ProgressPrint).ToList();
     }
 }

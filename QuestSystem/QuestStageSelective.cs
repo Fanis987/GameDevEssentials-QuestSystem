@@ -5,9 +5,14 @@ namespace QuestSystem;
 /// </summary>
 public class QuestStageSelective: QuestStage
 {
+
+    public override string StageProgress => $"{CompletedObjectiveCount}/1";
+
+
     /// <summary>
     /// Initializes a new instance of the <see cref="QuestStage"/> class with a set of tasks.
     /// </summary>
+    /// <param name="stageDescription"> The description of the stage</param>
     /// <param name="objectives">An array of tasks that belong to this quest stage.</param>
     /// <exception cref="ArgumentNullException">Thrown when null tasks are provided.</exception>
     /// <exception cref="ArgumentException">Thrown when no tasks are provided.</exception>
@@ -25,7 +30,6 @@ public class QuestStageSelective: QuestStage
             Objectives.Add(objectives[i]);
         }
     }
-    
     
     /// <summary>
     /// Checks any objective in the stage is completed and marks the stage as completed if they are.

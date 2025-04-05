@@ -64,6 +64,43 @@ public class QuestStageInclusiveTests
     }
     
     [Fact]
+    public void QuestStage_CanGetProgressOfStageObjectives()
+    {
+        // Stage: 5 kills , 3 gathers
+        var progressKill = new ObjectiveProgressDto((int)TaskType.Kill, 2);
+        var progressGath = new ObjectiveProgressDto((int)TaskType.Gather, 1);
+
+        var progressList = _questStageInclusive.ObjectiveProgress;
+        Assert.Equal("0/5",progressList[0]);
+        Assert.Equal("0/3",progressList[1]);
+        
+        //progress stage
+        _questStageInclusive.TryProgressTask(progressKill);
+        progressList = _questStageInclusive.ObjectiveProgress;
+        Assert.Equal("2/5",progressList[0]);
+        Assert.Equal("0/3",progressList[1]);
+        
+        _questStageInclusive.TryProgressTask(progressGath);
+        progressList = _questStageInclusive.ObjectiveProgress;
+        Assert.Equal("2/5",progressList[0]);
+        Assert.Equal("1/3",progressList[1]);
+        
+        _questStageInclusive.TryProgressTask(progressKill);
+        _questStageInclusive.TryProgressTask(progressGath);
+        _questStageInclusive.TryProgressTask(progressGath);
+        progressList = _questStageInclusive.ObjectiveProgress;
+        Assert.Equal("4/5",progressList[0]);
+        Assert.Equal("3/3",progressList[1]);
+        
+        _questStageInclusive.TryProgressTask(progressKill);
+        progressList = _questStageInclusive.ObjectiveProgress;
+        Assert.Equal("5/5",progressList[0]);
+        Assert.Equal("3/3",progressList[1]);
+
+        Assert.True(_questStageInclusive.IsCompleted);
+    }
+    
+    [Fact]
     public void QuestStage_ShouldThrowExceptionWhenNullTasksProvided()
     {
         // Act & Assert

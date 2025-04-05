@@ -7,7 +7,7 @@ public class QuestStageInclusive: QuestStage
 {
     // Properties
     public int TotalObjectiveCount => Objectives.Count;
-    public string StageProgress => $"{GetCompletedObjectiveCount()}/{TotalObjectiveCount}";
+    public override string StageProgress => $"{GetCompletedObjectiveCount()}/{TotalObjectiveCount}";
 
     /// <summary>
     /// Initializes a new instance of the <see cref="QuestStage"/> class with a set of tasks.
