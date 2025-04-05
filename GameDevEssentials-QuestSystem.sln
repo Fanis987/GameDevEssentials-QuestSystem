@@ -1,8 +1,22 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "QuestSystem", "QuestSystem\QuestSystem.csproj", "{C4427CC0-781D-418D-9999-D5AA7DEC9809}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "QuestSystemTests", "QuestSystemTests\QuestSystemTests.csproj", "{E93AFEA7-9E21-43C4-97B0-59C1ECE04B49}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
 		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{C4427CC0-781D-418D-9999-D5AA7DEC9809}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C4427CC0-781D-418D-9999-D5AA7DEC9809}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C4427CC0-781D-418D-9999-D5AA7DEC9809}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C4427CC0-781D-418D-9999-D5AA7DEC9809}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E93AFEA7-9E21-43C4-97B0-59C1ECE04B49}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E93AFEA7-9E21-43C4-97B0-59C1ECE04B49}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E93AFEA7-9E21-43C4-97B0-59C1ECE04B49}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E93AFEA7-9E21-43C4-97B0-59C1ECE04B49}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal
