@@ -12,9 +12,9 @@ public class Quest
     private readonly Queue<QuestStage> _stagesQueue =  new();
     
     // Getter Properties
-    public QuestStage CurrentStage => _stagesQueue.Peek();
-    public int StagesLeft => _stagesQueue.Count;
     public bool IsCompleted => _stagesQueue.Count == 0;
+    public QuestStage? CurrentStage => IsCompleted? null : _stagesQueue.Peek();
+    public int StagesLeft => _stagesQueue.Count;
     
 
     public Quest(int id, string title, params QuestStage[] stages)
