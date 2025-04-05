@@ -34,6 +34,26 @@ public class QuestStageInclusiveTests
         Assert.Equal(0,_questStageInclusive.CompletedObjectiveCount);
         Assert.False(_questStageInclusive.IsCompleted);
     }
+
+    [Fact]
+    public void QuestStage_ShouldPrintProgressProperly()
+    {
+        // progress structs
+        // Stage: 5 kills , 3 gathers
+        var progressKill = new ObjectiveProgressDto((int)TaskType.Kill, 5);
+        var progressGath = new ObjectiveProgressDto((int)TaskType.Gather, 3);
+        
+        Assert.Equal("0/2",_questStageInclusive.StageProgress);
+        
+        //progress stage
+        _questStageInclusive.TryProgressTask(progressKill);
+        Assert.Equal("1/2",_questStageInclusive.StageProgress);
+        
+        //finish stage
+        _questStageInclusive.TryProgressTask(progressGath);
+        Assert.Equal("2/2",_questStageInclusive.StageProgress);
+        
+    }
     
     [Fact]
     public void QuestStage_ShouldThrowExceptionWhenNoTasksProvided()
