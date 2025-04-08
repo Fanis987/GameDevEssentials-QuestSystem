@@ -21,8 +21,7 @@ public abstract class QuestStage
     public abstract string StageProgress { get; }
     public int CompletedObjectiveCount => GetCompletedTaskCount();
 
-    protected QuestStage(string stageDescription)
-    {
+    protected QuestStage(string stageDescription) {
         StageDescription = stageDescription;
     }
     

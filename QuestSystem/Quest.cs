@@ -17,17 +17,17 @@ public class Quest
     public int StagesLeft => _stagesQueue.Count;
     
 
-    public Quest(int id, string title, params QuestStage[] stages)
+    public Quest(int questId, string questTitle, params QuestStage[] stages)
     {
         //Arg checks
-        if (id <= 0) {
-            throw new ArgumentException("Invalid quest id", nameof(id));
+        if (questId <= 0) {
+            throw new ArgumentException("Invalid quest id", nameof(questId));
         }
-        if (string.IsNullOrEmpty(title)) {
-            throw new ArgumentException("Title cannot be empty", nameof(title));
+        if (string.IsNullOrEmpty(questTitle)) {
+            throw new ArgumentException("Title cannot be empty", nameof(questTitle));
         }
-        Id = id;
-        Title = title;
+        Id = questId;
+        Title = questTitle;
         
         //Null checks
         ArgumentNullException.ThrowIfNull(stages, nameof(stages));
@@ -46,24 +46,24 @@ public class Quest
     /// <summary>
     /// Constructs a quest with one inclusive stage using the provided objectives
     /// </summary>
-    /// <param name="id"> The id of the quest</param>
-    /// <param name="title"> The title of the quest</param>
+    /// <param name="questId"> The id of the quest</param>
+    /// <param name="questTitle"> The title of the quest</param>
     /// <param name="isInclusiveStage"> True if the stage is inclusive, false if selective</param>
     /// <param name="stageDescription">The description of the quest stage</param>
     /// <param name="objectives"> The objectives for the sole stage</param>
     /// <exception cref="ArgumentException"></exception>
-    public Quest(int id, string title,bool isInclusiveStage,
+    public Quest(int questId, string questTitle,bool isInclusiveStage,
         string stageDescription, params Objective[] objectives)
     {
         //Arg checks
-        if (id <= 0) {
-            throw new ArgumentException("Invalid quest id", nameof(id));
+        if (questId <= 0) {
+            throw new ArgumentException("Invalid quest id", nameof(questId));
         }
-        if (string.IsNullOrEmpty(title)) {
-            throw new ArgumentException("Title cannot be empty", nameof(title));
+        if (string.IsNullOrEmpty(questTitle)) {
+            throw new ArgumentException("Title cannot be empty", nameof(questTitle));
         }
-        Id = id;
-        Title = title;
+        Id = questId;
+        Title = questTitle;
         
         //Null checks
         ArgumentNullException.ThrowIfNull(objectives, nameof(objectives));

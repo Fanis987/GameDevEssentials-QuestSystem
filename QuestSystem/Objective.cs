@@ -1,5 +1,8 @@
 namespace QuestSystem;
 
+/// <summary>
+/// Represents an objective of a quest stage.
+/// </summary>
 public class Objective
 {
     private readonly int _taskTypeId;
@@ -20,13 +23,13 @@ public class Objective
     /// <summary>
     /// Initializes a new instance of the <see cref="Objective"/> class with the specified value and type.
     /// </summary>
-    /// <param name="value">The required value to complete the objective.</param>
+    /// <param name="goalValue">The required value to complete the objective.</param>
     /// <param name="taskTypeId">The id of the type of the task.</param>
     /// <param name="assetId">The specific asset that proceeds the objective</param>
-    public Objective(int value, int taskTypeId, int assetId = -1)
+    public Objective(int goalValue, int taskTypeId, int assetId = -1)
     {
         _taskTypeId = taskTypeId;
-        _goalValue = value;
+        _goalValue = goalValue;
         _targetAssetId = assetId;
         _currValue = 0;
     }
