@@ -1,3 +1,4 @@
 ﻿using ExampleUse;
 
-Console.WriteLine("Press any key to exit...");
+var quest = Example.CreateMultiStageQuest();
+Example.CompleteMultiStageQuest(quest);
