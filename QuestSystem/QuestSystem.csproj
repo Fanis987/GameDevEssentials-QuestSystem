@@ -4,6 +4,12 @@
         <TargetFramework>net6.0</TargetFramework>
         <ImplicitUsings>enable</ImplicitUsings>
         <Nullable>enable</Nullable>
+        
+        <PackageId>GameDevEssentials.QuestSystem</PackageId>
+        <Version>0.1.0</Version>
+        <Authors>Theofanis Tsakiris</Authors>
+        <Description>A package for building quests in a game</Description>
+        <PackageTags>Godot,GameDev,Quest</PackageTags>
     </PropertyGroup>
 
 </Project>
