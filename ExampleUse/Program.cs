@@ -1,3 +1,3 @@
 ﻿using ExampleUse;
 
-Example.Show1();
+Console.WriteLine("Press any key to exit...");
