@@ -1,3 +1,5 @@
+using QuestSystem.Entities;
+
 namespace QuestSystem;
 
 /// <summary>

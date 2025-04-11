@@ -1,4 +1,4 @@
-namespace QuestSystem;
+namespace QuestSystem.Entities;
 
 /// <summary>
 /// Represents a quest with one or more <see cref="QuestStage"/>.

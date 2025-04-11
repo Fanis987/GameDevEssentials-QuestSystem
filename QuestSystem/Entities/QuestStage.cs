@@ -1,4 +1,4 @@
-namespace QuestSystem;
+namespace QuestSystem.Entities;
 
 /// <summary>
 /// Abstract class representing a completable stage of a quest.

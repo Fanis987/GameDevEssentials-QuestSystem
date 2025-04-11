@@ -1,4 +1,5 @@
 ﻿using QuestSystem;
+using QuestSystem.Entities;
 
 namespace ExampleUse;
 

@@ -1,4 +1,4 @@
-namespace QuestSystem;
+namespace QuestSystem.Entities;
 
 /// <summary>
 /// Represents an objective of a quest stage.
