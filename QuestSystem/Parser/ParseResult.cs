@@ -1,5 +1,8 @@
 ﻿namespace QuestSystem.Parser;
 
+/// <summary>
+/// Represents the result of a parsing attempt of a quest json text
+/// </summary>
 public class ParseResult
 {
     public bool IsSuccessful { get; set; }
