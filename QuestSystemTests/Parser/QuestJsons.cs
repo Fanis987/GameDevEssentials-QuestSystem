@@ -1,4 +1,4 @@
-﻿namespace QuestSystemTests.Entities;
+﻿namespace QuestSystemTests.Parser;
 
 public static class QuestJsons 
 {
@@ -21,10 +21,42 @@ public static class QuestJsons
         }
       ]
     }";
-    
-  public static string mediumQuestJson = @"
+  
+  public static string NoStagesJson = @"
     {
-      ""Id"": 1,
+      ""Id"": 2,
+      ""Stages"": []
+    }";
+  
+  public static string CompletedStageJson = @"
+    {
+      ""Id"": 3,
+      ""Stages"": [
+        {
+          ""IsCompleted"": true,
+          ""Objectives"": [
+            {
+              ""Description"": ""This should not exist""
+            }
+          ]
+        }
+      ]
+    }";
+  
+  public static string StageWithNoObjectivesJson = @"
+    {
+      ""Id"": 4,
+      ""Stages"": [
+        {
+          ""IsCompleted"": false,
+          ""Objectives"": []
+        }
+      ]
+    }";
+
+  public static string MediumQuestJson = @"
+    {
+      ""Id"": 5,
       ""Title"": ""The example quest"",
       ""Stages"": [
         {
@@ -46,11 +78,14 @@ public static class QuestJsons
         {
           ""Description"": ""This is stage 2"",
           ""IsSelective"": false,
-          ""Objectives"": []
+          ""Objectives"": [
+            {
+              ""GoalValue"": 1,
+              ""TaskTypeId"": 1,
+              ""TargetAssetId"": 5
+            }
+          ]
         }
       ]
     }";
-
-        
-    
 }
