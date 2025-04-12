@@ -11,4 +11,10 @@
       <ProjectReference Include="..\QuestSystem\QuestSystem.csproj" />
     </ItemGroup>
 
+    <ItemGroup>
+      <None Update="Example.json">
+        <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      </None>
+    </ItemGroup>
+
 </Project>
