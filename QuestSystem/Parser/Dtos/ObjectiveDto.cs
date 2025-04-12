@@ -2,9 +2,9 @@
 
 namespace QuestSystem.Parser.Dtos;
 
-public record ObjectiveDto(int GoalValue,int TaskTypeId,int TargetAssetId) {
+internal record ObjectiveDto(int GoalValue,int TaskTypeId,int TargetAssetId) {
     
-    public Objective ToObjective() {
+    internal Objective ToObjective() {
         return new Objective(GoalValue, TaskTypeId, TargetAssetId);
     }
     

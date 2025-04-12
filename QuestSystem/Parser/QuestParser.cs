@@ -42,7 +42,7 @@ public static class QuestParser {
     }
     
     //Todo: make internal
-    public static ParseResult IsValidDto(QuestDto questDto)
+    internal static ParseResult IsValidDto(QuestDto questDto)
     {
         var pre = $"Error when parsing the quest id {questDto.Id}: ";
         

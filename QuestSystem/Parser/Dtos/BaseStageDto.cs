@@ -2,9 +2,9 @@
 
 namespace QuestSystem.Parser.Dtos;
 
-public record BaseStageDto(string Description,bool IsCompleted,bool IsSelective,List<ObjectiveDto> Objectives)
+internal record BaseStageDto(string Description,bool IsCompleted,bool IsSelective,List<ObjectiveDto> Objectives)
 {
-    public QuestStage ToQuestStage()
+    internal QuestStage ToQuestStage()
     {
         var objectiveList = Objectives.Select(objectiveDto => objectiveDto.ToObjective()).ToList();
 

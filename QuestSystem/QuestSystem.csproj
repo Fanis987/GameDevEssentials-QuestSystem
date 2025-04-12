@@ -12,4 +12,10 @@
         <PackageTags>Godot,GameDev,Quest</PackageTags>
     </PropertyGroup>
 
+    <ItemGroup>
+        <AssemblyAttribute Include="System.Runtime.CompilerServices.InternalsVisibleTo">
+            <_Parameter1>QuestSystemTests</_Parameter1>
+        </AssemblyAttribute>
+    </ItemGroup>
+
 </Project>

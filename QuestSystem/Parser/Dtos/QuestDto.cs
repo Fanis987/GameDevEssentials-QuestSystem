@@ -2,9 +2,9 @@
 
 namespace QuestSystem.Parser.Dtos;
 
-public record QuestDto(int Id,string Title,List<BaseStageDto> Stages)
+internal record QuestDto(int Id,string Title,List<BaseStageDto> Stages)
 {
-    public Quest ToQuest()
+    internal Quest ToQuest()
     {
         var stagesList = new List<QuestStage>();
         foreach (var stageDto in Stages)
