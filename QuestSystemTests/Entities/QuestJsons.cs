@@ -1,4 +1,4 @@
-﻿namespace QuestSystemTests;
+﻿namespace QuestSystemTests.Entities;
 
 public static class QuestJsons 
 {

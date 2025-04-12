@@ -1,7 +1,7 @@
 using QuestSystem;
 using QuestSystem.Entities;
 
-namespace QuestSystemTests;
+namespace QuestSystemTests.Entities;
 
 public class QuestStageSelectiveTests
 {
