@@ -3,8 +3,7 @@
 public static class QuestJsons 
 {
   
-  public static readonly string SmallQuestJson = @"
-    {
+  public static readonly string SmallQuestJson = @"{
       ""Id"": 1,
       ""Title"": ""First Quest"",
       ""Stages"": [
@@ -22,14 +21,12 @@ public static class QuestJsons
       ]
     }";
   
-  public static readonly string NoStagesJson = @"
-    {
+  public static readonly string NoStagesJson = @"{
       ""Id"": 2,
       ""Stages"": []
     }";
   
-  public static readonly string CompletedStageJson = @"
-    {
+  public static readonly string CompletedStageJson = @"{
       ""Id"": 3,
       ""Stages"": [
         {
@@ -43,8 +40,7 @@ public static class QuestJsons
       ]
     }";
   
-  public static readonly string StageWithNoObjectivesJson = @"
-    {
+  public static readonly string StageWithNoObjectivesJson = @"{
       ""Id"": 4,
       ""Stages"": [
         {
@@ -54,8 +50,7 @@ public static class QuestJsons
       ]
     }";
 
-  public static readonly string MediumQuestJson = @"
-    {
+  public static readonly string MediumQuestJson = @"{
       ""Id"": 5,
       ""Title"": ""The example quest"",
       ""Stages"": [

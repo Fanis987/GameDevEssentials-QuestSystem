@@ -6,25 +6,40 @@ namespace QuestSystem.Parser;
 
 public static class QuestParser {
 
-    private static JsonSerializerOptions _options = new JsonSerializerOptions  {
+    private static JsonSerializerOptions? _options = new JsonSerializerOptions  {
         PropertyNameCaseInsensitive = true
     };
     
-    // public static List<Quest> LoadFromJson(string json)
-    // {
-    //     var questList = new List<Quest>();
-    //     
-    //     //Parse the json
-    //     var questDtos = JsonSerializer.Deserialize<List<QuestDto>>(json);
-    //     if(questDtos == null) return new List<Quest>();
-    //     
-    //     // Check parsed data
-    //     foreach (var questDto in questDtos) {
-    //         var result = IsValidDto(questDto);
-    //         if(!result.IsSuccessful) continue;
-    //         
-    //     }
-    // }
+    public static List<Quest> LoadFromJson(string json, JsonSerializerOptions? options = null)
+    {
+        // Basic Checks
+        if(string.IsNullOrEmpty(json)) throw new ArgumentException("Cannot parse an empty json", nameof(json));
+        if(!json.StartsWith("{") || !json.StartsWith("[")) throw new ArgumentException("Json should start with '{' or '['", nameof(json));
+        options ??= _options;
+        var questList = new List<Quest>();
+        
+        // Parse the json
+        if (json.StartsWith("{") && json.EndsWith("}")) //SINGLE QUEST
+        {
+            var questDto = JsonSerializer.Deserialize<QuestDto>(json,options);
+            if(questDto == null) return new List<Quest>();
+            questList.Add(questDto.ToQuest());
+            return questList;
+        }
+        
+        //QUEST ARRAY
+        var questDtos = JsonSerializer.Deserialize<List<QuestDto>>(json,options);
+        if(questDtos == null) return new List<Quest>();
+        
+        // Check parsed data
+        foreach (var questDto in questDtos) {
+            var result = IsValidDto(questDto);
+            if(!result.IsSuccessful) continue;
+            questList.Add(questDto.ToQuest());
+        }
+        
+        return questList;
+    }
     
     //Todo: make internal
     public static ParseResult IsValidDto(QuestDto questDto)
