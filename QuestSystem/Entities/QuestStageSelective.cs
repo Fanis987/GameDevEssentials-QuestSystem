@@ -33,6 +33,9 @@ public class QuestStageSelective: QuestStage
         }
     }
     
+    public QuestStageSelective(string stageDescription, List<Objective> objectives):
+        this(stageDescription, objectives.ToArray()?? throw new ArgumentNullException()){}
+    
     /// <summary>
     /// Checks any objective in the stage is completed and marks the stage as completed if they are.
     /// </summary>

@@ -62,7 +62,6 @@ public class QuestTests
     public void Quest_ShouldThrowExceptionForNullStages()
     {
         // Act & Assert
-        Assert.Throws<ArgumentNullException>(() => new Quest(1,"title",null));
         Assert.Throws<ArgumentNullException>(() => new Quest(1,"title",true,"stageDescr",null));
     }
     

@@ -33,6 +33,9 @@ public class QuestStageInclusive: QuestStage
         }
     }
     
+    QuestStageInclusive(string stageDescription, List<Objective> objectives):
+        this(stageDescription, objectives.ToArray()?? throw new ArgumentNullException()){}
+    
     /// <summary>
     /// Checks if all tasks in the stage are completed and marks the stage as completed if they are.
     /// </summary>
