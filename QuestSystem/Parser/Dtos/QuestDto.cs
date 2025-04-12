@@ -1,8 +1,16 @@
-﻿namespace QuestSystem.Parser.Dtos;
+﻿using QuestSystem.Entities;
 
-public class QuestDto
+namespace QuestSystem.Parser.Dtos;
+
+public record QuestDto(int Id,string Title,List<BaseStageDto> Stages)
 {
-    public int Id { get; set; }
-    public string Title { get; set; } = "";
-    public List<BaseStageDto> Stages { get; set; } = new();
+    public Quest ToQuest()
+    {
+        var stagesList = new List<QuestStage>();
+        foreach (var stageDto in Stages)
+        {
+            stagesList.Add(stageDto.ToQuestStage());
+        }
+        return new Quest(Id, Title,stagesList);
+    }
 }

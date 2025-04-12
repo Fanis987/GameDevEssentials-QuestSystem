@@ -1,11 +1,18 @@
-﻿namespace QuestSystem.Parser.Dtos;
+﻿using QuestSystem.Entities;
 
-public class BaseStageDto
+namespace QuestSystem.Parser.Dtos;
+
+public record BaseStageDto(string Description,bool IsCompleted,bool IsSelective,List<ObjectiveDto> Objectives)
 {
+    public QuestStage ToQuestStage()
+    {
+        var objectiveList = Objectives.Select(objectiveDto => objectiveDto.ToObjective()).ToList();
 
-    public string Description { get; set; } = "";
-    public bool IsCompleted { get; set; } 
-    public bool IsSelective { get; set; }
-    public List<ObjectiveDto> Objectives { get; set; } = new();
+        if(IsSelective) {
+            return new QuestStageSelective(Description, objectiveList);
+        }
+
+        return new QuestStageInclusive(Description, objectiveList);
+    }
 
 }

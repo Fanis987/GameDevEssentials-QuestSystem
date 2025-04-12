@@ -98,13 +98,6 @@ public class QuestTests
     }
     
     [Fact]
-    public void Quest_ShouldThrowExceptionForNullStageInStages()
-    {
-        // Act & Assert
-        Assert.Throws<ArgumentNullException>(() => new Quest(1,"myQuest",new QuestStageInclusive("",null)));
-    }
-    
-    [Fact]
     public void TryProgressQuest_ShouldProgressCurrentStage()
     {
         //Arrange

@@ -32,8 +32,8 @@ public class QuestStageInclusive: QuestStage
             Objectives.Add(objectives[i]);
         }
     }
-    
-    QuestStageInclusive(string stageDescription, List<Objective> objectives):
+
+    public QuestStageInclusive(string stageDescription, List<Objective> objectives):
         this(stageDescription, objectives.ToArray()?? throw new ArgumentNullException()){}
     
     /// <summary>

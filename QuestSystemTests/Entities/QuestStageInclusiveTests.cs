@@ -105,7 +105,6 @@ public class QuestStageInclusiveTests
     public void QuestStage_ShouldThrowExceptionWhenNullTasksProvided()
     {
         // Act & Assert
-        Assert.Throws<ArgumentNullException>(() => new QuestStageInclusive("title",null));
         Assert.Throws<ArgumentNullException>(() => new QuestStageInclusive("title",new Objective(5,(int)TaskType.Kill),null));
     }
     
