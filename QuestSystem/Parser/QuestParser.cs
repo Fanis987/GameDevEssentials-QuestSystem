@@ -14,7 +14,7 @@ public static class QuestParser {
     {
         // Basic Checks
         if(string.IsNullOrEmpty(json)) throw new ArgumentException("Cannot parse an empty json", nameof(json));
-        if(!json.StartsWith("{") || !json.StartsWith("[")) throw new ArgumentException("Json should start with '{' or '['", nameof(json));
+        if(!json.StartsWith("{") && !json.StartsWith("[")) throw new ArgumentException("Json should start with '{' or '['", nameof(json));
         options ??= _options;
         var questList = new List<Quest>();
         

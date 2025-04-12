@@ -85,5 +85,52 @@ public class QuestParserTests
          Assert.False(result.IsSuccessful);
          Assert.Contains("No Objectives Found", result.ErrorMessage);
      }
+     
+     [Fact]
+     public void LoadFromJson_CannotParseEmptyAndInvalidJson()
+     {
+        Assert.Throws<ArgumentException>(() => QuestParser.LoadFromJson(QuestJsons.EmptyJson));
+        Assert.Throws<ArgumentException>(() => QuestParser.LoadFromJson(null));
+        Assert.Throws<ArgumentException>(() => QuestParser.LoadFromJson(QuestJsons.NumberJson));
+        Assert.Throws<ArgumentException>(() => QuestParser.LoadFromJson(QuestJsons.SpecialCharJson));
+     }
+     
+     [Fact]
+     public void LoadFromJson_ShouldDeserializeSingleQuest()
+     {
+         var questList = QuestParser.LoadFromJson(QuestJsons.SmallQuestJson);
+        
+         Assert.NotNull(questList);
+         Assert.Single(questList);
+        
+         var quest = questList.First();
+         Assert.NotNull(quest);
+         Assert.Equal(1, quest.Id);
+         Assert.Equal("First Quest", quest.Title);
+         Assert.False(quest.IsCompleted);
+         Assert.Equal(1,quest.StagesLeft);
+        
+         var stage = quest.CurrentStage;
+         Assert.NotNull(stage);
+         Assert.False(stage.IsCompleted);
+         Assert.Equal("This is stage 1",stage.StageDescription);
+         Assert.Equal(0,stage.CompletedObjectiveCount);
+     }
+     
+     [Fact]
+     public void LoadFromJson_ShouldDeserializeMultipleQuests()
+     {
+         var questList = QuestParser.LoadFromJson(QuestJsons.MultiQuestJson);
+        
+         Assert.NotNull(questList);
+         Assert.Equal(2, questList.Count);
+        
+         var quest = questList.First();
+         Assert.NotNull(quest);
+         Assert.Equal(6, quest.Id);
+         Assert.Equal("First Quest In Multi", quest.Title);
+         Assert.False(quest.IsCompleted);
+         Assert.Equal(1,quest.StagesLeft);
+     }
 
 }

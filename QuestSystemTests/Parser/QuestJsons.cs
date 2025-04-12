@@ -1,7 +1,11 @@
 ﻿namespace QuestSystemTests.Parser;
 
-public static class QuestJsons 
+public static class QuestJsons
 {
+
+  public static readonly string EmptyJson = "";
+  public static readonly string NumberJson = "234";
+  public static readonly string SpecialCharJson = "'34";
   
   public static readonly string SmallQuestJson = @"{
       ""Id"": 1,
@@ -83,4 +87,43 @@ public static class QuestJsons
         }
       ]
     }";
+  
+  public static readonly string MultiQuestJson = @"[
+    {
+      ""Id"": 6,
+      ""Title"": ""First Quest In Multi"",
+      ""Stages"": [
+        {
+          ""Description"": ""This is stage 1"",
+          ""IsSelective"": false,
+          ""Objectives"": [
+            {
+              ""GoalValue"": 5,
+              ""TaskTypeId"": 3,
+              ""TargetAssetId"": 2
+            }
+          ]
+        }
+      ]
+    },
+
+    {
+      ""Id"": 7,
+      ""Title"": ""Second Quest In Multi"",
+      ""Stages"": [
+        {
+          ""Description"": ""This is stage 1"",
+          ""IsSelective"": false,
+          ""Objectives"": [
+            {
+              ""GoalValue"": 5,
+              ""TaskTypeId"": 3,
+              ""TargetAssetId"": 2
+            }
+          ]
+        }
+      ]
+    }
+  ]
+";
 }
