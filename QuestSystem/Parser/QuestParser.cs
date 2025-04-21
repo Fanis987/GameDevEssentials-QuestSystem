@@ -12,6 +12,28 @@ public static class QuestParser {
     private static JsonSerializerOptions? _options = new JsonSerializerOptions  {
         PropertyNameCaseInsensitive = true
     };
+
+    /// <summary>
+    /// Parses a json in a specified path into a list of quests.
+    /// The validity of the json structure is also checked.
+    /// Invalid quests will NOT be included in the returned list.
+    /// <param name="jsonPath">The string containing the json</param>
+    /// <param name="jsonOptions">The list of valid quests parsed from the json</param>
+    /// <returns></returns>
+    /// </summary>
+    public static List<Quest>? LoadFromJsonFile(string jsonPath, JsonSerializerOptions? jsonOptions = null)
+    {
+        try
+        {
+            var json = File.ReadAllText(jsonPath);
+            return LoadFromJson(json, jsonOptions);
+        }
+        catch(Exception e)
+        {
+            Console.WriteLine(e);
+            return null;
+        }
+    }
     
     /// <summary>
     /// Parses a json string into a list of quests.
