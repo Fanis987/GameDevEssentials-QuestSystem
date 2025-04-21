@@ -4,12 +4,46 @@ using QuestSystem.Parser.Dtos;
 
 namespace QuestSystem.Parser;
 
+/// <summary>
+/// Helper static class for parsing json to quest objects
+/// </summary>
 public static class QuestParser {
 
     private static JsonSerializerOptions? _options = new JsonSerializerOptions  {
         PropertyNameCaseInsensitive = true
     };
+
+    /// <summary>
+    /// Parses a json in a specified path into a list of quests.
+    /// The validity of the json structure is also checked.
+    /// Invalid quests will NOT be included in the returned list.
+    /// <param name="jsonPath">The string containing the json</param>
+    /// <param name="jsonOptions">The list of valid quests parsed from the json</param>
+    /// <returns></returns>
+    /// </summary>
+    public static List<Quest>? LoadFromJsonFile(string jsonPath, JsonSerializerOptions? jsonOptions = null)
+    {
+        try
+        {
+            var json = File.ReadAllText(jsonPath);
+            return LoadFromJson(json, jsonOptions);
+        }
+        catch(Exception e)
+        {
+            Console.WriteLine(e);
+            return null;
+        }
+    }
     
+    /// <summary>
+    /// Parses a json string into a list of quests.
+    /// The validity of the structure is also  checked.
+    /// Invalid quests will NOT be included in the returned list.
+    /// </summary>
+    /// <param name="json">The string containing the json</param>
+    /// <param name="options">Json options for the serialization</param>
+    /// <returns>The list of valid quests parsed from the json</returns>
+    /// <exception cref="ArgumentException"></exception>
     public static List<Quest> LoadFromJson(string json, JsonSerializerOptions? options = null)
     {
         // Basic Checks
@@ -41,7 +75,11 @@ public static class QuestParser {
         return questList;
     }
     
-    //Todo: make internal
+    /// <summary>
+    /// Checks the validity of a parsed quest.
+    /// </summary>
+    /// <param name="questDto">The questDto extracted from a json</param>
+    /// <returns>A <see cref="ParseResult"/> with the result of the evaluation.></returns>
     internal static ParseResult IsValidDto(QuestDto questDto)
     {
         var pre = $"Error when parsing the quest id {questDto.Id}: ";
