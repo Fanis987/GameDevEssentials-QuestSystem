@@ -1,6 +1,4 @@
-using QuestSystem.Entities;
-
-namespace QuestSystem;
+namespace QuestSystem.Entities;
 
 /// <summary>
 /// A quest stage that can be completed by completing any of the objectives.
@@ -23,12 +21,18 @@ public class QuestStageSelective: QuestStage
     {
         //Basic checks
         ArgumentNullException.ThrowIfNull(objectives);
-        if (objectives.Length == 0) throw new Exception("No tasks are available");
+        if (objectives.Length == 0)
+        {
+            throw new ArgumentException("No tasks are available");
+        }
         
         //Add to task list
         for (var i = 0; i < objectives.Length; i++)
         {
-            if (objectives[i]==null) throw new ArgumentNullException();
+            if (objectives[i] == null)
+            {
+                throw new ArgumentNullException();
+            }
             Objectives.Add(objectives[i]);
         }
     }

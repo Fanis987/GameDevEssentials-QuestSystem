@@ -86,6 +86,23 @@ public class ObjectiveTests
     }
     
     [Fact]
+    public void TryProceed_CannotReachNegativeProgress()
+    {
+        // Act - Assert
+        Assert.Equal(0,_objective.CurrValue);
+        
+        // passing incorrect asset id - progress stays 0
+        _objective.TryProceed(2);
+        Assert.Equal(2,_objective.CurrValue);
+        Assert.False(_objective.IsCompleted);
+        
+        // passing correct asset id - progress moves
+        _objective.TryProceed(-4);
+        Assert.Equal(0,_objective.CurrValue);
+        Assert.False(_objective.IsCompleted);
+    }
+    
+    [Fact]
     public void CanProgressOnlyWithCorrectAsset()
     {
         // Act - Assert

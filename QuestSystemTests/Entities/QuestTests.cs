@@ -8,10 +8,12 @@ public class QuestTests
     
     // Dependencies
     private readonly Objective _taskKill,_taskKillLarge,_taskGather;
-    private readonly QuestStage _questStage1,_questStage2;
+    private readonly QuestStage _questStage1,_questStage2,_questStage3;
     
     // SUT
     private readonly Quest _quest;
+    private readonly Quest _questSelective;
+    private readonly Quest _questInvalid;
     
     public QuestTests()
     {
@@ -21,9 +23,17 @@ public class QuestTests
         _taskGather = new Objective(3,(int)TaskType.Gather);
         _questStage1 = new QuestStageInclusive("kill and gather",_taskKill, _taskGather);
         _questStage2 = new QuestStageInclusive("kill many",_taskKillLarge);
+        _questStage3 = new QuestStageSelective("kill or gather",_taskKill, _taskGather);
+        
+        // Stage an invalid quest
+        var taskKill = new Objective(5,(int)TaskType.Kill);
+        var completedStage = new QuestStageInclusive("kill many",taskKill);
+        completedStage.TryProgressTask(new ObjectiveProgressDto((int)TaskType.Kill,5));
+        _questInvalid = new Quest(2,"kill quest",completedStage);
         
         // SUT
         _quest = new Quest(1,"myQuest",_questStage1,_questStage2);
+        _questSelective = new Quest(3,"myQuest3",_questStage3);
     }
     
     [Fact]
@@ -39,6 +49,7 @@ public class QuestTests
         
         Assert.False(_questStage1.IsCompleted);
         Assert.False(_questStage2.IsCompleted);
+        Assert.False(_questStage3.IsCompleted);
         
         // Quest assertions
         Assert.NotNull(_quest);
@@ -48,8 +59,26 @@ public class QuestTests
         Assert.Equal(2, _quest.StagesLeft);
         Assert.Equal(_questStage1, _quest.CurrentStage);
         
-        //Alt COnstructor assertions
-        var quest2 = new Quest(3, "title", true,
+        // Quest selective assertions
+        Assert.NotNull(_questSelective);
+        Assert.Equal("myQuest3",_questSelective.Title);
+        Assert.Equal(3,_questSelective.Id);
+        Assert.False(_questSelective.IsCompleted);
+    }
+
+    [Fact]
+    public void Quest_ShouldInitializeProperlyWithAltCtor()
+    {
+        //Alt Constructor assertions
+        var quest = new Quest(1, "title", true,
+            "stageDescr", _taskGather,_taskKill);
+        Assert.NotNull(quest);
+        Assert.Equal("title",quest.Title);
+        Assert.Equal(1,quest.Id);
+        Assert.False(quest.IsCompleted);
+        Assert.Equal(1, quest.StagesLeft);
+            
+        var quest2 = new Quest(3, "title", false,
             "stageDescr", _taskGather,_taskKill);
         Assert.NotNull(quest2);
         Assert.Equal("title",quest2.Title);
@@ -57,6 +86,7 @@ public class QuestTests
         Assert.False(quest2.IsCompleted);
         Assert.Equal(1, quest2.StagesLeft);
     }
+
     
     [Fact]
     public void Quest_ShouldThrowExceptionForNullStages()
@@ -171,5 +201,17 @@ public class QuestTests
         _quest.TryProgressQuest(taskProgressDto3);
         Assert.Equal(0, _quest.StagesLeft);
         Assert.True(_quest.IsCompleted);
+    }
+    
+    [Fact]
+    public void TryProgressQuest_ShouldThrowExceptionForCurrentStageCompleted()
+    {
+        Assert.NotNull(_questInvalid);
+        Assert.NotNull(_questInvalid.CurrentStage);
+        Assert.True(_questInvalid.CurrentStage.IsCompleted);
+        Assert.False(_questInvalid.IsCompleted);
+
+        Assert.Throws<InvalidOperationException>(() =>
+            _questInvalid.TryProgressQuest(new ObjectiveProgressDto((int)TaskType.Kill, 5)));
     }
 }

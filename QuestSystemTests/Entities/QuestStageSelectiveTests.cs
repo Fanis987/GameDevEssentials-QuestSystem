@@ -18,11 +18,26 @@ public class QuestStageSelectiveTests
     }
 
     [Fact]
-    public void ShouldInitializeWithoutProgress()
+    public void QuestStageSelective_ShouldInitializeWithoutProgress()
     {
         Assert.NotNull(_questStageSelective);
         Assert.Equal(0,_questStageSelective.CompletedObjectiveCount);
+        Assert.Equal("0/1",_questStageSelective.StageProgress);
         Assert.False(_questStageSelective.IsCompleted);
+    }
+    
+    [Fact]
+    public void QuestStageSelective_ShouldNotInitializeWithoutArgs()
+    {
+        Assert.Throws<ArgumentException>(() => {
+            var questStageSelective = new QuestStageSelective("kill or gather"); });
+    }
+    
+    [Fact]
+    public void QuestStageSelective_ShouldNotInitializeWithNullObjective()
+    {
+        Assert.Throws<ArgumentNullException>(() => {
+            var questStageSelective = new QuestStageSelective("kill or gather",_taskKill,null); });
     }
     
     [Fact]

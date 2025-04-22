@@ -1,6 +1,4 @@
-using QuestSystem.Entities;
-
-namespace QuestSystem;
+namespace QuestSystem.Entities;
 
 /// <summary>
 /// A quest stage that requires all its objectives to be completed.
