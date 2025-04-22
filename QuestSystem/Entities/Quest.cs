@@ -111,4 +111,17 @@ public class Quest
         // Stage just completed
         _stagesQueue.Dequeue(); //move to the next stage or finish
     }
+
+    /// <summary>
+    /// Attempts to progress the quest.
+    /// </summary>
+    /// <param name="progressValue">The value of the progress made.</param>
+    /// <param name="taskTypeId">The id of the type of the action.</param>
+    /// <param name="assetId">The Id of the asset that was affected by the action</param>
+    /// <exception cref="InvalidOperationException"></exception>
+    public void TryProgressQuest(int progressValue, int taskTypeId, int assetId)
+    {
+        var dto = new ObjectiveProgressDto(taskTypeId,progressValue, assetId);
+        TryProgressQuest(dto);
+    }
 }
