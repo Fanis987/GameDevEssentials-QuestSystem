@@ -5,6 +5,8 @@ namespace QuestSystemTests.Entities;
 
 public class QuestStageTests
 {
+    //Dependencies
+    private new List<Objective> _objList;
     // SUT
     private readonly QuestStage _questStageInclusive;
     private readonly QuestStage _questStageSelective;
@@ -14,18 +16,18 @@ public class QuestStageTests
     {
         var taskKill = new Objective(5,(int)TaskType.Kill);
         var taskGather = new Objective(3,(int)TaskType.Gather);
-        var objList = new List<Objective>(){taskKill, taskGather};
+        _objList = new List<Objective>(){taskKill, taskGather};
         
         var taskKillFirst  = new Objective(7,(int)TaskType.Kill,10);
         var taskKillSecond = new Objective(5,(int)TaskType.Kill, 20);
         var objKillsList = new List<Objective>(){taskKillFirst, taskKillSecond};
         
         // Stage: 5 kills AND 3 gathers
-        _questStageInclusive = new QuestStage("kill and gather",false,objList);
+        _questStageInclusive = new QuestStage("kill and gather",false,_objList);
         // Stage: 7 kills of enemy id 10 , 5 kills of enemy id 20
         _questStageInclusive2 = new QuestStage("kill 2 things",false,objKillsList);
         // Stage: 5 kills OR 3 gathers
-        _questStageSelective = new QuestStage("kill or gather",true,objList);
+        _questStageSelective = new QuestStage("kill or gather",true,_objList);
     }
     
     
@@ -64,11 +66,18 @@ public class QuestStageTests
     }
     
     [Fact]
-    public void QuestStage_ShouldThrowExceptionWhenNoTasksProvided()
-    {
-        // Act & Assert
-        var exception = Assert.Throws<ArgumentNullException>(() => new QuestStage("",false,null));
-       //Assert.Equal("No tasks are available", exception.Message);
+    public void QuestStage_ShouldThrowExceptionWhenNoTasksProvided() {
+        var exception = Assert.Throws<ArgumentNullException>(() => new QuestStage("stage",false,null));
+    }
+    
+    [Fact]
+    public void QuestStage_ShouldThrowExceptionWhenNoDescriptionIsProvided() {
+        var exception = Assert.Throws<ArgumentException>(() => new QuestStage("",false,_objList));
+    }
+    
+    [Fact]
+    public void QuestStage_ShouldThrowExceptionWhenEmptyListProvided() {
+        var exception = Assert.Throws<ArgumentException>(() => new QuestStage("",false,new List<Objective>()));
     }
     
     [Fact]

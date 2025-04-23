@@ -6,8 +6,8 @@ namespace QuestSystem.Entities;
 public class Quest
 {
     // Main Properties
-    public string Title {get; private set;}
     public int Id {get; private set;}
+    public string Title {get; private set;}
     
     private readonly Queue<QuestStage> _stagesQueue =  new();
     
@@ -17,6 +17,13 @@ public class Quest
     public int StagesLeft => _stagesQueue.Count;
     
 
+    /// <summary>
+    /// Represents a quest in a game.
+    /// </summary>
+    /// <param name="questId">The id of the quest</param>
+    /// <param name="questTitle">The title of the quest</param>
+    /// <param name="stages"> The stages of the quest, in order.</param>
+    /// <exception cref="ArgumentException"></exception>
     public Quest(int questId, string questTitle, params QuestStage[] stages)
     {
         //Arg checks
@@ -55,7 +62,7 @@ public class Quest
     /// <param name="stageDescription">The description of the quest stage</param>
     /// <param name="objectives"> The objectives for the sole stage</param>
     /// <exception cref="ArgumentException"></exception>
-    public Quest(int questId, string questTitle,bool isInclusiveStage,
+    public Quest(int questId, string questTitle,bool isSelectiveStage,
         string stageDescription, params Objective[] objectives)
     {
         //Arg checks
@@ -76,16 +83,9 @@ public class Quest
                 $"{nameof(objective)} must not be null");
         }
         
-        // Create a quest stage and add to queue
-        // QuestStage stage;
-        // if (isInclusiveStage)
-        // {
-        //     stage = new QuestStageInclusive(stageDescription,objectives);
-        //     _stagesQueue.Enqueue(stage);
-        //     return;
-        // }
-        // stage = new QuestStageSelective(stageDescription,objectives);
-        // _stagesQueue.Enqueue(stage);
+         //Create a quest stage and add to queue
+         var stage = new QuestStage(stageDescription,isSelectiveStage,objectives);
+         _stagesQueue.Enqueue(stage);
     }
 
     /// <summary>

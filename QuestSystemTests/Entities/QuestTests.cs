@@ -75,10 +75,10 @@ public class QuestTests
         var quest = new Quest(1, "title", true,
             "stageDescr", _taskGather,_taskKill);
         Assert.NotNull(quest);
-        Assert.Equal("title",quest.Title);
         Assert.Equal(1,quest.Id);
-        Assert.False(quest.IsCompleted);
+        Assert.Equal("title",quest.Title);
         Assert.Equal(1, quest.StagesLeft);
+        Assert.False(quest.IsCompleted);
             
         var quest2 = new Quest(3, "title", false,
             "stageDescr", _taskGather,_taskKill);
@@ -87,6 +87,18 @@ public class QuestTests
         Assert.Equal(3,quest2.Id);
         Assert.False(quest2.IsCompleted);
         Assert.Equal(1, quest2.StagesLeft);
+    }
+    
+    [Fact]
+    public void Quest_ShouldInitializeProperlyWithList()
+    {
+        //Alt Constructor assertions
+        var quest = new Quest(1,"myQuest",new List<QuestStage>(){_questStage2});
+        Assert.NotNull(quest);
+        Assert.Equal(1,quest.Id);
+        Assert.Equal("myQuest",quest.Title);
+        Assert.Equal(1, quest.StagesLeft);
+        Assert.False(quest.IsCompleted);
     }
 
     
@@ -174,6 +186,20 @@ public class QuestTests
         Assert.False(_questStage1.IsCompleted);
         
         _quest.TryProgressQuest(taskProgressDto2);
+        Assert.True(_questStage1.IsCompleted);
+        Assert.Equal(_quest.CurrentStage,_questStage2);
+        Assert.False(_questStage2.IsCompleted);
+    }
+    
+    [Fact]
+    public void TryProgressQuest_ShouldMarkQuestAsCompleted2()
+    {
+        // Act - Assert
+        _quest.TryProgressQuest(5,(int)TaskType.Kill,-1);
+        Assert.Equal(_quest.CurrentStage,_questStage1);
+        Assert.False(_questStage1.IsCompleted);
+        
+        _quest.TryProgressQuest(5,(int)TaskType.Gather,-1);
         Assert.True(_questStage1.IsCompleted);
         Assert.Equal(_quest.CurrentStage,_questStage2);
         Assert.False(_questStage2.IsCompleted);

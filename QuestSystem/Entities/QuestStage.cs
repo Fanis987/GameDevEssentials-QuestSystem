@@ -86,11 +86,9 @@ public class QuestStage
     /// Returns number of completed tasks in the stage
     /// </summary>
     /// <returns>Number of completed tasks</returns>
-    private int GetCompletedTaskCount()
-    {
+    private int GetCompletedTaskCount() {
         var count = 0;
-        foreach (var task in _objectives)
-        {
+        foreach (var task in _objectives) {
             if (task.IsCompleted) count++;
         }
         return count;
