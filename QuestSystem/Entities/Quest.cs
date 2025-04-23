@@ -77,15 +77,15 @@ public class Quest
         }
         
         // Create a quest stage and add to queue
-        QuestStage stage;
-        if (isInclusiveStage)
-        {
-            stage = new QuestStageInclusive(stageDescription,objectives);
-            _stagesQueue.Enqueue(stage);
-            return;
-        }
-        stage = new QuestStageSelective(stageDescription,objectives);
-        _stagesQueue.Enqueue(stage);
+        // QuestStage stage;
+        // if (isInclusiveStage)
+        // {
+        //     stage = new QuestStageInclusive(stageDescription,objectives);
+        //     _stagesQueue.Enqueue(stage);
+        //     return;
+        // }
+        // stage = new QuestStageSelective(stageDescription,objectives);
+        // _stagesQueue.Enqueue(stage);
     }
 
     /// <summary>

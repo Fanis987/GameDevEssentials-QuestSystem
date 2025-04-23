@@ -8,13 +8,13 @@ public class QuestStageSelectiveTests
     private readonly Objective _taskKill;
     private readonly Objective _taskGather;
     
-    private QuestStageSelective _questStageSelective;
+    private QuestStage _questStageSelective;
 
     public QuestStageSelectiveTests()
     {
         _taskKill = new Objective(5,(int)TaskType.Kill);
         _taskGather = new Objective(3,(int)TaskType.Gather);
-        _questStageSelective = new QuestStageSelective("kill or gather",_taskKill, _taskGather);
+        _questStageSelective = new QuestStage("kill or gather",_taskKill, _taskGather);
     }
 
     [Fact]
@@ -30,14 +30,14 @@ public class QuestStageSelectiveTests
     public void QuestStageSelective_ShouldNotInitializeWithoutArgs()
     {
         Assert.Throws<ArgumentException>(() => {
-            var questStageSelective = new QuestStageSelective("kill or gather"); });
+            var questStageSelective = new QuestStage("kill or gather"); });
     }
     
     [Fact]
     public void QuestStageSelective_ShouldNotInitializeWithNullObjective()
     {
         Assert.Throws<ArgumentNullException>(() => {
-            var questStageSelective = new QuestStageSelective("kill or gather",_taskKill,null); });
+            var questStageSelective = new QuestStage("kill or gather",_taskKill,null); });
     }
     
     [Fact]

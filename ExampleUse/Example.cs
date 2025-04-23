@@ -24,7 +24,7 @@ public static class Example {
         
         // Then we define the stage that includes these objectives
         var stageDescription = "gathering 10 Beans and 10 mushrooms";
-        var stage = new QuestStageInclusive(stageDescription,gatherObjectiveBeans, gatherObjectiveShroom);
+        var stage = new QuestStage(stageDescription,gatherObjectiveBeans, gatherObjectiveShroom);
         
         // Finally we create the quest
         var questTitle = "Gather Ingredients";
@@ -47,19 +47,19 @@ public static class Example {
         
         // Then we define the 1st stage that includes these objectives
         var firstStageDescription = "Kill 5 toads and 3 wolves";
-        var firstStage = new QuestStageInclusive(firstStageDescription,killObjectiveToads, killObjectiveWolfs);
+        var firstStage = new QuestStage(firstStageDescription,killObjectiveToads, killObjectiveWolfs);
         
         // Then we define the 2nd stage and its objective
         var talkObjectiveGuard  = new Objective(1, (int)ObjectiveType.Talk, 1);
         var secondStageDescription = "Talk to the town guard";
-        var secondStage = new QuestStageInclusive(secondStageDescription,talkObjectiveGuard);
+        var secondStage = new QuestStage(secondStageDescription,talkObjectiveGuard);
         
         // Finally we define the 3rd stage and its objectives
         var killObjectiveWolfs2 = new Objective(5, (int)ObjectiveType.Kill, 2);
         var talkObjectiveHunter = new Objective(1, (int)ObjectiveType.Talk, 2);
         
         var thirdStageDescription = "Kill 5 wolves OR talk to the hunter";
-        var thirdStage = new QuestStageSelective(thirdStageDescription,killObjectiveWolfs2,talkObjectiveHunter);
+        var thirdStage = new QuestStage(thirdStageDescription,killObjectiveWolfs2,talkObjectiveHunter);
         
         // Finally we create the quest
         var questTitle = "Trouble in the forest";
