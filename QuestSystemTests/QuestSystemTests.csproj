@@ -24,4 +24,10 @@
       <ProjectReference Include="..\QuestSystem\QuestSystem.csproj" />
     </ItemGroup>
 
+    <ItemGroup>
+      <None Update="Parser\Example.json">
+        <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      </None>
+    </ItemGroup>
+
 </Project>

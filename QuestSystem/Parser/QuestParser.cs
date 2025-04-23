@@ -30,7 +30,6 @@ public static class QuestParser {
         }
         catch(Exception e)
         {
-            Console.WriteLine(e);
             return null;
         }
     }
@@ -44,7 +43,7 @@ public static class QuestParser {
     /// <param name="options">Json options for the serialization</param>
     /// <returns>The list of valid quests parsed from the json</returns>
     /// <exception cref="ArgumentException"></exception>
-    public static List<Quest> LoadFromJson(string json, JsonSerializerOptions? options = null)
+    internal static List<Quest> LoadFromJson(string json, JsonSerializerOptions? options = null)
     {
         // Basic Checks
         if(string.IsNullOrEmpty(json)) throw new ArgumentException("Cannot parse an empty json", nameof(json));
@@ -94,9 +93,6 @@ public static class QuestParser {
             //objectives test
             if(stage.Objectives.Count == 0) return ParseResult.Fail(pre + "No Objectives Found");
         }
-        
         return ParseResult.Ok();
     }
-    
-    
 }

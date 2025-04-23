@@ -7,8 +7,8 @@ public class DtoTests {
     private readonly ObjectiveDto _objectiveDto1 = new ObjectiveDto(10,1,1);
     private readonly ObjectiveDto _objectiveDto2 = new ObjectiveDto(5,1,2);
     
-    private readonly BaseStageDto _stageSelectiveDto;
-    private readonly BaseStageDto _stageInclusiveDto;
+    private readonly QuestStageDto _stageSelectiveDto;
+    private readonly QuestStageDto _stageInclusiveDto;
     
     private readonly QuestDto _questDto;
 
@@ -16,10 +16,10 @@ public class DtoTests {
     {
         var objDtoList = new List<ObjectiveDto>() { _objectiveDto1,_objectiveDto2 };
         
-        _stageInclusiveDto = new BaseStageDto("inclusive descr",false,false, objDtoList);
-        _stageSelectiveDto = new BaseStageDto("selective descr",false,true, objDtoList);
+        _stageInclusiveDto = new QuestStageDto("inclusive descr",false,false, objDtoList);
+        _stageSelectiveDto = new QuestStageDto("selective descr",false,true, objDtoList);
 
-        var stageDtoList = new List<BaseStageDto>() { _stageInclusiveDto,_stageSelectiveDto };
+        var stageDtoList = new List<QuestStageDto>() { _stageInclusiveDto,_stageSelectiveDto };
         _questDto = new QuestDto(5, "quest title", stageDtoList);
     }
     

@@ -1,0 +1,36 @@
+﻿[
+  {
+    "Id": 1,
+    "Title": "First Quest In Multi",
+    "Stages": [
+      {
+        "Description": "This is stage 1",
+        "IsSelective": false,
+        "Objectives": [
+          {
+            "GoalValue": 5,
+            "TaskTypeId": 3,
+            "TargetAssetId": 2
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "Id": 2,
+    "Title": "Second Quest In Multi",
+    "Stages": [
+      {
+        "Description": "This is stage 1 again",
+        "IsSelective": false,
+        "Objectives": [
+          {
+            "GoalValue": 5,
+            "TaskTypeId": 3,
+            "TargetAssetId": 2
+          }
+        ]
+      }
+    ]
+  }
+]

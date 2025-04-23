@@ -132,5 +132,17 @@ public class QuestParserTests
          Assert.False(quest.IsCompleted);
          Assert.Equal(1,quest.StagesLeft);
      }
+     
+     [Fact]
+     public void ParseExampleJson_ShouldReturnExpectedModel()
+     {
+         var baseDir = AppDomain.CurrentDomain.BaseDirectory;
+         var filePath = Path.Combine(baseDir, "Parser", "Example.json");
+         var questListFromJson = QuestParser.LoadFromJsonFile(filePath);
+         
+         Assert.NotNull(questListFromJson);
+         Assert.NotEmpty(questListFromJson);
+         Assert.Equal(2,questListFromJson.Count);
+     }
 
 }
