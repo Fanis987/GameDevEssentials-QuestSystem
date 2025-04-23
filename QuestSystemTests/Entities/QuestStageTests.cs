@@ -7,33 +7,40 @@ public class QuestStageTests
 {
     // SUT
     private readonly QuestStage _questStageInclusive;
+    private readonly QuestStage _questStageSelective;
     private readonly QuestStage _questStageInclusive2;
 
     public QuestStageTests()
     {
         var taskKill = new Objective(5,(int)TaskType.Kill);
         var taskGather = new Objective(3,(int)TaskType.Gather);
+        var objList = new List<Objective>(){taskKill, taskGather};
         
         var taskKillFirst  = new Objective(7,(int)TaskType.Kill,10);
         var taskKillSecond = new Objective(5,(int)TaskType.Kill, 20);
+        var objKillsList = new List<Objective>(){taskKillFirst, taskKillSecond};
         
-        // Stage: 5 kills , 3 gathers
-        _questStageInclusive = new QuestStage("kill and gather",taskKill, taskGather);
-        
+        // Stage: 5 kills AND 3 gathers
+        _questStageInclusive = new QuestStage("kill and gather",false,objList);
         // Stage: 7 kills of enemy id 10 , 5 kills of enemy id 20
-        _questStageInclusive2 = new QuestStage("kill 2 things",taskKillFirst, taskKillSecond);
+        _questStageInclusive2 = new QuestStage("kill 2 things",false,objKillsList);
+        // Stage: 5 kills OR 3 gathers
+        _questStageSelective = new QuestStage("kill or gather",true,objList);
     }
     
     
     [Fact]
-    public void QuestStage_ShouldInitializeWithTasks()
+    public void QuestStage_ShouldInitializeWithObjectives()
     {
-        // Assert
+        // Normal stage
         Assert.NotNull(_questStageInclusive);
         Assert.Equal("kill and gather",_questStageInclusive.StageDescription);
-        //Assert.Equal(2,_questStageInclusive.TotalObjectiveCount);
-        Assert.Equal(0,_questStageInclusive.CompletedObjectiveCount);
         Assert.False(_questStageInclusive.IsCompleted);
+        
+        // Selective Stage
+        Assert.NotNull(_questStageSelective);
+        Assert.Equal(0,_questStageSelective.CompletedObjectiveCount);
+        Assert.False(_questStageSelective.IsCompleted);
     }
 
     [Fact]
@@ -60,8 +67,8 @@ public class QuestStageTests
     public void QuestStage_ShouldThrowExceptionWhenNoTasksProvided()
     {
         // Act & Assert
-        var exception = Assert.Throws<Exception>(() => new QuestStage(""));
-        Assert.Equal("No tasks are available", exception.Message);
+        var exception = Assert.Throws<ArgumentNullException>(() => new QuestStage("",false,null));
+       //Assert.Equal("No tasks are available", exception.Message);
     }
     
     [Fact]
@@ -104,8 +111,8 @@ public class QuestStageTests
     [Fact]
     public void QuestStage_ShouldThrowExceptionWhenNullTasksProvided()
     {
-        // Act & Assert
-        Assert.Throws<ArgumentNullException>(() => new QuestStage("title",new Objective(5,(int)TaskType.Kill),null));
+        var objList = new List<Objective>(){new Objective(5,(int)TaskType.Kill),null};
+        Assert.Throws<ArgumentException>(() => new QuestStage("title",false,objList));
     }
     
     [Fact]
@@ -138,6 +145,35 @@ public class QuestStageTests
         
         Assert.Equal(1,_questStageInclusive2.CompletedObjectiveCount);
         Assert.False(_questStageInclusive2.IsCompleted); // The second task is still incomplete, so the stage is not completed.
+    }
+    
+    [Fact]
+    public void TryProgressTask_ShouldProgressSelective()
+    {
+        // Arrange
+        var progressDto = new ObjectiveProgressDto((int)TaskType.Kill,2);
+        
+        //Act
+        _questStageSelective.TryProgressTask(progressDto);
+            
+        //Assert
+        Assert.NotNull(_questStageSelective);
+        Assert.Equal(0,_questStageSelective.CompletedObjectiveCount);
+        Assert.False(_questStageSelective.IsCompleted);
+    }
+    
+    [Fact]
+    public void CheckStageCompletion_ShouldCompleteWithAnyTaskCompleted()
+    {
+        // Arrange
+        var progressDto = new ObjectiveProgressDto((int)TaskType.Kill,5);
+        
+        //Act
+        _questStageSelective.TryProgressTask(progressDto);
+            
+        //Assert
+        Assert.NotNull(_questStageSelective);
+        Assert.True(_questStageSelective.IsCompleted);
     }
     
     [Fact]

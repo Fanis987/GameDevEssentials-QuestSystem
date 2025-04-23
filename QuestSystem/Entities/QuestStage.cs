@@ -1,3 +1,5 @@
+using ArgumentException = System.ArgumentException;
+
 namespace QuestSystem.Entities;
 
 /// <summary>
@@ -8,7 +10,7 @@ public class QuestStage
     /// <summary>
     /// The objectives of the quest stage.
     /// </summary>
-    protected readonly List<Objective> Objectives = new();
+    private readonly List<Objective> _objectives = new();
     
     //Getter properties
     public string StageDescription { get; private set; }
@@ -17,27 +19,36 @@ public class QuestStage
     
     // Complex Getters
     public IReadOnlyList<string> ObjectiveProgress => GetProgressOfStageObjectives();
-    
-    public string StageProgress => $"{GetCompletedObjectiveCount()}/{Objectives.Count}";
+    public string StageProgress => $"{GetCompletedObjectiveCount()}/{_objectives.Count}";
     public int CompletedObjectiveCount => GetCompletedTaskCount();
 
-    public QuestStage(string stageDescription, params Objective[] objectives) {
-        StageDescription = stageDescription;
+    /// <summary>
+    /// Represents a stage of a quest.
+    /// </summary>
+    /// <param name="stageDescription">Description of the stage</param>
+    /// <param name="isSelective">Whether the stage is completed by completing ANY of its objectives</param>
+    /// <param name="objectives">The objectives of the stage</param>
+    /// <exception cref="ArgumentException"></exception>
+    /// <exception cref="ArgumentNullException"></exception>
+    public QuestStage(string stageDescription, bool isSelective, IList<Objective> objectives) {
         //Basic checks
+        ArgumentNullException.ThrowIfNull(stageDescription);
         ArgumentNullException.ThrowIfNull(objectives);
-        if (objectives.Length == 0)
-        {
-            throw new ArgumentException("No tasks are available");
+        if (objectives.Count() == 0) {
+            throw new ArgumentException("No objectives were passed");
+        }
+        if (stageDescription.Length == 0) {
+            throw new ArgumentException("Must have a stage description");
         }
         
-        //Add to task list
-        for (var i = 0; i < objectives.Length; i++)
-        {
-            if (objectives[i] == null)
-            {
-                throw new ArgumentNullException();
+        // Fill fields
+        StageDescription = stageDescription;
+        IsSelective = isSelective;
+        for (var i = 0; i < objectives.Count; i++) {
+            if (objectives[i] == null) {
+                throw new ArgumentException("A null objective found in the passed list");
             }
-            Objectives.Add(objectives[i]);
+            _objectives.Add(objectives[i]);
         }
     }
     
@@ -48,14 +59,27 @@ public class QuestStage
     public void TryProgressTask(ObjectiveProgressDto objectiveProgressDto)
     {
         //Try Advance some of the objectives
-        foreach (var objective in Objectives)
+        foreach (var objective in _objectives)
         {
             if(objective.TaskTypeId != objectiveProgressDto.TaskTypeId) continue;
             
             objective.TryProceed(objectiveProgressDto.ProgressValue,objectiveProgressDto.AssetId);
         }
-
         CheckStageCompletion();
+    }
+    
+    /// <summary>
+    /// Checks any objective in the stage is completed and marks the stage as completed if they are.
+    /// </summary>
+    private void CheckStageCompletion()
+    {
+        if (IsSelective) { //At least one objective should be completed
+            if (_objectives.Any(task => task.IsCompleted)) IsCompleted = true;
+            return;
+        }
+        // ALl objectives must be completed
+        if (_objectives.Any(task => ! task.IsCompleted)) return;
+        IsCompleted = true;
     }
     
     /// <summary>
@@ -65,7 +89,7 @@ public class QuestStage
     private int GetCompletedTaskCount()
     {
         var count = 0;
-        foreach (var task in Objectives)
+        foreach (var task in _objectives)
         {
             if (task.IsCompleted) count++;
         }
@@ -78,25 +102,14 @@ public class QuestStage
     /// <returns></returns>
     /// <exception cref="NotImplementedException"></exception>
     private List<string> GetProgressOfStageObjectives() {
-        return Objectives.Select(objective => objective.ProgressPrint).ToList();
+        return _objectives.Select(objective => objective.ProgressPrint).ToList();
     }
     
-    /// <summary>
-    /// Checks any objective in the stage is completed and marks the stage as completed if they are.
-    /// </summary>
-    private void CheckStageCompletion()
-    {
-        if (Objectives.Any(task => task.IsCompleted)) IsCompleted = true;
-        if (Objectives.Any(task => ! task.IsCompleted)) return;
-        IsCompleted = true;
-    }
-    
-
     /// <summary>
     /// Calculates the number of completed objectives in this stage
     /// </summary>
     /// <returns>Number of completed objectives</returns>
     private int GetCompletedObjectiveCount() {
-        return Objectives.Count(objective => objective.IsCompleted);
+        return _objectives.Count(objective => objective.IsCompleted);
     }
 }

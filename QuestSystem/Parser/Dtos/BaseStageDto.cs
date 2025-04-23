@@ -18,7 +18,7 @@ internal record BaseStageDto(string Description,bool IsCompleted,bool IsSelectiv
     internal QuestStage ToQuestStage()
     {
         var objectiveList = Objectives.Select(objectiveDto => objectiveDto.ToObjective()).ToList();
-        return new QuestStage(Description, null);//ToDO: Fix
+        return new QuestStage(Description,false, null);//ToDO: Fix
     }
 
 }
