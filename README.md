@@ -39,11 +39,12 @@ public partial class QuestManager : Node
         // AssetId - OPTIONAL - Depends on the action type
         var gatherObjectiveSprites = new Objective(3, 1);
         var hitObjectiveSprites = new Objective(3, 2);
+        var objectiveList = new List<Objective>(){gatherObjectiveSprites,hitObjectiveSprites}
 
         // Then we must declare the stages
         // In this case there is only one stage
         string stageDescription = "Gather 3 plants and hit 3 targets";
-        var stage = new QuestStageInclusive(stageDescription, gatherObjectiveSprites, hitObjectiveSprites);
+        var stage = new QuestStageInclusive(stageDescription, objectiveList);
 
         //Finally, create the quest object
         string questTitle = "Practicing the basics !";
@@ -51,8 +52,8 @@ public partial class QuestManager : Node
         return newQuest;
     }
     
-    // Then we need a funuction that will be called from other nodes (or connected to events/signals)
-    // Example : Player killed 3 wolf enemies
+    // Then we need a progress function that will be called from other nodes (or connected to events/signals)
+    // Example Scenario: The player killed 3 wolf enemies
     // progressValue = 3 , taskId = 4 (based on above convention), assetId = 5 (for example)
     private void ProgressQuests( int progressValue,int taskId, int assetId = -1)
     {
@@ -60,10 +61,11 @@ public partial class QuestManager : Node
         {
             quest.TryProgress( progressValue, taskId, assetId)
             if(quest.IsCompleted){
-                //do sth / give rewards based on how your game works
+                // Do sth like giving rewards based on how your game works
                 continue;
             }
-            // otherwise maybe update some UI or log sth
+            // Otherwise maybe update some UI or log sth with the quest progress
+            // You can use exposed properties of the quest object for this:
             GD.Print(quest.Title);
         }
     }
