@@ -21,7 +21,7 @@ public static class QuestParser {
     /// <param name="jsonOptions">The list of valid quests parsed from the json</param>
     /// <returns></returns>
     /// </summary>
-    public static List<Quest>? LoadFromJsonFile(string jsonPath, JsonSerializerOptions? jsonOptions = null)
+    public static MultiParseResult LoadFromJsonFile(string jsonPath, JsonSerializerOptions? jsonOptions = null)
     {
         try
         {
@@ -30,7 +30,7 @@ public static class QuestParser {
         }
         catch(Exception e)
         {
-            return null;
+            return new MultiParseResult();
         }
     }
     
@@ -43,25 +43,32 @@ public static class QuestParser {
     /// <param name="options">Json options for the serialization</param>
     /// <returns>The list of valid quests parsed from the json</returns>
     /// <exception cref="ArgumentException"></exception>
-    internal static List<Quest> LoadFromJson(string json, JsonSerializerOptions? options = null)
+    internal static MultiParseResult LoadFromJson(string json, JsonSerializerOptions? options = null)
     {
         // Basic Checks
         if(string.IsNullOrEmpty(json)) throw new ArgumentException("Cannot parse an empty json", nameof(json));
         if(!json.StartsWith("{") && !json.StartsWith("[")) throw new ArgumentException("Json should start with '{' or '['", nameof(json));
         options ??= _options;
-        var questList = new List<Quest>();
         
         // Parse the json
+        var parseResult = new MultiParseResult();
         if (json.StartsWith('{') && json.EndsWith('}')) //SINGLE QUEST
         {
             try {
                 var questDto = JsonSerializer.Deserialize<QuestDto>(json, options);
-                if (questDto == null) return new List<Quest>();
-                questList.Add(questDto.ToQuest());
-                return questList;
+                if (questDto == null) return new MultiParseResult();;
+                //check questDto
+                var result = IsValidDto(questDto);
+                if (!result.IsSuccessful) {
+                    parseResult.ErrorMessages.Add(result.ErrorMessage);
+                    return parseResult;
+                }
+                parseResult.Quests.Add(questDto.ToQuest());
+                return parseResult;
             }
             catch (JsonException jsonEx) {
-                return questList;
+                parseResult.ErrorMessages.Add($"A JsonException occured"+ jsonEx.Message);
+                return parseResult;
             }
         }
         
@@ -71,18 +78,21 @@ public static class QuestParser {
             questDtos = JsonSerializer.Deserialize<List<QuestDto>>(json,options);
         }
         catch (JsonException jsonEx) {
-            return questList;
+            parseResult.ErrorMessages.Add($"A JsonException occured"+ jsonEx.Message);
+            return parseResult;
         }
-        if(questDtos == null) return new List<Quest>();
+        if(questDtos == null) return new MultiParseResult();
         
         // Check parsed data
         foreach (var questDto in questDtos) {
             var result = IsValidDto(questDto);
-            if(!result.IsSuccessful) continue;
-            questList.Add(questDto.ToQuest());
+            if (!result.IsSuccessful) {
+                parseResult.ErrorMessages.Add(result.ErrorMessage);
+                continue;
+            }
+            parseResult.Quests.Add(questDto.ToQuest());
         }
-        
-        return questList;
+        return parseResult;
     }
     
     /// <summary>

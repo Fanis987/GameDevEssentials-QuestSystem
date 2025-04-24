@@ -131,21 +131,53 @@ public class QuestParserTests
      
      [Fact]
      public void LoadFromJson_CannotParseInvalidJson() {
-         var questList = QuestParser.LoadFromJson(QuestJsons.QuestInvalidId);
-         var questList2 = QuestParser.LoadFromJson(QuestJsons.QuestListInvalidId);
+         var parseResult = QuestParser.LoadFromJson(QuestJsons.QuestInvalidId);
+         var questList = parseResult.Quests;
+         var errors = parseResult.ErrorMessages;
+         
+         var parseResult2 = QuestParser.LoadFromJson(QuestJsons.QuestListInvalidId);
+         var questList2 = parseResult2.Quests;
+         var errors2 = parseResult.ErrorMessages;
          
          Assert.NotNull(questList);
          Assert.Empty(questList);
+         Assert.Single(errors);
          Assert.NotNull(questList2);
          Assert.Empty(questList2);
+         Assert.Single(errors2);
+     }
+
+     [Fact]
+     public void LoadFromJson_CannotParseNoStageJson()
+     {
+         var parseResult = QuestParser.LoadFromJson(QuestJsons.NoStagesJson);
+         var questList = parseResult.Quests;
+         var errors = parseResult.ErrorMessages;
+
+         Assert.NotNull(questList);
+         Assert.Empty(questList);
+         Assert.Single(errors);
      }
      
      [Fact]
+     public void LoadFromJson_CannotParseNoStageJsonList()
+     {
+         var parseResult = QuestParser.LoadFromJson(QuestJsons.QuestListNoStages);
+         var questList = parseResult.Quests;
+         var errors = parseResult.ErrorMessages;
+
+         Assert.NotNull(questList);
+         Assert.Single(questList);
+         Assert.Single(errors);
+     }
+
+     [Fact]
      public void LoadFromJson_ShouldDeserializeSingleQuest()
      {
-         var questList = QuestParser.LoadFromJson(QuestJsons.SmallQuestJson);
-        
-         Assert.NotNull(questList);
+         var parseResult = QuestParser.LoadFromJson(QuestJsons.SmallQuestJson);
+         Assert.NotNull(parseResult);
+         
+         var questList = parseResult.Quests;
          Assert.Single(questList);
         
          var quest = questList.First();
@@ -165,8 +197,8 @@ public class QuestParserTests
      [Fact]
      public void LoadFromJson_ShouldDeserializeMultipleQuests()
      {
-         var questList = QuestParser.LoadFromJson(QuestJsons.MultiQuestJson);
-        
+         var parseResult = QuestParser.LoadFromJson(QuestJsons.MultiQuestJson);
+         var questList = parseResult.Quests;
          Assert.NotNull(questList);
          Assert.Equal(2, questList.Count);
         
@@ -177,14 +209,15 @@ public class QuestParserTests
          Assert.False(quest.IsCompleted);
          Assert.Equal(1,quest.StagesLeft);
      }
+    
      
      [Fact]
      public void ParseExampleJson_ShouldReturnExpectedModel()
      {
          var baseDir = AppDomain.CurrentDomain.BaseDirectory;
          var filePath = Path.Combine(baseDir, "Parser", "Example.json");
-         var questListFromJson = QuestParser.LoadFromJsonFile(filePath);
-         
+         var parseResult = QuestParser.LoadFromJsonFile(filePath);
+         var questListFromJson = parseResult.Quests;
          Assert.NotNull(questListFromJson);
          Assert.NotEmpty(questListFromJson);
          Assert.Equal(2,questListFromJson.Count);

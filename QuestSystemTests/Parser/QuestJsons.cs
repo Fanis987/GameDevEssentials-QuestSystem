@@ -115,6 +115,31 @@ public static class QuestJsons
       }
     ]";
   
+  public static readonly string QuestListNoStages = @"[
+      {
+        ""Id"": 1,
+        ""Title"": ""First Quest"",
+        ""Stages"": []
+      },
+      {
+        ""Id"": 2,
+        ""Title"": ""Second Quest"",
+        ""Stages"": [
+          {
+            ""Description"": ""This is stage 1-2"",
+            ""IsSelective"": false,
+            ""Objectives"": [
+              {
+                ""GoalValue"": 56,
+                ""TaskTypeId"": 37,
+                ""TargetAssetId"": 28
+              }
+            ]
+          }
+        ]
+      }
+    ]";
+  
   public static readonly string QuestNoGoal = @"{
       ""Id"": 3,
       ""Title"": ""First Quest"",
@@ -143,6 +168,7 @@ public static class QuestJsons
       ""Title"": ""Quest 3"",
       ""Stages"": [
         {
+          ""Description"": ""This is stage 1"",          
           ""IsCompleted"": true,
           ""Objectives"": [
             {
@@ -158,6 +184,7 @@ public static class QuestJsons
       ""Title"": ""Quest 4"",
       ""Stages"": [
         {
+          ""Description"": ""This is stage 1"",
           ""IsCompleted"": false,
           ""Objectives"": []
         }
