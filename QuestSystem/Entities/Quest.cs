@@ -6,17 +6,21 @@ namespace QuestSystem.Entities;
 public class Quest
 {
     // Main Properties
+    private readonly Queue<QuestStage> _stagesQueue =  new();
+    /// <summary> The id of the quest. Must be positive </summary>
     public int Id {get; private set;}
+    /// <summary> The title of the quest. Must be positive </summary>
     public string Title {get; private set;}
     
-    private readonly Queue<QuestStage> _stagesQueue =  new();
     
     // Getter Properties
+    /// <summary> Whether this <see cref="Quest"/> is complete </summary>
     public bool IsCompleted => _stagesQueue.Count == 0;
+    /// <summary> The current <see cref="QuestStage"/> of the quest </summary>
     public QuestStage? CurrentStage => IsCompleted? null : _stagesQueue.Peek();
+    /// <summary> The number of <see cref="QuestStage"/> left in this quest </summary>
     public int StagesLeft => _stagesQueue.Count;
     
-
     /// <summary>
     /// Represents a quest in a game.
     /// </summary>

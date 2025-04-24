@@ -13,13 +13,19 @@ public class QuestStage
     private readonly List<Objective> _objectives = new();
     
     //Getter properties
+    /// <summary> The description of the <see cref="QuestStage"/> </summary>
     public string StageDescription { get; private set; }
+    /// <summary> Whether this <see cref="QuestStage"/> is complete</summary>
     public bool IsCompleted { get; private set; }
+    /// <summary> Whether this <see cref="QuestStage"/> can completed, by finishing ANY of its objectives</summary>
     public bool IsSelective { get; private set; }
     
     // Complex Getters
+    /// <summary> The list of individual progress of each <see cref="Objective"/> in this stage</summary>
     public IReadOnlyList<string> ObjectiveProgress => GetProgressOfStageObjectives();
+    /// <summary> A simple progress indicator of the stage's objectives</summary>
     public string StageProgress => $"{GetCompletedObjectiveCount()}/{_objectives.Count}";
+    /// <summary> The number of objectives completed in this <see cref="QuestStage"/></summary>
     public int CompletedObjectiveCount => GetCompletedTaskCount();
 
     /// <summary>

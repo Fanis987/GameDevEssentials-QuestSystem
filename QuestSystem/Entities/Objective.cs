@@ -11,13 +11,19 @@ public class Objective
     private int _currValue;
     
     // Simple Getters
-    public int TaskTypeId => _taskTypeId;
-    public int TargetAssetId => _targetAssetId;
+    /// <summary> The current progress of the objective. When equal to <see cref="GoalValue"/> objective is complete </summary>
     public int CurrValue => _currValue;
+    /// <summary> The goal progress of the objective </summary>
     public int GoalValue => _goalValue;
+    /// <summary> The id of the action of this objective </summary>
+    public int TaskTypeId => _taskTypeId;
+    /// <summary> OPTIONAL: The id of the asset that must be interacted-with, for the objective to progress</summary>
+    public int TargetAssetId => _targetAssetId;
     
     // Complex Getters
+    /// <summary> A simple progress indicator</summary>
     public string ProgressPrint => $"{_currValue}/{_goalValue}";
+    /// <summary> Whether this <see cref="Objective"/> is complete</summary>
     public bool IsCompleted => _currValue >= _goalValue;
 
     /// <summary>
@@ -26,8 +32,7 @@ public class Objective
     /// <param name="goalValue">The required value to complete the objective.</param>
     /// <param name="taskTypeId">The id of the type of the task.</param>
     /// <param name="assetId">The specific asset that proceeds the objective</param>
-    public Objective(int goalValue, int taskTypeId, int assetId = 0)
-    {
+    public Objective(int goalValue, int taskTypeId, int assetId = 0) {
         _taskTypeId = taskTypeId;
         _goalValue = goalValue;
         _targetAssetId = assetId;
@@ -52,15 +57,13 @@ public class Objective
         var newCurrentValue = _currValue + progressValue;
         
         // In case of decrement it should not go below 0.
-        if (newCurrentValue <= 0)
-        {
+        if (newCurrentValue <= 0) {
             _currValue = 0;
             return;
         }
         
         // In case of increment it should cap at objective of the goal
-        if (_currValue + progressValue >= _goalValue)
-        {
+        if (_currValue + progressValue >= _goalValue) {
             _currValue = _goalValue;
             return;
         }
