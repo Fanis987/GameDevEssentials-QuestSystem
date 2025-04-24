@@ -52,16 +52,27 @@ public static class QuestParser {
         var questList = new List<Quest>();
         
         // Parse the json
-        if (json.StartsWith("{") && json.EndsWith("}")) //SINGLE QUEST
+        if (json.StartsWith('{') && json.EndsWith('}')) //SINGLE QUEST
         {
-            var questDto = JsonSerializer.Deserialize<QuestDto>(json,options);
-            if(questDto == null) return new List<Quest>();
-            questList.Add(questDto.ToQuest());
-            return questList;
+            try {
+                var questDto = JsonSerializer.Deserialize<QuestDto>(json, options);
+                if (questDto == null) return new List<Quest>();
+                questList.Add(questDto.ToQuest());
+                return questList;
+            }
+            catch (JsonException jsonEx) {
+                return questList;
+            }
         }
         
         //QUEST ARRAY
-        var questDtos = JsonSerializer.Deserialize<List<QuestDto>>(json,options);
+        List<QuestDto>? questDtos;
+        try {
+            questDtos = JsonSerializer.Deserialize<List<QuestDto>>(json,options);
+        }
+        catch (JsonException jsonEx) {
+            return questList;
+        }
         if(questDtos == null) return new List<Quest>();
         
         // Check parsed data
@@ -84,6 +95,8 @@ public static class QuestParser {
         var pre = $"Error when parsing the quest id {questDto.Id}: ";
         
         // Quest Tests
+        if(questDto.Id <= 0 ) return ParseResult.Fail(pre + "ID is required, and should be positive integer");
+        if(String.IsNullOrEmpty(questDto.Title)) return ParseResult.Fail(pre + "Must have a title");
         if(questDto.Stages.Count == 0) return ParseResult.Fail(pre + "No Stages Found");
         
         //Stage tests
@@ -92,6 +105,9 @@ public static class QuestParser {
             if(stage.IsCompleted) return ParseResult.Fail(pre + "Completed stage found");
             //objectives test
             if(stage.Objectives.Count == 0) return ParseResult.Fail(pre + "No Objectives Found");
+            foreach (var objective in stage.Objectives) {
+                if(objective.GoalValue == 0) return ParseResult.Fail(pre + "Goal value of 0 found");
+            }
         }
         return ParseResult.Ok();
     }

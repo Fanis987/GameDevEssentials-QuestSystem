@@ -69,6 +69,26 @@ public class QuestParserTests
      }
      
      [Fact]
+     public void IsValidDto_ShouldFailWithoutId() {
+         var questDto = JsonSerializer.Deserialize<QuestDto>(QuestJsons.QuestNoIdJson);
+         Assert.NotNull(questDto);
+         var result = QuestParser.IsValidDto(questDto);
+
+         Assert.False(result.IsSuccessful);
+         Assert.Contains("ID is required", result.ErrorMessage);
+     }
+     
+     [Fact]
+     public void IsValidDto_ShouldFailWithoutTitle() {
+         var questDto = JsonSerializer.Deserialize<QuestDto>(QuestJsons.QuestNoTitleJson);
+         Assert.NotNull(questDto);
+         var result = QuestParser.IsValidDto(questDto);
+
+         Assert.False(result.IsSuccessful);
+         Assert.Contains("Must have a title", result.ErrorMessage);
+     }
+     
+     [Fact]
      public void IsValidDto_ShouldFailWhenStageIsCompleted()
      {
          var questDto = JsonSerializer.Deserialize<QuestDto>(QuestJsons.CompletedStageJson);
@@ -91,12 +111,33 @@ public class QuestParserTests
      }
      
      [Fact]
-     public void LoadFromJson_CannotParseEmptyAndInvalidJson()
+     public void IsValidDto_ShouldFail_WhenStageHasZeroGoalValue()
      {
+         var questDto = JsonSerializer.Deserialize<QuestDto>(QuestJsons.QuestNoGoal);
+         Assert.NotNull(questDto);
+         var result = QuestParser.IsValidDto(questDto);
+
+         Assert.False(result.IsSuccessful);
+         Assert.Contains("Goal value of 0 found", result.ErrorMessage);
+     }
+     
+     [Fact]
+     public void LoadFromJson_CannotParseEmptyAndInvalidJson() {
         Assert.Throws<ArgumentException>(() => QuestParser.LoadFromJson(QuestJsons.EmptyJson));
         Assert.Throws<ArgumentException>(() => QuestParser.LoadFromJson(null));
         Assert.Throws<ArgumentException>(() => QuestParser.LoadFromJson(QuestJsons.NumberJson));
         Assert.Throws<ArgumentException>(() => QuestParser.LoadFromJson(QuestJsons.SpecialCharJson));
+     }
+     
+     [Fact]
+     public void LoadFromJson_CannotParseInvalidJson() {
+         var questList = QuestParser.LoadFromJson(QuestJsons.QuestInvalidId);
+         var questList2 = QuestParser.LoadFromJson(QuestJsons.QuestListInvalidId);
+         
+         Assert.NotNull(questList);
+         Assert.Empty(questList);
+         Assert.NotNull(questList2);
+         Assert.Empty(questList2);
      }
      
      [Fact]
