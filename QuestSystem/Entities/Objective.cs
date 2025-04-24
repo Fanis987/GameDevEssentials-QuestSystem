@@ -26,7 +26,7 @@ public class Objective
     /// <param name="goalValue">The required value to complete the objective.</param>
     /// <param name="taskTypeId">The id of the type of the task.</param>
     /// <param name="assetId">The specific asset that proceeds the objective</param>
-    public Objective(int goalValue, int taskTypeId, int assetId = -1)
+    public Objective(int goalValue, int taskTypeId, int assetId = 0)
     {
         _taskTypeId = taskTypeId;
         _goalValue = goalValue;
@@ -41,7 +41,7 @@ public class Objective
     /// </summary>
     /// <param name="progressValue">The progress value to add.</param>
     /// <param name="assetId">The specific asset that proceeds the objective.</param>
-    public void TryProceed(int progressValue, int assetId = -1)
+    public void TryProceed(int progressValue, int assetId = 0)
     {
         // Completed objectives do not receive progress (positive or negative)
         if (IsCompleted) return;

@@ -56,23 +56,31 @@ public class QuestStage
     /// Tries to progress tasks in the stage based on the provided progress data.
     /// </summary>
     /// <param name="objectiveProgressDto">The data containing task type and progress value.</param>
-    public void TryProgressTask(ObjectiveProgressDto objectiveProgressDto)
-    {
+    public void TryProgressObjective(ObjectiveProgressDto objectiveProgressDto) {
         //Try Advance some of the objectives
-        foreach (var objective in _objectives)
-        {
+        foreach (var objective in _objectives) {
             if(objective.TaskTypeId != objectiveProgressDto.TaskTypeId) continue;
-            
             objective.TryProceed(objectiveProgressDto.ProgressValue,objectiveProgressDto.AssetId);
         }
         CheckStageCompletion();
     }
     
     /// <summary>
+    /// Tries to progress tasks in the stage based on the provided progress data.
+    /// </summary>
+    /// <param name="progressValue">The value of the progress made.</param>
+    /// <param name="taskTypeId">The id of the type of the action.</param>
+    /// <param name="assetId">The id of the asset that was affected by the action</param>
+    /// <exception cref="InvalidOperationException"></exception>
+    public void TryProgressObjective(int progressValue, int taskTypeId, int assetId = 0) {
+        var dto = new ObjectiveProgressDto(taskTypeId,progressValue, assetId);
+        TryProgressObjective(dto);
+    }
+    
+    /// <summary>
     /// Checks any objective in the stage is completed and marks the stage as completed if they are.
     /// </summary>
-    private void CheckStageCompletion()
-    {
+    private void CheckStageCompletion() {
         if (IsSelective) { //At least one objective should be completed
             if (_objectives.Any(task => task.IsCompleted)) IsCompleted = true;
             return;

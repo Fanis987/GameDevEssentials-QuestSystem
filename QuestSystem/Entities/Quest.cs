@@ -58,7 +58,7 @@ public class Quest
     /// </summary>
     /// <param name="questId"> The id of the quest</param>
     /// <param name="questTitle"> The title of the quest</param>
-    /// <param name="isInclusiveStage"> True if the stage is inclusive, false if selective</param>
+    /// <param name="isSelectiveStage">Whether stages completes by finishing ANY of the objectives</param>
     /// <param name="stageDescription">The description of the quest stage</param>
     /// <param name="objectives"> The objectives for the sole stage</param>
     /// <exception cref="ArgumentException"></exception>
@@ -103,7 +103,7 @@ public class Quest
         if (currentStage.IsCompleted) {
             throw new InvalidOperationException("The current stage is already completed");
         }
-        currentStage.TryProgressTask(objProgressDto);
+        currentStage.TryProgressObjective(objProgressDto);
 
         // Stage not completed yet
         if (!currentStage.IsCompleted) return;

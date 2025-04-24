@@ -51,6 +51,10 @@ public class QuestParserTests
 
          Assert.True(result.IsSuccessful);
          Assert.Equal(string.Empty, result.ErrorMessage);
+         
+         // check generated
+         var quest = questDto.ToQuest();
+         Assert.NotNull(quest);
      }
      
      [Fact]

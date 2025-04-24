@@ -30,7 +30,7 @@ public class QuestTests
         // Stage an invalid quest
         var taskKill = new Objective(5,(int)TaskType.Kill);
         var completedStage = new QuestStage("kill many",false,new List<Objective> {taskKill});
-        completedStage.TryProgressTask(new ObjectiveProgressDto((int)TaskType.Kill,5));
+        completedStage.TryProgressObjective(new ObjectiveProgressDto((int)TaskType.Kill,5));
         _questInvalid = new Quest(2,"kill quest",completedStage);
         
         // SUT

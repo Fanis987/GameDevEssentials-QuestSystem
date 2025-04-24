@@ -69,8 +69,7 @@ public static class QuestJsons
             },
             {
               ""GoalValue"": 10,
-              ""TaskTypeId"": 3,
-              ""TargetAssetId"": 3
+              ""TaskTypeId"": 3
             }
           ]
         },
