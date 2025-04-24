@@ -54,7 +54,8 @@ public partial class QuestManager : Node
     
     // Then we need a progress function that will be called from other nodes (or connected to events/signals)
     // Example Scenario: The player killed 3 wolf enemies
-    // progressValue = 3 , taskId = 4 (based on above convention), assetId = 5 (for example)
+    // Assume in-game enemy ids: 1: Toad 2: Rabbit 3:Wolf 4: Turtle
+    // progressValue = 3 , taskId = 4 (based on above convention), assetId = 3 (for example)
     private void ProgressQuests( int progressValue,int taskId, int assetId = -1)
     {
         foreach(var quest in ActiveQuests)
@@ -99,13 +100,25 @@ Json Example (somewhere in godot project directory):
   ]
 }
 ```
+Note: can also have json with array of quests
+
 Replace the function from minimal example with:
 ```csharp
-private Quest CreateSimpleQuestViaJson(string jsonPath){
-    // load from your path of choice
+private List<Quest> LoadQuestsFromJson(string jsonPath){
+    // Load from your path of choice
     // Can also pass serializer options as 2nd arg
-   Quest questFromJson = QuestParser.LoadFromJsonFile(jsonPath);
-   return questFromJson;
+    MultiParseResult parseResult = QuestParser.LoadFromJsonFile(jsonPath);
+    
+    // Here you can access your parsed quests
+    List<Quest> parsedQuestList = parseResult.Quests;
+    
+    // Check for parsing errors (useful for many quests in a json)
+    var errorsList = parseResult.ErrorMessages;
+    if(errorsList.Count != 0){
+        foreach(var error in errorsList) GD.PrintErr(error)
+    }
+    
+    return parsedQuestList;
 }
 ```
 
