@@ -11,7 +11,7 @@ public class QuestTests
     private readonly QuestStage _questStage1,_questStage2,_questStage3;
     
     // SUT
-    private readonly Quest _quest;
+    private readonly Quest _quest,_quest2;
     private readonly Quest _questSelective;
     private readonly Quest _questInvalid;
     
@@ -35,6 +35,7 @@ public class QuestTests
         
         // SUT
         _quest = new Quest(1,"myQuest",_questStage1,_questStage2);
+        _quest2 = new Quest(2,"myQuest2",true,_questStage1,_questStage2);
         _questSelective = new Quest(3,"myQuest3",_questStage3);
     }
     
@@ -58,6 +59,7 @@ public class QuestTests
         Assert.Equal("myQuest",_quest.Title);
         Assert.Equal(1,_quest.Id);
         Assert.False(_quest.IsCompleted);
+        Assert.False(_quest.IsMainQuest);
         Assert.Equal(2, _quest.StagesLeft);
         Assert.Equal(_questStage1, _quest.CurrentStage);
         
@@ -71,7 +73,7 @@ public class QuestTests
     [Fact]
     public void Quest_ShouldInitializeProperlyWithAltCtor()
     {
-        //Alt Constructor assertions
+        //Single-stage Constructor assertions
         var quest = new Quest(1, "title", true,
             "stageDescr", _taskGather,_taskKill);
         Assert.NotNull(quest);
@@ -87,6 +89,18 @@ public class QuestTests
         Assert.Equal(3,quest2.Id);
         Assert.False(quest2.IsCompleted);
         Assert.Equal(1, quest2.StagesLeft);
+    }
+    
+    [Fact]
+    public void Quest_ShouldInitializeProperlyWithAltCtor2() {
+        // Quest assertions
+        Assert.NotNull(_quest2);
+        Assert.Equal("myQuest2",_quest2.Title);
+        Assert.Equal(2,_quest2.Id);
+        Assert.False(_quest2.IsCompleted);
+        Assert.True(_quest2.IsMainQuest);
+        Assert.Equal(2, _quest2.StagesLeft);
+        Assert.Equal(_questStage1, _quest2.CurrentStage);
     }
     
     [Fact]

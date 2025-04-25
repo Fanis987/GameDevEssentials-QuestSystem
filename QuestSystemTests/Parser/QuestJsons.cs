@@ -10,6 +10,7 @@ public static class QuestJsons
   public static readonly string SmallQuestJson = @"{
       ""Id"": 1,
       ""Title"": ""First Quest"",
+      ""IsMainQuest"": true,
       ""Stages"": [
         {
           ""Description"": ""This is stage 1"",

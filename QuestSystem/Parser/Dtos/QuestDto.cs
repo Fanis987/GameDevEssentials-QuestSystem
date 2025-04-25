@@ -8,7 +8,7 @@ namespace QuestSystem.Parser.Dtos;
 /// <param name="Id">The id of the quest</param>
 /// <param name="Title">The title of the quest</param>
 /// <param name="Stages">The list of the stages</param>
-internal record QuestDto(int Id,string Title,List<QuestStageDto> Stages)
+internal record QuestDto(int Id,string Title,bool IsMainQuest,List<QuestStageDto> Stages)
 {
     /// <summary>
     /// Produces a Quest object from the dto.

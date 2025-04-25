@@ -8,12 +8,13 @@ public class QuestParserTests
 {
     
     [Fact]
-    public void CanParseSmallJson()
-    {
+    public void CanParseSmallJson() {
         var questDto = JsonSerializer.Deserialize<QuestDto>(QuestJsons.SmallQuestJson);
         
         Assert.NotNull(questDto);
         Assert.Equal(1,questDto.Id);
+        Assert.Equal("First Quest",questDto.Title);
+        Assert.True(questDto.IsMainQuest);
         Assert.Equal("First Quest",questDto.Title);
     
         var stages = questDto.Stages;
@@ -31,8 +32,7 @@ public class QuestParserTests
     }
     
      [Fact]
-     public void IsValidDto_ShouldReturnOkForValidQuestDto()
-     {
+     public void IsValidDto_ShouldReturnOkForValidQuestDto() {
          var questDto = JsonSerializer.Deserialize<QuestDto>(QuestJsons.SmallQuestJson);
          Assert.NotNull(questDto);
          var result = QuestParser.IsValidDto(questDto);

@@ -5,12 +5,15 @@ namespace QuestSystem.Entities;
 /// </summary>
 public class Quest
 {
-    // Main Properties
+    // Main Properties (set in ctor)
     private readonly Queue<QuestStage> _stagesQueue =  new();
+    
+    /// <summary>Whether the quest is part of the main line.</summary>
+    public bool IsMainQuest {get;}
     /// <summary> The id of the quest. Must be positive </summary>
-    public int Id {get; private set;}
-    /// <summary> The title of the quest. Must be positive </summary>
-    public string Title {get; private set;}
+    public int Id {get;}
+    /// <summary> The title of the quest.</summary>
+    public string Title {get;}
     
     
     // Getter Properties
@@ -52,6 +55,19 @@ public class Quest
         {
             _stagesQueue.Enqueue (stage);    
         }
+    }
+
+    /// <summary>
+    /// Represents a quest in a game.
+    /// </summary>
+    /// <param name="questId">The id of the quest</param>
+    /// <param name="questTitle">The title of the quest</param>
+    /// <param name="isMainQuest">Whether the quest is part of the main quest line</param>
+    /// <param name="stages"> The stages of the quest, in order.</param>
+    public Quest(int questId, string questTitle,bool isMainQuest, params QuestStage[] stages)
+    :this(questId,questTitle,stages)
+    {
+        IsMainQuest = isMainQuest;
     }
 
     public Quest(int questId, string questTitle, List<QuestStage> stages)

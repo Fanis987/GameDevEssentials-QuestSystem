@@ -20,7 +20,7 @@ public class DtoTests {
         _stageSelectiveDto = new QuestStageDto("selective descr",false,true, objDtoList);
 
         var stageDtoList = new List<QuestStageDto>() { _stageInclusiveDto,_stageSelectiveDto };
-        _questDto = new QuestDto(5, "quest title", stageDtoList);
+        _questDto = new QuestDto(5, "quest title",true, stageDtoList);
     }
     
     [Fact]
@@ -57,6 +57,7 @@ public class DtoTests {
         Assert.NotNull(_questDto);
         Assert.Equal(5, _questDto.Id);
         Assert.Equal("quest title", _questDto.Title);
+        Assert.True(_questDto.IsMainQuest);
 
         // Assert stages
         Assert.NotNull(_questDto.Stages);
