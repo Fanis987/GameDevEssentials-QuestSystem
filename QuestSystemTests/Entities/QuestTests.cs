@@ -256,4 +256,33 @@ public class QuestTests
         Assert.Throws<InvalidOperationException>(() =>
             _questInvalid.TryProgressQuest(new ObjectiveProgressDto((int)TaskType.Kill, 5)));
     }
+    
+    [Fact]
+    public void TrySkipStage_CanSkipStage() {
+        Assert.Equal(2, _quest.StagesLeft);
+        _quest.TrySkipStage();
+        
+        Assert.False(_quest.IsCompleted);
+        Assert.Equal(_questStage2, _quest.CurrentStage);
+        Assert.Equal(1, _quest.StagesLeft);
+    }
+    
+    [Fact]
+    public void TrySkipStage_CannotSkipStageOnCompleted() {
+        _quest.TrySkipStage();
+        _quest.TrySkipStage();
+        Assert.True(_quest.IsCompleted);
+        //Still completed
+        _quest.TrySkipStage();
+        Assert.True(_quest.IsCompleted);
+    }
+    
+    [Fact]
+    public void CompleteInstantly_CanCompleteInstantly() {
+        Assert.Equal(2, _quest.StagesLeft);
+        Assert.False(_quest.IsCompleted);
+        _quest.CompleteInstantly();
+        Assert.True(_quest.IsCompleted);
+        Assert.Equal(0, _quest.StagesLeft);
+    }
 }

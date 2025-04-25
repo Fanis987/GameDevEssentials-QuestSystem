@@ -144,4 +144,20 @@ public class Quest
         var dto = new ObjectiveProgressDto(taskTypeId,progressValue, assetId);
         TryProgressQuest(dto);
     }
+
+    /// <summary>
+    /// Force skips the current stage of the quest.
+    /// Useful when debugging and loading a half-finished quest from a save file.
+    /// </summary>
+    public void TrySkipStage() {
+        if(IsCompleted) return; // A completed quest cannot be progressed
+        _stagesQueue.Dequeue();  // Force-Skip the current stage
+    }
+    
+    /// <summary>
+    /// Forces a quest to complete instantly. Useful for debugging.
+    /// </summary>
+    public void CompleteInstantly() {
+        _stagesQueue.Clear(); // Force-Skip all teh stages
+    }
 }
