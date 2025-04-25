@@ -8,12 +8,16 @@ public class Quest
     // Main Properties (set in ctor)
     private readonly Queue<QuestStage> _stagesQueue =  new();
     
-    /// <summary>Whether the quest is part of the main line.</summary>
-    public bool IsMainQuest {get;}
     /// <summary> The id of the quest. Must be positive </summary>
     public int Id {get;}
     /// <summary> The title of the quest.</summary>
     public string Title {get;}
+    /// <summary>Whether the quest is part of the main line.</summary>
+    public bool IsMainQuest {get;}
+
+    /// <summary>Whether the quest is part of the main line.</summary>
+    public int NextQuestId { get; }
+    
     
     
     // Getter Properties
@@ -68,6 +72,20 @@ public class Quest
     :this(questId,questTitle,stages)
     {
         IsMainQuest = isMainQuest;
+    }
+
+    /// <summary>
+    /// Represents a quest in a game.
+    /// </summary>
+    /// <param name="questId">The id of the quest</param>
+    /// <param name="questTitle">The title of the quest</param>
+    /// <param name="isMainQuest">Whether the quest is part of the main quest line</param>
+    /// <param name="nextQuestId">The id of the next quest in the quest chain. Zero interpreted as no next quest.</param>
+    /// <param name="stages"> The stages of the quest, in order.</param>
+    public Quest(int questId, string questTitle,bool isMainQuest,int nextQuestId, params QuestStage[] stages)
+        :this(questId,questTitle,isMainQuest,stages)
+    {
+        NextQuestId = nextQuestId;
     }
 
     public Quest(int questId, string questTitle, List<QuestStage> stages)

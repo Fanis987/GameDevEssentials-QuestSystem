@@ -13,9 +13,9 @@ public class QuestParserTests
         
         Assert.NotNull(questDto);
         Assert.Equal(1,questDto.Id);
+        Assert.Equal(2,questDto.NextQuestId);
         Assert.Equal("First Quest",questDto.Title);
         Assert.True(questDto.IsMainQuest);
-        Assert.Equal("First Quest",questDto.Title);
     
         var stages = questDto.Stages;
         Assert.NotNull(stages);
@@ -205,9 +205,17 @@ public class QuestParserTests
          var quest = questList.First();
          Assert.NotNull(quest);
          Assert.Equal(6, quest.Id);
+         Assert.True(quest.IsMainQuest);
+         Assert.Equal(7, quest.NextQuestId);
          Assert.Equal("First Quest In Multi", quest.Title);
          Assert.False(quest.IsCompleted);
          Assert.Equal(1,quest.StagesLeft);
+         
+         var quest2 = questList[1];
+         Assert.NotNull(quest2);
+         Assert.Equal(7, quest2.Id);
+         Assert.Equal(0, quest2.NextQuestId);
+         Assert.True(quest.IsMainQuest);
      }
     
      

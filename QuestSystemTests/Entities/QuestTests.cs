@@ -42,7 +42,7 @@ public class QuestTests
     [Fact]
     public void Quest_ShouldInitializeProperly()
     {
-        // Assert
+        // Assert Dependencies
         Assert.Equal(0,_taskKill.CurrValue);
         Assert.False(_taskKill.IsCompleted);
         Assert.Equal(0,_taskKillLarge.CurrValue);
@@ -61,6 +61,7 @@ public class QuestTests
         Assert.False(_quest.IsCompleted);
         Assert.False(_quest.IsMainQuest);
         Assert.Equal(2, _quest.StagesLeft);
+        Assert.Equal(0, _quest.NextQuestId);
         Assert.Equal(_questStage1, _quest.CurrentStage);
         
         // Quest selective assertions

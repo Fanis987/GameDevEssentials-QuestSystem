@@ -10,6 +10,7 @@ public static class QuestJsons
   public static readonly string SmallQuestJson = @"{
       ""Id"": 1,
       ""Title"": ""First Quest"",
+      ""NextQuestId"": 2,
       ""IsMainQuest"": true,
       ""Stages"": [
         {
@@ -229,6 +230,8 @@ public static class QuestJsons
     {
       ""Id"": 6,
       ""Title"": ""First Quest In Multi"",
+      ""IsMainQuest"": true,
+      ""NextQuestId"": 7,
       ""Stages"": [
         {
           ""Description"": ""This is stage 1"",
@@ -247,6 +250,7 @@ public static class QuestJsons
     {
       ""Id"": 7,
       ""Title"": ""Second Quest In Multi"",
+      ""IsMainQuest"": true,
       ""Stages"": [
         {
           ""Description"": ""This is stage 1"",
