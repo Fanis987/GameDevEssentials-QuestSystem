@@ -22,11 +22,17 @@ using System;
 // We start with some kind of manager class 
 public partial class QuestManager : Node
 {
-    // Have a collection to store your in-game quests
+    // Have collections to store your in-game quests
+    public List<Quest> AllQuests { get; private set; } = new()
     public List<Quest> ActiveQuests { get; private set; } = new()
 
     public override void _Ready()    {
+        // Method 1: Make a quest via code
         CreateSimpleQuest();
+        
+        //Add it to active
+        var quest = AllQuests.Select( q => q.Id == 1 );
+        if(quest!= null) ActiveQuests.Add(quest);
     }
     
     // Creating a quest follows the described structure
@@ -53,8 +59,12 @@ public partial class QuestManager : Node
 
         //Finally, create the quest object and add it to the list
         string questTitle = "Practicing the basics !";
-        Quest newQuest = new Quest(1, questTitle, stage);
-        ActiveQuests.Add( newQuest );
+        bool isMainQuest = true;// Optional: Common quest discrimination
+        bool nextQuestId = 5;  //  Optional: For quest-chain support
+        Quest newQuest = new Quest(1, questTitle,isMainQuest,nextQuestId, stage);
+        //Note: there are also overloaded constructors with less args
+        
+        AllQuests.Add( newQuest );
     }
     
     // Then we need a progress function that will be called from other nodes (or connected to events/signals)
@@ -62,13 +72,19 @@ public partial class QuestManager : Node
     // progressValue = 3 , taskId = 4 (kill action), assetId = 3 (wolf)
     private void ProgressQuests( int progressValue,int taskId, int assetId = -1)
     {
-        var activeQuestsCopy = new List<Quest>(ActiveQuests) //avoid mid-loop deletion issues
+        var activeQuestsCopy = new List<Quest>(ActiveQuests); //avoid mid-loop deletion issues
         foreach(var quest in activeQuestsCopy)
         {
             quest.TryProgress( progressValue, taskId, assetId);
             if(quest.IsCompleted){
-                // Do sth like giving rewards based on how your game works
+                // Here do sth like giving rewards based on how your game works
                 ActiveQuests.Remove(quest);
+                
+                // Can also use logic to start next quest in chain
+                if(quest.NextQuestId != 0){
+                    var nextQuest = AllQuests.Select( q => q.Id == quest.Id );
+                    if(nextQuest!= null) ActiveQuests.Add(nextQuest);
+                }
                 continue;
             }
             // Otherwise maybe update some UI or log sth with the quest progress
@@ -79,11 +95,13 @@ public partial class QuestManager : Node
 }
 ```
 **METHOD 2 : Read Quest details from a json file!**  
-Json Example (somewhere in godot project directory):
+Json Example (Stored somewhere your project directory):
 ```json
 {
   "Id": 1,
   "Title": "First Quest",
+  "IsMainQuest": true,
+  "NextQuestId" : 7,
   "Stages": [
     {
       "Description": "This is stage 1",
@@ -104,11 +122,11 @@ Json Example (somewhere in godot project directory):
   ]
 }
 ```
-Note: can also have json with array of quests
+Note: Json with array of quests also supported.
 
-Replace the function from minimal example with:
+Load multiple quests from minimal example with:
 ```csharp
-private List<Quest> LoadQuestsFromJson(string jsonPath){
+private void LoadQuestsFromJson(string jsonPath){
     // Load from your path of choice
     // Can also pass serializer options as 2nd arg
     MultiParseResult parseResult = QuestParser.LoadFromJsonFile(jsonPath);
@@ -116,13 +134,13 @@ private List<Quest> LoadQuestsFromJson(string jsonPath){
     // Here you can access your parsed quests
     List<Quest> parsedQuestList = parseResult.Quests;
     
-    // Check for parsing errors (useful for many quests in a json)
+    // Check for parsing errors (useful for many quests present in a json)
     var errorsList = parseResult.ErrorMessages;
     if(errorsList.Count != 0){
         foreach(var error in errorsList) GD.PrintErr(error)
     }
     
-    return parsedQuestList;
+    AllQuests.AddRange( parsedQuestList );
 }
 ```
 

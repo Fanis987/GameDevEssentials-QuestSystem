@@ -6,7 +6,7 @@
         <Nullable>enable</Nullable>
         
         <PackageId>GameDevEssentials.QuestSystem</PackageId>
-        <Version>0.2.0</Version>
+        <Version>0.3.1</Version>
         <Authors>Theofanis Tsakiris</Authors>
         <Description>A package for building quests in a game</Description>
         <PackageTags>Godot,GameDev,Quest</PackageTags>
