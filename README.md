@@ -23,18 +23,20 @@ using System;
 public partial class QuestManager : Node
 {
     // Have collections to store your in-game quests
-    public List<Quest> AllQuests { get; private set; } = new()
-    public List<Quest> ActiveQuests { get; private set; } = new()
+    public List<Quest> AllQuests { get; private set; } = new();
+    public List<Quest> ActiveQuests { get; private set; } = new();
 
     public override void _Ready()    {
         // Method 1: Make a quest via code
         CreateSimpleQuest();
         
         //Add it to active
-        var quest = AllQuests.Select( q => q.Id == 1 );
+        var quest = AllQuests.FirstOrDefault( q => q.Id == 1 );
         if(quest!= null) ActiveQuests.Add(quest);
+        GD.Print("Active Quests Count: " + ActiveQuests.Count);
     }
     
+    // Method 1: Make a quest via code
     // Creating a quest follows the described structure
     private void CreateSimpleQuest(){
         // Assume in-game action/ objective type Ids: 1: Gather 2: Hit  3:Talk  4: Kill etc.
@@ -72,24 +74,39 @@ public partial class QuestManager : Node
     // progressValue = 3 , taskId = 4 (kill action), assetId = 3 (wolf)
     private void ProgressQuests( int progressValue,int taskId, int assetId = -1)
     {
+        GD.Print($"\nReceived progress {progressValue} for taskId:{taskId}, for asset: {assetId}");
         var activeQuestsCopy = new List<Quest>(ActiveQuests); //avoid mid-loop deletion issues
         foreach(var quest in activeQuestsCopy)
         {
-            quest.TryProgress( progressValue, taskId, assetId);
+            quest.TryProgressQuest(progressValue, taskId, assetId);
             if(quest.IsCompleted){
+                GD.Print($"\nQuest {quest.Id} COMPLETED");
                 // Here do sth like giving rewards based on how your game works
                 ActiveQuests.Remove(quest);
                 
-                // Can also use logic to start next quest in chain
-                if(quest.NextQuestId != 0){
-                    var nextQuest = AllQuests.Select( q => q.Id == quest.Id );
-                    if(nextQuest!= null) ActiveQuests.Add(nextQuest);
-                }
+                // Can also use logic to start next quest in chain (if it exists)
+                if(quest.NextQuestId == 0) continue;
+                var nextQuest = AllQuests.FirstOrDefault( q => q.Id == quest.NextQuestId );
+                if(nextQuest== null) continue;
+                ActiveQuests.Add(nextQuest);
+                GD.Print($"Added Next quest in chain, with id: {nextQuest.Id}");
                 continue;
             }
             // Otherwise maybe update some UI or log sth with the quest progress
-            // You can use exposed properties of the quest object for this:
-            GD.Print(quest.Title);
+            // You can use exposed properties of the quest object for this
+            PrintQuestProgress(quest);
+        }
+        
+        private void PrintQuestProgress(Quest quest)
+        {
+            GD.Print($"\nQuest {quest.Id}: '{quest.Title}'");
+            GD.Print($"Stage Description: {quest.CurrentStage?.StageDescription}");
+            GD.Print($"Objectives completed {quest.CurrentStage?.StageProgress}");
+            var i = 0;
+            foreach (var objProg in quest.CurrentStage?.ObjectiveProgress) {
+                i++;
+                GD.Print($"Objective {i} progress: {objProg}");
+            }
         }
     }    
 }
