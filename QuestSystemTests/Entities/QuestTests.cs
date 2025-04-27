@@ -11,10 +11,8 @@ public class QuestTests
     private readonly QuestStage _questStage1,_questStage2,_questStage3;
     
     // SUT
-    private readonly Quest _quest,_quest2;
-    private readonly Quest _questSelective;
-    private readonly Quest _questInvalid;
-    
+    private readonly Quest _quest,_quest2,_questSelective,_questInvalid,_questFailed;
+
     public QuestTests()
     {
         // Dependencies
@@ -35,6 +33,7 @@ public class QuestTests
         
         // SUT
         _quest = new Quest(1,"myQuest",_questStage1,_questStage2);
+        _questFailed = new Quest(1,"myQuest",_questStage1,_questStage2);
         _quest2 = new Quest(2,"myQuest2",true,_questStage1,_questStage2);
         _questSelective = new Quest(3,"myQuest3",_questStage3);
     }
@@ -69,6 +68,7 @@ public class QuestTests
         Assert.Equal("myQuest3",_questSelective.Title);
         Assert.Equal(3,_questSelective.Id);
         Assert.False(_questSelective.IsCompleted);
+        Assert.False(_questSelective.WasFailed);
     }
 
     [Fact]
@@ -207,6 +207,19 @@ public class QuestTests
     }
     
     [Fact]
+    public void TryProgressQuest_CannotProgressFailedQuest()
+    {
+        //Arrange
+        var taskProgressDto = new ObjectiveProgressDto((int)TaskType.Kill,5);
+        var taskProgressDto2 = new ObjectiveProgressDto((int)TaskType.Gather,5);
+        // Act - Assert
+        _quest.Fail();
+        _quest.TryProgressQuest(taskProgressDto);
+        _quest.TryProgressQuest(taskProgressDto2);
+        Assert.False(_questStage1.IsCompleted);
+    }
+    
+    [Fact]
     public void TryProgressQuest_ShouldMarkQuestAsCompleted2()
     {
         // Act - Assert
@@ -285,5 +298,12 @@ public class QuestTests
         _quest.CompleteInstantly();
         Assert.True(_quest.IsCompleted);
         Assert.Equal(0, _quest.StagesLeft);
+    }
+    
+    [Fact]
+    public void Fail_CanFailQuest() {
+        Assert.False(_quest.WasFailed);
+        _quest.Fail();
+        Assert.True(_quest.WasFailed);
     }
 }

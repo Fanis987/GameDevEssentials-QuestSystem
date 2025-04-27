@@ -17,8 +17,8 @@ public class Quest
 
     /// <summary>Whether the quest is part of the main line.</summary>
     public int NextQuestId { get; }
-    
-    
+    /// <summary> Whether this <see cref="Quest"/> was failed</summary>
+    public bool WasFailed { get; private set; }
     
     // Getter Properties
     /// <summary> Whether this <see cref="Quest"/> is complete </summary>
@@ -133,8 +133,9 @@ public class Quest
     /// <exception cref="InvalidOperationException"></exception>
     public void TryProgressQuest(ObjectiveProgressDto objProgressDto)
     {
-        // A completed quest cannot be progressed
+        // A completed or failed quest cannot be progressed
         if(IsCompleted) return;
+        if(WasFailed) return;
         
         //Try progress the current stage based on arg
         var currentStage = _stagesQueue.Peek();
@@ -172,10 +173,11 @@ public class Quest
         _stagesQueue.Dequeue();  // Force-Skip the current stage
     }
     
-    /// <summary>
-    /// Forces a quest to complete instantly. Useful for debugging.
-    /// </summary>
+    /// <summary>  Forces a quest to complete instantly. Useful for debugging.  </summary>
     public void CompleteInstantly() {
         _stagesQueue.Clear(); // Force-Skip all teh stages
     }
+
+    /// <summary>Fails a quest. Useful for cases like timed quest </summary>
+    public void Fail() => WasFailed = true;
 }
