@@ -19,6 +19,9 @@ public class QuestStage
     public bool IsCompleted { get; private set; }
     /// <summary> Whether this <see cref="QuestStage"/> can completed, by finishing ANY of its objectives</summary>
     public bool IsSelective { get; private set; }
+    /// <summary>The time left for this stage. Zero means the stage is NOT timed.</summary>
+    public float TimeLeft { get; private set; }
+    
     
     // Complex Getters
     /// <summary> The list of individual progress of each <see cref="Objective"/> in this stage</summary>
@@ -124,4 +127,7 @@ public class QuestStage
     private int GetCompletedObjectiveCount() {
         return _objectives.Count(objective => objective.IsCompleted);
     }
+    
+    /// <summary>Makes the quest timed</summary>
+    public void MakeTimed(float newTime) => TimeLeft = newTime;
 }

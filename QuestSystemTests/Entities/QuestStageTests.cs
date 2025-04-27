@@ -37,10 +37,12 @@ public class QuestStageTests
         // Normal stage
         Assert.NotNull(_questStageInclusive);
         Assert.Equal("kill and gather",_questStageInclusive.StageDescription);
+        Assert.Equal(0f,_questStageInclusive.TimeLeft);
         Assert.False(_questStageInclusive.IsCompleted);
         
         // Selective Stage
         Assert.NotNull(_questStageSelective);
+        Assert.Equal(0f,_questStageInclusive.TimeLeft);
         Assert.Equal(0,_questStageSelective.CompletedObjectiveCount);
         Assert.False(_questStageSelective.IsCompleted);
     }
@@ -208,4 +210,13 @@ public class QuestStageTests
         Assert.Equal(2,_questStageInclusive.CompletedObjectiveCount);
         Assert.True(_questStageInclusive.IsCompleted);
     }
+
+    [Fact]
+    public void MakeTimed_CanMakeTimed() {
+        Assert.Equal(0f,_questStageInclusive.TimeLeft);
+        _questStageInclusive.MakeTimed(2f);
+        Assert.Equal(2f,_questStageInclusive.TimeLeft);
+    }
+
+    
 }
