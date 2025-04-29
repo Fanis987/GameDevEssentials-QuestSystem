@@ -227,6 +227,68 @@ public class QuestStageTests
         _questStageInclusive.MakeTimed(2f);
         Assert.Equal(2f,_questStageInclusive.TimeLeft);
     }
+    
+    [Fact]
+    public void ConnectToNextStages_SetsDefaultOnlyWhenOnlyDefaultProvided()
+    {
+        _questStageInclusive.ConnectToNextStages(10);
+
+        Assert.Equal(10, _questStageInclusive.DefaultNextStageId);
+        Assert.Equal(0, _questStageInclusive.AltNextStageIdFirst);
+        Assert.Equal(0, _questStageInclusive.AltNextStageIdSecond);
+    }
+
+    [Fact]
+    public void ConnectToNextStages_SetsAllIdsWhenAllProvided()
+    {
+        _questStageInclusive.ConnectToNextStages(5, 15, 25);
+
+        Assert.Equal(5, _questStageInclusive.DefaultNextStageId);
+        Assert.Equal(15, _questStageInclusive.AltNextStageIdFirst);
+        Assert.Equal(25, _questStageInclusive.AltNextStageIdSecond);
+    }
+    
+    [Fact]
+    public void ConnectToNextStages_ThrowsExceptionWhenDefaultIsZeroOrNegative()
+    {
+        Assert.Throws<ArgumentOutOfRangeException>(() =>
+            _questStageInclusive.ConnectToNextStages(0));
+
+        Assert.Throws<ArgumentOutOfRangeException>(() =>
+            _questStageInclusive.ConnectToNextStages(-1));
+    }
+
+    [Fact]
+    public void ConnectToNextStages_ThrowsExceptionWhenAltFirstIsNegative()
+    {
+        Assert.Throws<ArgumentOutOfRangeException>(() =>
+            _questStageInclusive.ConnectToNextStages(1, -5));
+    }
+    
+    [Fact]
+    public void ConnectToNextStages_ThrowsExceptionWhenAltSecondIsNegative()
+    {
+        Assert.Throws<ArgumentOutOfRangeException>(() =>
+            _questStageInclusive.ConnectToNextStages(1, 0, -10));
+    }
+
+    [Fact]
+    public void ConnectToNextStages_AllowsZeroAltValues()
+    {
+        _questStageInclusive.ConnectToNextStages(3, 0, 0);
+
+        Assert.Equal(3, _questStageInclusive.DefaultNextStageId);
+        Assert.Equal(0, _questStageInclusive.AltNextStageIdFirst);
+        Assert.Equal(0, _questStageInclusive.AltNextStageIdSecond);
+    }
+    
+
+    [Fact]
+    public void SetFinal_SetsDefaultNextStageIdToMinusOne()
+    {
+        _questStageInclusive.SetFinal();
+        Assert.Equal(-1, _questStageInclusive.DefaultNextStageId);
+    }
 
     
 }

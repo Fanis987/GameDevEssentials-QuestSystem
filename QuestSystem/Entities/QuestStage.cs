@@ -23,6 +23,12 @@ public class QuestStage
     public bool IsSelective { get;}
     /// <summary>The time left for this stage. Zero means the stage is NOT timed.</summary>
     public float TimeLeft { get; private set; }
+    /// <summary> The id of the default next <see cref="QuestStage"/>. Value of -1 indicates end of quest.</summary>
+    public int DefaultNextStageId { get; private set;}
+    /// <summary> The id of the first alternative <see cref="QuestStage"/> after the current one. Must be positive.</summary>
+    public int AltNextStageIdFirst { get; private set;}
+    /// <summary> The id of the second next <see cref="QuestStage"/> after the current one. Must be positive.</summary>
+    public int AltNextStageIdSecond { get; private set;}
     
     
     // Complex Getters
@@ -137,4 +143,21 @@ public class QuestStage
     
     /// <summary>Makes the quest timed</summary>
     public void MakeTimed(float newTime) => TimeLeft = newTime;
+
+    /// <summary>Makes the quest timed</summary>
+    public void ConnectToNextStages(int nextStageIdDefault, int nextStageIdAltFirst = 0, int nextStageIdAltSecond = 0)
+    {
+        if(nextStageIdDefault <= 0) 
+            throw new ArgumentOutOfRangeException(nameof(nextStageIdDefault),"Default stage ID must be positive.");
+        if (nextStageIdAltFirst != 0 && nextStageIdAltFirst < 0)
+            throw new ArgumentOutOfRangeException(nameof(nextStageIdAltFirst), "Alternate stage ID must be positive if provided.");
+        if (nextStageIdAltSecond != 0 && nextStageIdAltSecond < 0)
+            throw new ArgumentOutOfRangeException(nameof(nextStageIdAltSecond), "Alternate stage ID must be positive if provided.");
+        DefaultNextStageId = nextStageIdDefault;
+        AltNextStageIdFirst = nextStageIdAltFirst;
+        AltNextStageIdSecond = nextStageIdAltSecond;
+    } 
+
+    /// <summary>Sets the current stage as the final stage of the quest branch</summary>
+    public void SetFinal() => DefaultNextStageId = -1;
 }
