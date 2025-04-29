@@ -13,12 +13,14 @@ public class QuestStage
     private readonly List<Objective> _objectives = new();
     
     //Getter properties
+    /// <summary> The id of the <see cref="QuestStage"/>. Must be positive.</summary>
+    public int Id { get; }
     /// <summary> The description of the <see cref="QuestStage"/> </summary>
-    public string StageDescription { get; private set; }
+    public string StageDescription { get; }
     /// <summary> Whether this <see cref="QuestStage"/> is complete</summary>
     public bool IsCompleted { get; private set; }
     /// <summary> Whether this <see cref="QuestStage"/> can completed, by finishing ANY of its objectives</summary>
-    public bool IsSelective { get; private set; }
+    public bool IsSelective { get;}
     /// <summary>The time left for this stage. Zero means the stage is NOT timed.</summary>
     public float TimeLeft { get; private set; }
     
@@ -34,15 +36,19 @@ public class QuestStage
     /// <summary>
     /// Represents a stage of a quest.
     /// </summary>
+    /// <param name="id"></param>
     /// <param name="stageDescription">Description of the stage</param>
     /// <param name="isSelective">Whether the stage is completed by completing ANY of its objectives</param>
     /// <param name="objectives">The objectives of the stage</param>
     /// <exception cref="ArgumentException"></exception>
     /// <exception cref="ArgumentNullException"></exception>
-    public QuestStage(string stageDescription, bool isSelective, IList<Objective> objectives) {
+    public QuestStage(int id, string stageDescription, bool isSelective, IList<Objective> objectives) {
         //Basic checks
         ArgumentNullException.ThrowIfNull(stageDescription);
         ArgumentNullException.ThrowIfNull(objectives);
+        if (id <= 0) {
+            throw new ArgumentOutOfRangeException(nameof(id),"Id must be positive");
+        }
         if (objectives.Count() == 0) {
             throw new ArgumentException("No objectives were passed");
         }
@@ -51,6 +57,7 @@ public class QuestStage
         }
         
         // Fill fields
+        Id = id;
         StageDescription = stageDescription;
         IsSelective = isSelective;
         for (var i = 0; i < objectives.Count; i++) {

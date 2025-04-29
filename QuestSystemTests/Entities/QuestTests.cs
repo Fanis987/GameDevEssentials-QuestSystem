@@ -21,13 +21,13 @@ public class QuestTests
         _taskGather = new Objective(3,(int)TaskType.Gather);
         
         
-        _questStage1 = new QuestStage("kill and gather",false,new List<Objective> {_taskKill, _taskGather});
-        _questStage2 = new QuestStage("kill many",false, new List<Objective> {_taskKillLarge});
-        _questStage3 = new QuestStage("kill or gather",false,new List<Objective> {_taskKill, _taskGather});
+        _questStage1 = new QuestStage(1,"kill and gather",false,new List<Objective> {_taskKill, _taskGather});
+        _questStage2 = new QuestStage(2,"kill many",false, new List<Objective> {_taskKillLarge});
+        _questStage3 = new QuestStage(3,"kill or gather",false,new List<Objective> {_taskKill, _taskGather});
         
         // Stage an invalid quest
         var taskKill = new Objective(5,(int)TaskType.Kill);
-        var completedStage = new QuestStage("kill many",false,new List<Objective> {taskKill});
+        var completedStage = new QuestStage(4,"kill many",false,new List<Objective> {taskKill});
         completedStage.TryProgressObjective(new ObjectiveProgressDto((int)TaskType.Kill,5));
         _questInvalid = new Quest(2,"kill quest",completedStage);
         

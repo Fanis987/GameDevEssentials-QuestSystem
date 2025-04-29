@@ -23,11 +23,11 @@ public class QuestStageTests
         var objKillsList = new List<Objective>(){taskKillFirst, taskKillSecond};
         
         // Stage: 5 kills AND 3 gathers
-        _questStageInclusive = new QuestStage("kill and gather",false,_objList);
+        _questStageInclusive = new QuestStage(1,"kill and gather",false,_objList);
         // Stage: 7 kills of enemy id 10 , 5 kills of enemy id 20
-        _questStageInclusive2 = new QuestStage("kill 2 things",false,objKillsList);
+        _questStageInclusive2 = new QuestStage(2,"kill 2 things",false,objKillsList);
         // Stage: 5 kills OR 3 gathers
-        _questStageSelective = new QuestStage("kill or gather",true,_objList);
+        _questStageSelective = new QuestStage(3,"kill or gather",true,_objList);
     }
     
     
@@ -38,6 +38,7 @@ public class QuestStageTests
         Assert.NotNull(_questStageInclusive);
         Assert.Equal("kill and gather",_questStageInclusive.StageDescription);
         Assert.Equal(0f,_questStageInclusive.TimeLeft);
+        Assert.Equal(1,_questStageInclusive.Id);
         Assert.False(_questStageInclusive.IsCompleted);
         
         // Selective Stage
@@ -69,17 +70,26 @@ public class QuestStageTests
     
     [Fact]
     public void QuestStage_ShouldThrowExceptionWhenNoTasksProvided() {
-         Assert.Throws<ArgumentNullException>(() => new QuestStage("stage",false,null));
+         Assert.Throws<ArgumentNullException>(() => new QuestStage(1,"stage",false,null));
+    }
+    
+    [Fact]
+    public void QuestStage_ShouldThrowExceptionWhenIdIsZero() {
+        Assert.Throws<ArgumentOutOfRangeException>(() => new QuestStage(0,"stage",false,_objList));
+    }
+    [Fact]
+    public void QuestStage_ShouldThrowExceptionWhenIdIsNegative() {
+        Assert.Throws<ArgumentOutOfRangeException>(() => new QuestStage(-1,"stage",false,_objList));
     }
     
     [Fact]
     public void QuestStage_ShouldThrowExceptionWhenNoDescriptionIsProvided() {
-        Assert.Throws<ArgumentException>(() => new QuestStage("",false,_objList));
+        Assert.Throws<ArgumentException>(() => new QuestStage(2,"",false,_objList));
     }
     
     [Fact]
     public void QuestStage_ShouldThrowExceptionWhenEmptyListProvided() {
-        Assert.Throws<ArgumentException>(() => new QuestStage("",false,new List<Objective>()));
+        Assert.Throws<ArgumentException>(() => new QuestStage(3,"",false,new List<Objective>()));
     }
     
     [Fact]
@@ -123,7 +133,7 @@ public class QuestStageTests
     public void QuestStage_ShouldThrowExceptionWhenNullTasksProvided()
     {
         var objList = new List<Objective>(){new Objective(5,(int)TaskType.Kill),null};
-        Assert.Throws<ArgumentException>(() => new QuestStage("title",false,objList));
+        Assert.Throws<ArgumentException>(() => new QuestStage(1,"title",false,objList));
     }
     
     [Fact]
