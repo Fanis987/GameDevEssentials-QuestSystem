@@ -14,6 +14,7 @@ public static class QuestJsons
       ""IsMainQuest"": true,
       ""Stages"": [
         {
+          ""Id"": 1,
           ""Description"": ""This is stage 1"",
           ""IsSelective"": false,
           ""Objectives"": [
@@ -31,6 +32,7 @@ public static class QuestJsons
       ""Title"": ""First Quest"",
       ""Stages"": [
         {
+          ""Id"": 1,
           ""Description"": ""This is stage 1"",
           ""IsSelective"": false,
           ""Objectives"": [
@@ -48,6 +50,7 @@ public static class QuestJsons
       ""Id"": 2,
       ""Stages"": [
         {
+          ""Id"": 1,
           ""Description"": ""This is stage 1"",
           ""IsSelective"": false,
           ""Objectives"": [
@@ -67,6 +70,7 @@ public static class QuestJsons
       ""Title"": ""First Quest"",
       ""Stages"": [
         {
+          ""Id"": 1,
           ""Description"": ""This is stage 1"",
           ""IsSelective"": false,
           ""Objectives"": [
@@ -86,6 +90,7 @@ public static class QuestJsons
         ""Title"": ""First Quest"",
         ""Stages"": [
           {
+            ""Id"": 1,
             ""Description"": ""This is stage 1"",
             ""IsSelective"": false,
             ""Objectives"": [
@@ -103,6 +108,7 @@ public static class QuestJsons
         ""Title"": ""Second Quest"",
         ""Stages"": [
           {
+            ""Id"": 1,
             ""Description"": ""This is stage 1-2"",
             ""IsSelective"": false,
             ""Objectives"": [
@@ -128,6 +134,7 @@ public static class QuestJsons
         ""Title"": ""Second Quest"",
         ""Stages"": [
           {
+            ""Id"": 1,
             ""Description"": ""This is stage 1-2"",
             ""IsSelective"": false,
             ""Objectives"": [
@@ -147,6 +154,7 @@ public static class QuestJsons
       ""Title"": ""First Quest"",
       ""Stages"": [
         {
+          ""Id"": 1,
           ""Description"": ""This is stage 1"",
           ""IsSelective"": false,
           ""Objectives"": [
@@ -170,6 +178,7 @@ public static class QuestJsons
       ""Title"": ""Quest 3"",
       ""Stages"": [
         {
+          ""Id"": 1,
           ""Description"": ""This is stage 1"",          
           ""IsCompleted"": true,
           ""Objectives"": [
@@ -186,6 +195,7 @@ public static class QuestJsons
       ""Title"": ""Quest 4"",
       ""Stages"": [
         {
+          ""Id"": 1,
           ""Description"": ""This is stage 1"",
           ""IsCompleted"": false,
           ""Objectives"": []
@@ -198,6 +208,7 @@ public static class QuestJsons
       ""Title"": ""The example quest"",
       ""Stages"": [
         {
+          ""Id"": 1,
           ""Description"": ""This is stage 1"",
           ""IsSelective"": false,
           ""Objectives"": [
@@ -213,6 +224,7 @@ public static class QuestJsons
           ]
         },
         {
+          ""Id"": 2,
           ""Description"": ""This is stage 2"",
           ""IsSelective"": false,
           ""Objectives"": [
@@ -234,6 +246,7 @@ public static class QuestJsons
       ""NextQuestId"": 7,
       ""Stages"": [
         {
+          ""Id"": 1,
           ""Description"": ""This is stage 1"",
           ""IsSelective"": false,
           ""Objectives"": [
@@ -253,6 +266,7 @@ public static class QuestJsons
       ""IsMainQuest"": true,
       ""Stages"": [
         {
+          ""Id"": 1,
           ""Description"": ""This is stage 1"",
           ""IsSelective"": false,
           ""Objectives"": [

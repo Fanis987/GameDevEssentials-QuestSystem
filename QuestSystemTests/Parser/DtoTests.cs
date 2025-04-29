@@ -16,8 +16,8 @@ public class DtoTests {
     {
         var objDtoList = new List<ObjectiveDto>() { _objectiveDto1,_objectiveDto2 };
         
-        _stageInclusiveDto = new QuestStageDto("inclusive descr",false,false, objDtoList);
-        _stageSelectiveDto = new QuestStageDto("selective descr",false,true, objDtoList);
+        _stageInclusiveDto = new QuestStageDto(1,"inclusive descr",false,false, objDtoList);
+        _stageSelectiveDto = new QuestStageDto(2,"selective descr",false,true, objDtoList);
 
         var stageDtoList = new List<QuestStageDto>() { _stageInclusiveDto,_stageSelectiveDto };
         _questDto = new QuestDto(5, "quest title",true,11, stageDtoList);

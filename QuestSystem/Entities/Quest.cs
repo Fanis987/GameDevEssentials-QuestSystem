@@ -44,15 +44,15 @@ public class Quest
         if (string.IsNullOrEmpty(questTitle)) {
             throw new ArgumentException("Title cannot be empty", nameof(questTitle));
         }
-        Id = questId;
-        Title = questTitle;
-        
-        //Null checks
         ArgumentNullException.ThrowIfNull(stages, nameof(stages));
-        foreach (var stage in stages)
-        {
+        foreach (var stage in stages) {
             ArgumentNullException.ThrowIfNull(stage, $"{nameof(stages)} must not be null");
         }
+        if(hasDuplicateStageId(stages.ToList())) throw new QuestException("Invalid quest id", nameof(questId));
+        
+        // Setting properties
+        Id = questId;
+        Title = questTitle;
         
         // Fill queue
         foreach (var stage in stages)
@@ -110,10 +110,6 @@ public class Quest
         if (string.IsNullOrEmpty(questTitle)) {
             throw new ArgumentException("Title cannot be empty", nameof(questTitle));
         }
-        Id = questId;
-        Title = questTitle;
-        
-        //Null checks
         ArgumentNullException.ThrowIfNull(objectives, nameof(objectives));
         foreach (var objective in objectives)
         {
@@ -121,8 +117,11 @@ public class Quest
                 $"{nameof(objective)} must not be null");
         }
         
-         //Create a quest stage and add to queue
-         var stage = new QuestStage(stageDescription,isSelectiveStage,objectives);
+        Id = questId;
+        Title = questTitle;
+        
+         //Create a quest stage and add to queue (id=1 for single stage)
+         var stage = new QuestStage(1,stageDescription,isSelectiveStage,objectives);
          _stagesQueue.Enqueue(stage);
     }
 
@@ -149,6 +148,16 @@ public class Quest
         
         // Stage just completed
         _stagesQueue.Dequeue(); //move to the next stage or finish
+    }
+
+    private bool hasDuplicateStageId(List<QuestStage> stages) {
+        if(stages.Count == 1) return false;
+        for (int i = 0; i < stages.Count; i++) {
+            for (int j = 0; j < i; j++) {
+                if(stages[i].Id == stages[j].Id) return true;
+            }
+        }
+        return false;
     }
 
     /// <summary>
@@ -180,4 +189,6 @@ public class Quest
 
     /// <summary>Fails a quest. Useful for cases like timed quest </summary>
     public void Fail() => WasFailed = true;
+    
+     
 }

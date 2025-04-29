@@ -4,6 +4,7 @@
     "Title": "First Quest In Multi",
     "Stages": [
       {
+        "Id": 1,
         "Description": "This is stage 1",
         "IsSelective": false,
         "Objectives": [
@@ -21,6 +22,7 @@
     "Title": "Second Quest In Multi",
     "Stages": [
       {
+        "Id": 1,
         "Description": "This is stage 1 again",
         "IsSelective": false,
         "Objectives": [

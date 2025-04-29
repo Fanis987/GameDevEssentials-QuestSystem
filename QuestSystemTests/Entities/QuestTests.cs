@@ -115,7 +115,22 @@ public class QuestTests
         Assert.Equal(1, quest.StagesLeft);
         Assert.False(quest.IsCompleted);
     }
-
+    
+    [Fact]
+    public void Quest_ShouldThrowExceptionForNegativeId()
+    {
+        // Act & Assert
+        Assert.Throws<ArgumentException>(() => new Quest(-1,"myQuest",_questStage1));
+        Assert.Throws<ArgumentException>(() => new Quest(-1,"myQuest",true,"stageDescr",_taskGather));
+    }
+    
+    [Fact]
+    public void Quest_ShouldThrowExceptionForZeroId()
+    {
+        // Act & Assert
+        Assert.Throws<ArgumentException>(() => new Quest(0,"myQuest",_questStage1));
+        Assert.Throws<ArgumentException>(() => new Quest(0,"myQuest",true,"stageDescr",_taskGather));
+    }
     
     [Fact]
     public void Quest_ShouldThrowExceptionForNullStages()
@@ -141,20 +156,13 @@ public class QuestTests
     }
     
     [Fact]
-    public void Quest_ShouldThrowExceptionForNegativeId()
+    public void Quest_ShouldThrowExceptionForDuplicateStageIds()
     {
+        var sameIdStage = new QuestStage(1,"title",true,new List<Objective> {_taskKill});
         // Act & Assert
-        Assert.Throws<ArgumentException>(() => new Quest(-1,"myQuest",_questStage1));
-        Assert.Throws<ArgumentException>(() => new Quest(-1,"myQuest",true,"stageDescr",_taskGather));
+        Assert.Throws<QuestException>(() => new Quest(7,"a title",_questStage1,sameIdStage));
     }
     
-    [Fact]
-    public void Quest_ShouldThrowExceptionForZeroId()
-    {
-        // Act & Assert
-        Assert.Throws<ArgumentException>(() => new Quest(0,"myQuest",_questStage1));
-        Assert.Throws<ArgumentException>(() => new Quest(0,"myQuest",true,"stageDescr",_taskGather));
-    }
     
     [Fact]
     public void TryProgressQuest_ShouldProgressCurrentStage()

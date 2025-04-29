@@ -9,7 +9,7 @@ namespace QuestSystem.Parser.Dtos;
 /// <param name="IsCompleted">Whether the stage is completed</param>
 /// <param name="IsSelective">Whether the stage is compelted by selecting an objective</param>
 /// <param name="Objectives">The objectives of a stage</param>
-internal record QuestStageDto(string Description,bool IsCompleted,bool IsSelective,List<ObjectiveDto> Objectives)
+internal record QuestStageDto(int Id,string Description,bool IsCompleted,bool IsSelective,List<ObjectiveDto> Objectives)
 {
     /// <summary>
     /// Produces a QuestStage object from the dto.
@@ -17,7 +17,7 @@ internal record QuestStageDto(string Description,bool IsCompleted,bool IsSelecti
     /// <returns>The QuestStage object</returns>
     internal QuestStage ToQuestStage() {
         var objectiveList = Objectives.Select(objectiveDto => objectiveDto.ToObjective()).ToList();
-        return new QuestStage(Description,IsSelective, objectiveList);
+        return new QuestStage(Id,Description,IsSelective, objectiveList);
     }
 
 }
