@@ -48,7 +48,7 @@ public class Quest
         foreach (var stage in stages) {
             ArgumentNullException.ThrowIfNull(stage, $"{nameof(stages)} must not be null");
         }
-        if(hasDuplicateStageId(stages.ToList())) throw new QuestException("Invalid quest id", nameof(questId));
+        if(HasDuplicateStageId(stages.ToList())) throw new QuestException("Invalid quest id", nameof(questId));
         
         // Setting properties
         Id = questId;
@@ -124,6 +124,24 @@ public class Quest
          var stage = new QuestStage(1,stageDescription,isSelectiveStage,objectives);
          _stagesQueue.Enqueue(stage);
     }
+    
+    
+    /// <summary>
+    /// Helper method that detects stages with duplicate ids
+    /// </summary>
+    /// <param name="stages">The list of stages passed by the user.</param>
+    /// <returns>Whether a duplicate stage id was found.</returns>
+    private bool HasDuplicateStageId(List<QuestStage> stages) {
+        if(stages.Count == 1) return false;
+        for (int i = 0; i < stages.Count; i++) {
+            for (int j = 0; j < i; j++) {
+                if(stages[i].Id == stages[j].Id) return true;
+            }
+        }
+        return false;
+    }
+
+    #region Quest Progressing
 
     /// <summary>
     /// Attempts to progress the quest based on the given information.
@@ -148,16 +166,6 @@ public class Quest
         
         // Stage just completed
         _stagesQueue.Dequeue(); //move to the next stage or finish
-    }
-
-    private bool hasDuplicateStageId(List<QuestStage> stages) {
-        if(stages.Count == 1) return false;
-        for (int i = 0; i < stages.Count; i++) {
-            for (int j = 0; j < i; j++) {
-                if(stages[i].Id == stages[j].Id) return true;
-            }
-        }
-        return false;
     }
 
     /// <summary>
@@ -190,5 +198,5 @@ public class Quest
     /// <summary>Fails a quest. Useful for cases like timed quest </summary>
     public void Fail() => WasFailed = true;
     
-     
+    #endregion
 }
