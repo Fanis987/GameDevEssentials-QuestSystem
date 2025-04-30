@@ -48,7 +48,7 @@ public class Quest
         foreach (var stage in stages) {
             ArgumentNullException.ThrowIfNull(stage, $"{nameof(stages)} must not be null");
         }
-        if(HasDuplicateStageId(stages.ToList())) throw new QuestException("Invalid quest id", nameof(questId));
+        if(HasDuplicateStageId(stages.ToList())) throw new QuestException("Duplicate stage ids found", nameof(stages));
         
         // Setting properties
         Id = questId;
@@ -96,14 +96,14 @@ public class Quest
     /// </summary>
     /// <param name="questId"> The id of the quest</param>
     /// <param name="questTitle"> The title of the quest</param>
-    /// <param name="isSelectiveStage">Whether stages completes by finishing ANY of the objectives</param>
+    /// <param name="isSelectiveStagePath">Whether stage with a singe stagePath completes by finishing ANY of the objectives</param>
     /// <param name="stageDescription">The description of the quest stage</param>
     /// <param name="objectives"> The objectives for the sole stage</param>
     /// <exception cref="ArgumentException"></exception>
-    public Quest(int questId, string questTitle,bool isSelectiveStage,
+    public Quest(int questId, string questTitle, bool isSelectiveStagePath,
         string stageDescription, params Objective[] objectives)
     {
-        //Arg checks
+        // Argument checks
         if (questId <= 0) {
             throw new ArgumentException("Invalid quest id", nameof(questId));
         }
@@ -113,17 +113,17 @@ public class Quest
         ArgumentNullException.ThrowIfNull(objectives, nameof(objectives));
         foreach (var objective in objectives)
         {
-            ArgumentNullException.ThrowIfNull(objective, 
+            ArgumentNullException.ThrowIfNull(objective,
                 $"{nameof(objective)} must not be null");
         }
-        
+
         Id = questId;
         Title = questTitle;
-        
-         //Create a quest stage and add to queue (id=1 for single stage)
-         //TODO: FIx
-         //var stage = new QuestStage(1,stageDescription,isSelectiveStage,objectives);
-         //_stagesQueue.Enqueue(stage);
+
+        // Create a stage path and a stage from it
+        var stagePath = new StagePath(isSelectiveStagePath, objectives.ToArray());
+        var questStage = new QuestStage(1, stageDescription, stagePath);
+        _stagesQueue.Enqueue(questStage);
     }
     
     

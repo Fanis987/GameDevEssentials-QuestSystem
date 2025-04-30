@@ -69,7 +69,7 @@ public class QuestTests
         Assert.False(_questSelective.WasFailed);
     }
 
-    /*[Fact]
+    [Fact]
     public void Quest_ShouldInitializeProperlyWithAltCtor()
     {
         //Single-stage Constructor assertions
@@ -88,7 +88,7 @@ public class QuestTests
         Assert.Equal(3,quest2.Id);
         Assert.False(quest2.IsCompleted);
         Assert.Equal(1, quest2.StagesLeft);
-    }*/
+    }
     
     [Fact]
     public void Quest_ShouldInitializeProperlyWithAltCtor2() {
@@ -153,14 +153,13 @@ public class QuestTests
         Assert.Throws<ArgumentException>(() => new Quest(1,"",true,"stageDescr",_taskGather));
     }
     
-    //todo: fix
-    /*[Fact]
+    [Fact]
     public void Quest_ShouldThrowExceptionForDuplicateStageIds()
     {
-        var sameIdStage = new QuestStage(1,"title",true,new List<Objective> {_taskKill});
+        var sameIdStage = new QuestStage(1,"title",_stagePathInclusive);
         // Act & Assert
         Assert.Throws<QuestException>(() => new Quest(7,"a title",_questStage1,sameIdStage));
-    }*/
+    }
     
     
     [Fact]
@@ -247,19 +246,21 @@ public class QuestTests
         Assert.True(_quest.IsCompleted);
     }
     
-    /*[Fact]
+    [Fact]
     public void TryProgressQuest_ShouldThrowExceptionForCurrentStageCompleted()
     {
-        //complete
-        var quest = new Quest(2,"myQuest2",true,_questStage1,_questStage2);
-        _quest.TryProgressQuest(5,(int)TaskType.Kill);
+        //complete the stage and THEN create the quest
+        _questStage1.TryProgressObjective(5,(int)TaskType.Kill);
+        _questStage1.TryProgressObjective(3,(int)TaskType.Gather);
+        Assert.True(_questStage1.IsCompleted);
         
-        Assert.True(_questInvalid.CurrentStage.IsCompleted);
-        Assert.False(_questInvalid.IsCompleted);
+        var quest = new Quest(2,"myQuest2",true,_questStage1);
+        Assert.True(quest.CurrentStage.IsCompleted);
+        Assert.False(quest.IsCompleted);
 
         Assert.Throws<InvalidOperationException>(() =>
-            _questInvalid.TryProgressQuest(5,(int)TaskType.Kill));
-    }*/
+            quest.TryProgressQuest(5,(int)TaskType.Kill));
+    }
     
     [Fact]
     public void TrySkipStage_CanSkipStage() {
