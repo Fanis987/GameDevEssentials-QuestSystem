@@ -110,7 +110,6 @@ public static class QuestParser {
         if(questDto.Stages.Count == 0) return ParseResult.Fail(pre + "No Stages Found");
         
         //Stage tests
-        //todo: fox
         foreach (var stageDto in questDto.Stages) {
             //stages should not be completed when reading from json file
             if(stageDto.Id < 0 ) return ParseResult.Fail(pre + "Stage ID is required, and should be positive integer");

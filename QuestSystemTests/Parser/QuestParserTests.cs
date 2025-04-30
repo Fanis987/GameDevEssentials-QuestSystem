@@ -131,6 +131,28 @@ public class QuestParserTests
      }
      
      [Fact]
+     public void IsValidDto_ShouldFail_WhenStageIdIsNegative()
+     {
+         var questDto = JsonSerializer.Deserialize<QuestDto>(QuestJsons.StageWithNegativeIdJson);
+         Assert.NotNull(questDto);
+         var result = QuestParser.IsValidQuestDto(questDto);
+
+         Assert.False(result.IsSuccessful);
+         Assert.Contains("Stage ID is required, and should be positive integer", result.ErrorMessage);
+     }
+     
+     [Fact]
+     public void IsValidDto_ShouldFail_WhenStageHasNoPathDtos()
+     {
+         var questDto = JsonSerializer.Deserialize<QuestDto>(QuestJsons.StageWithNoPathDtosJson);
+         Assert.NotNull(questDto);
+         var result = QuestParser.IsValidQuestDto(questDto);
+
+         Assert.False(result.IsSuccessful);
+         Assert.Contains("No paths Found", result.ErrorMessage);
+     }
+     
+     [Fact]
      public void LoadFromJson_CannotParseEmptyAndInvalidJson() {
         Assert.Throws<ArgumentException>(() => QuestParser.LoadFromJson(QuestJsons.EmptyJson));
         Assert.Throws<ArgumentException>(() => QuestParser.LoadFromJson(null));

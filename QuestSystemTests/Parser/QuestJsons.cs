@@ -209,6 +209,21 @@ public static class QuestJsons
       ""Stages"": []
     }";
   
+  public static readonly string StageWithNoPathDtosJson = @"{
+    ""Id"": 3,
+    ""Title"": ""Quest with No PathDtos"",
+    ""IsMainQuest"": true,
+    ""NextQuestId"": 4,
+    ""Stages"": [
+      {
+        ""Id"": 1,
+        ""Description"": ""This stage has no PathDtos"",
+        ""IsCompleted"": false,
+        ""PathDtos"": []
+      }
+    ]
+  }";
+  
   public static readonly string CompletedStageJson = @"{
     ""Id"": 3,
     ""Title"": ""Quest 3"",
@@ -223,6 +238,32 @@ public static class QuestJsons
             ""Objectives"": [
               {
                 ""Description"": ""This should not exist""
+              }
+            ]
+          }
+        ]
+      }
+    ]
+  }";
+  
+  public static readonly string StageWithNegativeIdJson = @"{
+    ""Id"": 1,
+    ""Title"": ""Quest with Invalid Stage"",
+    ""IsMainQuest"": true,
+    ""NextQuestId"": 2,
+    ""Stages"": [
+      {
+        ""Id"": -1,
+        ""Description"": ""This stage has an invalid ID"",
+        ""IsCompleted"": false,
+        ""PathDtos"": [
+          {
+            ""IsSelective"": false,
+            ""Objectives"": [
+              {
+                ""GoalValue"": 5,
+                ""TaskTypeId"": 3,
+                ""TargetAssetId"": 2
               }
             ]
           }
