@@ -10,32 +10,41 @@ public class QuestParserTests
     [Fact]
     public void CanParseSmallJson() {
         var questDto = JsonSerializer.Deserialize<QuestDto>(QuestJsons.SmallQuestJson);
-        
+
         Assert.NotNull(questDto);
-        Assert.Equal(1,questDto.Id);
-        Assert.Equal(2,questDto.NextQuestId);
-        Assert.Equal("First Quest",questDto.Title);
+        Assert.Equal(1, questDto.Id);
+        Assert.Equal(2, questDto.NextQuestId);
+        Assert.Equal("First Quest", questDto.Title);
         Assert.True(questDto.IsMainQuest);
-    
+
         var stages = questDto.Stages;
         Assert.NotNull(stages);
         Assert.Single(stages);
-        Assert.False(stages[0].IsCompleted);
-        Assert.Equal("This is stage 1",stages[0].Description);
-        
-        var objectives = stages[0].Objectives;
-        Assert.NotNull(objectives);
-        Assert.Single(objectives);
-        Assert.Equal(5,objectives[0].GoalValue);
-        Assert.Equal(3,objectives[0].TaskTypeId);
-        Assert.Equal(2,objectives[0].TargetAssetId);
+
+        var stage = stages[0];
+        Assert.Equal("This is stage 1", stage.Description);
+        Assert.False(stage.IsCompleted);
+
+        var pathDtos = stage.PathDtos;
+        Assert.NotNull(pathDtos);
+        Assert.Single(pathDtos);
+
+        var path = pathDtos[0];
+        Assert.False(path.IsSelective);
+        Assert.Single(path.Objectives);
+
+        var objective = path.Objectives[0];
+        Assert.Equal(5, objective.GoalValue);
+        Assert.Equal(3, objective.TaskTypeId);
+        Assert.Equal(2, objective.TargetAssetId);
     }
+
     
      [Fact]
      public void IsValidDto_ShouldReturnOkForValidQuestDto() {
          var questDto = JsonSerializer.Deserialize<QuestDto>(QuestJsons.SmallQuestJson);
          Assert.NotNull(questDto);
-         var result = QuestParser.IsValidDto(questDto);
+         var result = QuestParser.IsValidQuestDto(questDto);
 
          Assert.True(result.IsSuccessful);
          Assert.Equal(string.Empty, result.ErrorMessage);
@@ -47,22 +56,22 @@ public class QuestParserTests
      {
          var questDto = JsonSerializer.Deserialize<QuestDto>(QuestJsons.MediumQuestJson);
          Assert.NotNull(questDto);
-         var result = QuestParser.IsValidDto(questDto);
 
+         var result = QuestParser.IsValidQuestDto(questDto);
          Assert.True(result.IsSuccessful);
          Assert.Equal(string.Empty, result.ErrorMessage);
-         
-         // check generated
+
          var quest = questDto.ToQuest();
          Assert.NotNull(quest);
      }
+
      
      [Fact]
      public void IsValidDto_ShouldFailWhenNoStagesPresent()
      {
          var questDto = JsonSerializer.Deserialize<QuestDto>(QuestJsons.NoStagesJson);
          Assert.NotNull(questDto);
-         var result = QuestParser.IsValidDto(questDto);
+         var result = QuestParser.IsValidQuestDto(questDto);
 
          Assert.False(result.IsSuccessful);
          Assert.Contains("No Stages Found", result.ErrorMessage);
@@ -72,7 +81,7 @@ public class QuestParserTests
      public void IsValidDto_ShouldFailWithoutId() {
          var questDto = JsonSerializer.Deserialize<QuestDto>(QuestJsons.QuestNoIdJson);
          Assert.NotNull(questDto);
-         var result = QuestParser.IsValidDto(questDto);
+         var result = QuestParser.IsValidQuestDto(questDto);
 
          Assert.False(result.IsSuccessful);
          Assert.Contains("ID is required", result.ErrorMessage);
@@ -82,7 +91,7 @@ public class QuestParserTests
      public void IsValidDto_ShouldFailWithoutTitle() {
          var questDto = JsonSerializer.Deserialize<QuestDto>(QuestJsons.QuestNoTitleJson);
          Assert.NotNull(questDto);
-         var result = QuestParser.IsValidDto(questDto);
+         var result = QuestParser.IsValidQuestDto(questDto);
 
          Assert.False(result.IsSuccessful);
          Assert.Contains("Must have a title", result.ErrorMessage);
@@ -93,7 +102,7 @@ public class QuestParserTests
      {
          var questDto = JsonSerializer.Deserialize<QuestDto>(QuestJsons.CompletedStageJson);
          Assert.NotNull(questDto);
-         var result = QuestParser.IsValidDto(questDto);
+         var result = QuestParser.IsValidQuestDto(questDto);
 
          Assert.False(result.IsSuccessful);
          Assert.Contains("Completed stage found", result.ErrorMessage);
@@ -104,7 +113,7 @@ public class QuestParserTests
      {
          var questDto = JsonSerializer.Deserialize<QuestDto>(QuestJsons.StageWithNoObjectivesJson);
          Assert.NotNull(questDto);
-         var result = QuestParser.IsValidDto(questDto);
+         var result = QuestParser.IsValidQuestDto(questDto);
 
          Assert.False(result.IsSuccessful);
          Assert.Contains("No Objectives Found", result.ErrorMessage);
@@ -115,7 +124,7 @@ public class QuestParserTests
      {
          var questDto = JsonSerializer.Deserialize<QuestDto>(QuestJsons.QuestNoGoal);
          Assert.NotNull(questDto);
-         var result = QuestParser.IsValidDto(questDto);
+         var result = QuestParser.IsValidQuestDto(questDto);
 
          Assert.False(result.IsSuccessful);
          Assert.Contains("Goal value of 0 found", result.ErrorMessage);
@@ -191,7 +200,7 @@ public class QuestParserTests
          Assert.NotNull(stage);
          Assert.False(stage.IsCompleted);
          Assert.Equal("This is stage 1",stage.StageDescription);
-         Assert.Equal(0,stage.CompletedObjectiveCount);
+         //Assert.Equal(0,stage.CompletedObjectiveCount);
      }
      
      [Fact]

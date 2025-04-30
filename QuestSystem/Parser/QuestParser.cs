@@ -58,7 +58,7 @@ public static class QuestParser {
                 var questDto = JsonSerializer.Deserialize<QuestDto>(json, options);
                 if (questDto == null) return new MultiParseResult();;
                 //check questDto
-                var result = IsValidDto(questDto);
+                var result = IsValidQuestDto(questDto);
                 if (!result.IsSuccessful) {
                     parseResult.ErrorMessages.Add(result.ErrorMessage);
                     return parseResult;
@@ -85,7 +85,7 @@ public static class QuestParser {
         
         // Check parsed data
         foreach (var questDto in questDtos) {
-            var result = IsValidDto(questDto);
+            var result = IsValidQuestDto(questDto);
             if (!result.IsSuccessful) {
                 parseResult.ErrorMessages.Add(result.ErrorMessage);
                 continue;
@@ -100,24 +100,32 @@ public static class QuestParser {
     /// </summary>
     /// <param name="questDto">The questDto extracted from a json</param>
     /// <returns>A <see cref="ParseResult"/> with the result of the evaluation.></returns>
-    internal static ParseResult IsValidDto(QuestDto questDto)
+    internal static ParseResult IsValidQuestDto(QuestDto questDto)
     {
         var pre = $"Error when parsing the quest id {questDto.Id}: ";
         
         // Quest Tests
-        if(questDto.Id <= 0 ) return ParseResult.Fail(pre + "ID is required, and should be positive integer");
+        if(questDto.Id <= 0 ) return ParseResult.Fail(pre + "Quest ID is required, and should be positive integer");
         if(String.IsNullOrEmpty(questDto.Title)) return ParseResult.Fail(pre + "Must have a title");
         if(questDto.Stages.Count == 0) return ParseResult.Fail(pre + "No Stages Found");
         
         //Stage tests
-        foreach (var stage in questDto.Stages) {
+        //todo: fox
+        foreach (var stageDto in questDto.Stages) {
             //stages should not be completed when reading from json file
-            if(stage.IsCompleted) return ParseResult.Fail(pre + "Completed stage found");
-            //objectives test
-            if(stage.Objectives.Count == 0) return ParseResult.Fail(pre + "No Objectives Found");
-            foreach (var objective in stage.Objectives) {
-                if(objective.GoalValue == 0) return ParseResult.Fail(pre + "Goal value of 0 found");
+            if(stageDto.Id < 0 ) return ParseResult.Fail(pre + "Stage ID is required, and should be positive integer");
+            if(stageDto.IsCompleted) return ParseResult.Fail(pre + "Completed stage found");
+            if(stageDto.PathDtos.Count == 0) return ParseResult.Fail(pre + "No paths Found");
+            
+            //stage path tests
+            foreach (var stagePathDto in stageDto.PathDtos)
+            {
+                if(stagePathDto.Objectives.Count == 0) return ParseResult.Fail(pre + "No Objectives Found");
+                foreach (var objective in stagePathDto.Objectives) {
+                    if(objective.GoalValue == 0) return ParseResult.Fail(pre + "Goal value of 0 found");
+                }
             }
+            
         }
         return ParseResult.Ok();
     }
