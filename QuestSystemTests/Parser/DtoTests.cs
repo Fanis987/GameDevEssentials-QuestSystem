@@ -1,4 +1,5 @@
-﻿using QuestSystem.Parser.Dtos;
+﻿using QuestSystem.Entities;
+using QuestSystem.Parser.Dtos;
 
 namespace QuestSystemTests.Parser;
 
@@ -6,6 +7,9 @@ public class DtoTests {
     
     private readonly ObjectiveDto _objectiveDto1 = new ObjectiveDto(10,1,1);
     private readonly ObjectiveDto _objectiveDto2 = new ObjectiveDto(5,1,2);
+    
+    private readonly StagePathDto _stagePathDtoSelective;
+    private readonly StagePathDto _stagePathDtoNormal;
     
     private readonly QuestStageDto _stageSelectiveDto;
     private readonly QuestStageDto _stageInclusiveDto;
@@ -16,8 +20,11 @@ public class DtoTests {
     {
         var objDtoList = new List<ObjectiveDto>() { _objectiveDto1,_objectiveDto2 };
         
-        _stageInclusiveDto = new QuestStageDto(1,"inclusive descr",false,false, objDtoList);
-        _stageSelectiveDto = new QuestStageDto(2,"selective descr",false,true, objDtoList);
+        _stagePathDtoNormal    = new StagePathDto(false, objDtoList);
+        _stagePathDtoSelective = new StagePathDto(true , objDtoList);
+        
+        _stageInclusiveDto = new QuestStageDto(1,"inclusive descr",false,new(){_stagePathDtoNormal});
+        _stageSelectiveDto = new QuestStageDto(2,"selective descr",false,new(){_stagePathDtoSelective});
 
         var stageDtoList = new List<QuestStageDto>() { _stageInclusiveDto,_stageSelectiveDto };
         _questDto = new QuestDto(5, "quest title",true,11, stageDtoList);
@@ -34,21 +41,29 @@ public class DtoTests {
         Assert.Equal(1, _objectiveDto2.TaskTypeId);
         Assert.Equal(2, _objectiveDto2.TargetAssetId);
     }
+    
+    [Fact]
+    public void CanCreateStagePathDtos()
+    {
+        Assert.True(_stagePathDtoSelective.IsSelective);
+        Assert.Equal(2, _stagePathDtoSelective.Objectives.Count);
+        Assert.Contains(_objectiveDto1, _stagePathDtoSelective.Objectives);
+        Assert.Contains(_objectiveDto2, _stagePathDtoSelective.Objectives);
+        
+        Assert.False(_stagePathDtoNormal.IsSelective);
+        Assert.Equal(2, _stagePathDtoNormal.Objectives.Count);
+        Assert.Contains(_objectiveDto1, _stagePathDtoNormal.Objectives);
+        Assert.Contains(_objectiveDto2, _stagePathDtoNormal.Objectives);
+    }
 
     [Fact]
-    public void CanCreateStageDtos()
-    {
+    public void CanCreateStageDtos() {
         Assert.Equal("inclusive descr", _stageInclusiveDto.Description);
-        Assert.False(_stageInclusiveDto.IsSelective);
-        Assert.Equal(2, _stageInclusiveDto.Objectives.Count);
-        Assert.Contains(_objectiveDto1, _stageInclusiveDto.Objectives);
-        Assert.Contains(_objectiveDto2, _stageInclusiveDto.Objectives);
+        Assert.Single(_stageInclusiveDto.PathDtos);
+        Assert.Contains(_stagePathDtoNormal, _stageInclusiveDto.PathDtos);
 
         Assert.Equal("selective descr", _stageSelectiveDto.Description);
-        Assert.True(_stageSelectiveDto.IsSelective);
-        Assert.Equal(2, _stageSelectiveDto.Objectives.Count);
-        Assert.Contains(_objectiveDto1, _stageSelectiveDto.Objectives);
-        Assert.Contains(_objectiveDto2, _stageSelectiveDto.Objectives);
+        Assert.Single(_stageSelectiveDto.PathDtos);
     }
 
     [Fact]
@@ -68,18 +83,12 @@ public class DtoTests {
         var stage2 = _questDto.Stages[1];
 
         // Check selective stage
-        Assert.False(stage1.IsSelective);
         Assert.Equal("inclusive descr", stage1.Description);
-        Assert.Equal(2, stage1.Objectives.Count);
-        Assert.Contains(_objectiveDto1, stage1.Objectives);
-        Assert.Contains(_objectiveDto2, stage1.Objectives);
+        Assert.Single(stage1.PathDtos);
 
         // Check inclusive stage
-        Assert.True(stage2.IsSelective);
         Assert.Equal("selective descr", stage2.Description);
-        Assert.Equal(2, stage2.Objectives.Count);
-        Assert.Contains(_objectiveDto1, stage2.Objectives);
-        Assert.Contains(_objectiveDto2, stage2.Objectives);
+        Assert.Single(stage2.PathDtos);
     }
 
     [Fact]
@@ -90,6 +99,21 @@ public class DtoTests {
         Assert.Equal(10, objective.GoalValue);
         Assert.Equal(1, objective.TaskTypeId);
         Assert.Equal(1, objective.TargetAssetId);
+    }
+    
+    [Fact]
+    public void CanConvertStagePathDtos()
+    {
+        var stagePathInclusive = _stagePathDtoNormal.ToStagePath();
+        var stagePathSelective = _stagePathDtoSelective.ToStagePath();
+        
+        Assert.False(stagePathInclusive.IsSelective);
+        Assert.Equal(0, stagePathInclusive.CompletedObjectiveCount);
+        Assert.False(stagePathInclusive.IsCompleted);
+
+        Assert.True(stagePathSelective.IsSelective);
+        Assert.Equal(0, stagePathSelective.CompletedObjectiveCount);
+        Assert.False(stagePathSelective.IsCompleted);
     }
     
     [Fact]
