@@ -57,7 +57,6 @@ public class QuestTests
         Assert.Equal(1,_quest.Id);
         Assert.False(_quest.IsCompleted);
         Assert.False(_quest.IsMainQuest);
-        Assert.Equal(2, _quest.StagesLeft);
         Assert.Equal(0, _quest.NextQuestId);
         Assert.Equal(_questStage1, _quest.CurrentStage);
         
@@ -78,7 +77,6 @@ public class QuestTests
         Assert.NotNull(quest);
         Assert.Equal(1,quest.Id);
         Assert.Equal("title",quest.Title);
-        Assert.Equal(1, quest.StagesLeft);
         Assert.False(quest.IsCompleted);
             
         var quest2 = new Quest(3, "title", false,
@@ -87,7 +85,6 @@ public class QuestTests
         Assert.Equal("title",quest2.Title);
         Assert.Equal(3,quest2.Id);
         Assert.False(quest2.IsCompleted);
-        Assert.Equal(1, quest2.StagesLeft);
     }
     
     [Fact]
@@ -98,7 +95,6 @@ public class QuestTests
         Assert.Equal(2,_quest2.Id);
         Assert.False(_quest2.IsCompleted);
         Assert.True(_quest2.IsMainQuest);
-        Assert.Equal(2, _quest2.StagesLeft);
         Assert.Equal(_questStage1, _quest2.CurrentStage);
     }
     
@@ -110,7 +106,6 @@ public class QuestTests
         Assert.NotNull(quest);
         Assert.Equal(1,quest.Id);
         Assert.Equal("myQuest",quest.Title);
-        Assert.Equal(1, quest.StagesLeft);
         Assert.False(quest.IsCompleted);
     }
     
@@ -184,7 +179,6 @@ public class QuestTests
         // Assert
         Assert.True(_questStage1.IsCompleted);
         Assert.Equal(_questStage2, _quest.CurrentStage);
-        Assert.Equal(1, _quest.StagesLeft);
     }
     
     [Fact]
@@ -229,20 +223,16 @@ public class QuestTests
         //Complete the quest
         _quest.TryProgressQuest(5,(int)TaskType.Kill);
         Assert.False(_quest.CurrentStage.IsCompleted);
-        Assert.Equal(2, _quest.StagesLeft);
         Assert.False(_quest.IsCompleted);
         
         _quest.TryProgressQuest(5,(int)TaskType.Gather);
-        Assert.Equal(1, _quest.StagesLeft);
         Assert.False(_quest.IsCompleted);
         
         _quest.TryProgressQuest(15,(int)TaskType.Kill);
-        Assert.Equal(0, _quest.StagesLeft);
         Assert.True(_quest.IsCompleted);
         
         //Try to proceed past the end - nothing happens
         _quest.TryProgressQuest(15,(int)TaskType.Kill);
-        Assert.Equal(0, _quest.StagesLeft);
         Assert.True(_quest.IsCompleted);
     }
     
@@ -262,33 +252,12 @@ public class QuestTests
             quest.TryProgressQuest(5,(int)TaskType.Kill));
     }
     
-    [Fact]
-    public void TrySkipStage_CanSkipStage() {
-        Assert.Equal(2, _quest.StagesLeft);
-        _quest.TrySkipStage();
-        
-        Assert.False(_quest.IsCompleted);
-        Assert.Equal(_questStage2, _quest.CurrentStage);
-        Assert.Equal(1, _quest.StagesLeft);
-    }
-    
-    [Fact]
-    public void TrySkipStage_CannotSkipStageOnCompleted() {
-        _quest.TrySkipStage();
-        _quest.TrySkipStage();
-        Assert.True(_quest.IsCompleted);
-        //Still completed
-        _quest.TrySkipStage();
-        Assert.True(_quest.IsCompleted);
-    }
     
     [Fact]
     public void CompleteInstantly_CanCompleteInstantly() {
-        Assert.Equal(2, _quest.StagesLeft);
         Assert.False(_quest.IsCompleted);
         _quest.CompleteInstantly();
         Assert.True(_quest.IsCompleted);
-        Assert.Equal(0, _quest.StagesLeft);
     }
     
     [Fact]

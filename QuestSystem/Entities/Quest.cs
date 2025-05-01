@@ -6,7 +6,7 @@ namespace QuestSystem.Entities;
 public class Quest
 {
     // Main Properties (set in ctor)
-    private readonly Queue<QuestStage> _stagesQueue =  new();
+    private readonly List<QuestStage> _allStages =  new();
     
     /// <summary> The id of the quest. Must be positive </summary>
     public int Id {get;}
@@ -22,11 +22,13 @@ public class Quest
     
     // Getter Properties
     /// <summary> Whether this <see cref="Quest"/> is complete </summary>
-    public bool IsCompleted => _stagesQueue.Count == 0;
+    public bool IsCompleted { get; private set; } 
+    
+    /// <summary> The id of the quest. Must be positive </summary>
+    public int CurrentStageId {get; private set; }
     /// <summary> The current <see cref="QuestStage"/> of the quest </summary>
-    public QuestStage? CurrentStage => IsCompleted? null : _stagesQueue.Peek();
-    /// <summary> The number of <see cref="QuestStage"/> left in this quest </summary>
-    public int StagesLeft => _stagesQueue.Count;
+    public QuestStage? CurrentStage => _allStages.FirstOrDefault(stage => stage.Id == CurrentStageId);
+
     
     /// <summary>
     /// Represents a quest in a game.
@@ -55,10 +57,10 @@ public class Quest
         Title = questTitle;
         
         // Fill queue
-        foreach (var stage in stages)
-        {
-            _stagesQueue.Enqueue (stage);    
+        foreach (var stage in stages) {
+            _allStages.Add(stage);
         }
+        CurrentStageId = stages[0].Id;
     }
 
     /// <summary>
@@ -69,8 +71,7 @@ public class Quest
     /// <param name="isMainQuest">Whether the quest is part of the main quest line</param>
     /// <param name="stages"> The stages of the quest, in order.</param>
     public Quest(int questId, string questTitle,bool isMainQuest, params QuestStage[] stages)
-    :this(questId,questTitle,stages)
-    {
+    :this(questId,questTitle,stages) {
         IsMainQuest = isMainQuest;
     }
 
@@ -83,8 +84,7 @@ public class Quest
     /// <param name="nextQuestId">The id of the next quest in the quest chain. Zero interpreted as no next quest.</param>
     /// <param name="stages"> The stages of the quest, in order.</param>
     public Quest(int questId, string questTitle,bool isMainQuest,int nextQuestId, params QuestStage[] stages)
-        :this(questId,questTitle,isMainQuest,stages)
-    {
+        :this(questId,questTitle,isMainQuest,stages) {
         NextQuestId = nextQuestId;
     }
 
@@ -121,9 +121,9 @@ public class Quest
         Title = questTitle;
 
         // Create a stage path and a stage from it
-        var stagePath = new StagePath(isSelectiveStagePath,1, objectives.ToArray());
+        var stagePath = new StagePath(isSelectiveStagePath,-1, objectives.ToArray());
         var questStage = new QuestStage(1, stageDescription, stagePath);
-        _stagesQueue.Enqueue(questStage);
+        _allStages.Add(questStage);
     }
     
     
@@ -151,31 +151,26 @@ public class Quest
         if(WasFailed) return;
         
         //Try progress the current stage based on arg
-        var currentStage = _stagesQueue.Peek();
+        //var currentStage = _stagesQueue.Peek();
+        var currentStage = _allStages.FirstOrDefault(stage => stage.Id == CurrentStageId);
+        if(currentStage == null) throw new InvalidOperationException("Cannot identify current stage");
         if (currentStage.IsCompleted) {
             throw new InvalidOperationException("The current stage is already completed");
         }
         currentStage.TryProgressStage(progressValue, taskTypeId,  assetId);
 
-        // Stage not completed yet
+        // Stage not completed yet - move to the next stage or finish
         if (!currentStage.IsCompleted) return;
-        
-        // Stage just completed
-        _stagesQueue.Dequeue(); //move to the next stage or finish
-    }
-
-    /// <summary>
-    /// Force skips the current stage of the quest.
-    /// Useful when debugging and loading a half-finished quest from a save file.
-    /// </summary>
-    public void TrySkipStage() {
-        if(IsCompleted) return; // A completed quest cannot be progressed
-        _stagesQueue.Dequeue();  // Force-Skip the current stage
+        if (currentStage.NextStageId == -1) {//quest done
+            IsCompleted = true;
+            return;
+        }
+        CurrentStageId = currentStage.NextStageId;
     }
     
     /// <summary>  Forces a quest to complete instantly. Useful for debugging.  </summary>
     public void CompleteInstantly() {
-        _stagesQueue.Clear(); // Force-Skip all teh stages
+        IsCompleted = true;
     }
 
     /// <summary>Fails a quest. Useful for cases like timed quest </summary>

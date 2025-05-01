@@ -137,7 +137,6 @@ public class DtoTests {
         Assert.NotNull(quest);
         Assert.Equal(5, quest.Id);
         Assert.Equal("quest title", quest.Title);
-        Assert.Equal(2, quest.StagesLeft);
         Assert.False(quest.IsCompleted);
         
         // Assert stages

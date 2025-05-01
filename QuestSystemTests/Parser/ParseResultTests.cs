@@ -47,8 +47,11 @@ public class ParseResultTests
         Assert.NotNull(result);
         Assert.Empty(result.Quests);
         Assert.Empty(result.ErrorMessages);
-        
-        result.Quests.Add(new Quest(1,"title"));
+
+        var path = new StagePath(true, 3, new Objective(5, 3));
+        var stage = new QuestStage(3, "sth",path);
+        var quest = new Quest(1, "title",stage );
+        result.Quests.Add(quest);
         result.ErrorMessages.Add("error message");
         Assert.Single(result.Quests);
         Assert.Single(result.ErrorMessages);

@@ -216,7 +216,6 @@ public class QuestParserTests
          Assert.Equal(1, quest.Id);
          Assert.Equal("First Quest", quest.Title);
          Assert.False(quest.IsCompleted);
-         Assert.Equal(1,quest.StagesLeft);
         
          var stage = quest.CurrentStage;
          Assert.NotNull(stage);
@@ -240,7 +239,6 @@ public class QuestParserTests
          Assert.Equal(7, quest.NextQuestId);
          Assert.Equal("First Quest In Multi", quest.Title);
          Assert.False(quest.IsCompleted);
-         Assert.Equal(1,quest.StagesLeft);
          
          var quest2 = questList[1];
          Assert.NotNull(quest2);
