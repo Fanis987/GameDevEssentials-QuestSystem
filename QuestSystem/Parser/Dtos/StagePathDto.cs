@@ -8,6 +8,6 @@ internal record StagePathDto(bool IsSelective, List<ObjectiveDto> Objectives)
     /// <returns>The <see cref="StagePath"/> object</returns>
     internal StagePath ToStagePath() {
         var objectiveArray = Objectives.Select(objectiveDto => objectiveDto.ToObjective()).ToArray();
-        return new StagePath(IsSelective,objectiveArray);
+        return new StagePath(IsSelective,-1,objectiveArray);
     }
 }

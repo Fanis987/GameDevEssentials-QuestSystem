@@ -21,9 +21,9 @@ public class QuestTests
         _taskKillLarge = new Objective(10,(int)TaskType.Kill);
         _taskGather = new Objective(3,(int)TaskType.Gather);
 
-        _stagePathInclusive = new StagePath(false, _taskKill, _taskGather);
-        _stagePathInclusiveL= new StagePath(false, _taskKillLarge);
-        _stagePathSelective = new StagePath(true, _taskKill, _taskGather);
+        _stagePathInclusive = new StagePath(false,2, _taskKill, _taskGather);
+        _stagePathInclusiveL= new StagePath(false,-1, _taskKillLarge);
+        _stagePathSelective = new StagePath(true,-1, _taskKill, _taskGather);
         
         _questStage1 = new QuestStage(1,"kill and gather",_stagePathInclusive);
         _questStage2 = new QuestStage(2,"kill many",_stagePathInclusiveL);

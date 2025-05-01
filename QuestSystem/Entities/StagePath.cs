@@ -2,16 +2,21 @@ namespace QuestSystem.Entities;
 
 public class StagePath
 {
+    //Fields
     /// <summary>The objectives of the stage path.</summary>
     private readonly List<Objective> _objectives = new();
     
-    /// <summary> Whether this <see cref="StagePath"/> is complete</summary>
-    public bool IsCompleted { get; private set; }
-    
+    // Basic properties
     /// <summary> Whether this <see cref="StagePath"/> can completed, by finishing ANY of its objectives</summary>
     public bool IsSelective { get;}
+
+    /// <summary> Whether this <see cref="StagePath"/> can completed, by finishing ANY of its objectives</summary>
+    public int NextStageId { get; }
     
-    /// <summary> The number of objectives completed in this <see cref="QuestStage"/></summary>
+    // Complex properties
+    /// <summary> Whether this <see cref="StagePath"/> is complete</summary>
+    public bool IsCompleted { get; private set; }
+    /// <summary> The number of objectives completed in this <see cref="StagePath"/></summary>
     public int CompletedObjectiveCount => _objectives.Count(objective => objective.IsCompleted);
     
     /// <summary> A simple progress indicator of the stage's objectives</summary>
@@ -20,12 +25,16 @@ public class StagePath
     /// <summary> The list of individual progress of each <see cref="Objective"/> in this stage</summary>
     public IReadOnlyList<string> ObjectiveProgress => GetProgressOfStagePathObjectives();
     
-    public StagePath(bool isSelective, params Objective[] objectives) {
+    public StagePath(bool isSelective,int nextStageId, params Objective[] objectives) {
         //Basic checks
         if (objectives == null) throw new ArgumentNullException(nameof(objectives),"Objectives cannot be null.");
         if (objectives.Length == 0) throw new ArgumentException("No objectives were passed");
+        if(nextStageId <= -2 || nextStageId == 0) 
+            throw new ArgumentOutOfRangeException(nameof(nextStageId),"The next stage id must be either positive or -1 for quest end.");
         
         IsSelective = isSelective;
+        NextStageId = nextStageId;
+        
         for (var i = 0; i < objectives.Length; i++) {
             if (objectives[i] == null) {
                 throw new ArgumentNullException(nameof(objectives),"A null objective found in the passed array");
@@ -33,7 +42,7 @@ public class StagePath
             _objectives.Add(objectives[i]);
         }
     }
-    
+
     /// <summary>
     /// Tries to progress tasks in the stage based on the provided progress data.
     /// </summary>

@@ -121,7 +121,7 @@ public class Quest
         Title = questTitle;
 
         // Create a stage path and a stage from it
-        var stagePath = new StagePath(isSelectiveStagePath, objectives.ToArray());
+        var stagePath = new StagePath(isSelectiveStagePath,1, objectives.ToArray());
         var questStage = new QuestStage(1, stageDescription, stagePath);
         _stagesQueue.Enqueue(questStage);
     }

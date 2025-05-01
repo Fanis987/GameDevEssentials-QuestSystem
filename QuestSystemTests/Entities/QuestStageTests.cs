@@ -25,9 +25,9 @@ public class QuestStageTests
         _taskKillSecond = new Objective(5, (int)TaskType.Kill, 20);
 
         // Create StagePaths
-        _pathInclusive = new StagePath(false, _taskKill, _taskGather); // All objectives must be completed
-        var pathSelective = new StagePath(true, _taskKill, _taskGather);  // Any objective completion will suffice
-        var pathInclusive2 = new StagePath(false, _taskKillFirst, _taskKillSecond); // Specific kills for two enemies
+        _pathInclusive = new StagePath(false,-1, _taskKill, _taskGather); // All objectives must be completed
+        var pathSelective = new StagePath(true,-1, _taskKill, _taskGather);  // Any objective completion will suffice
+        var pathInclusive2 = new StagePath(false,-1, _taskKillFirst, _taskKillSecond); // Specific kills for two enemies
 
         // Stage: 5 kills AND 3 gathers
         _questStageInclusive = new QuestStage(1, "kill and gather", _pathInclusive);

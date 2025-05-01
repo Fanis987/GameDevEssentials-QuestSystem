@@ -22,8 +22,8 @@ public class StagePathTests
         _completedTask.TryProceed(1, (int)TaskType.Gather); //complete it
         _uncompletedTask = new Objective(1, (int)TaskType.Gather);
 
-        _stagePathInclusive = new StagePath(false, _killTask, _gatherTask);
-        _stagePathSelective = new StagePath(true, _killTask, _gatherTask);
+        _stagePathInclusive = new StagePath(false,-1, _killTask, _gatherTask);
+        _stagePathSelective = new StagePath(true,-1, _killTask, _gatherTask);
     }
 
     [Fact]
@@ -42,19 +42,19 @@ public class StagePathTests
     [Fact]
     public void StagePath_Throws_IfObjectiveArrayIsNull() {
         Objective[] nullObjectives = null;
-        Assert.Throws<ArgumentNullException>(() => new StagePath(false, nullObjectives));
+        Assert.Throws<ArgumentNullException>(() => new StagePath(false,-1, nullObjectives));
     }
 
     [Fact]
     public void StagePath_Throws_IfObjectiveArrayIsEmpty() {
-        Assert.Throws<ArgumentException>(() => new StagePath(false));
+        Assert.Throws<ArgumentException>(() => new StagePath(false,-1));
     }
 
     [Fact]
     public void StagePath_Throws_IfAnyObjectiveIsNull() {
         Objective obj1 = new Objective(1, 0);
         Objective obj2 = null;
-        Assert.Throws<ArgumentNullException>(() => new StagePath(false, obj1, obj2));
+        Assert.Throws<ArgumentNullException>(() => new StagePath(false, -1,obj1, obj2));
     }
     
     [Fact]
@@ -93,7 +93,7 @@ public class StagePathTests
         var objTargeted = new Objective(2, (int)TaskType.Kill, assetId: 42);
         var objIgnored  = new Objective(2, (int)TaskType.Kill, assetId: 99);
 
-        var stage = new StagePath(false, objTargeted, objIgnored);
+        var stage = new StagePath(false,-1, objTargeted, objIgnored);
 
         stage.TryProgressPath(2, (int)TaskType.Kill, assetId: 42);
 
@@ -107,7 +107,7 @@ public class StagePathTests
         var obj1 = new Objective(3, (int)TaskType.Gather);
         var obj2 = new Objective(5, (int)TaskType.Kill);
 
-        var stage = new StagePath(true, obj1, obj2);
+        var stage = new StagePath(true,-1, obj1, obj2);
 
         // Progress only the first objective
         stage.TryProgressPath(3, (int)TaskType.Gather);
@@ -123,15 +123,15 @@ public class StagePathTests
         var obj1 = new Objective(2, (int)TaskType.Kill);
         var obj2 = new Objective(3, (int)TaskType.Gather);
 
-        var stage = new StagePath(false, obj1, obj2);
+        var stagePath = new StagePath(false,-1, obj1, obj2);
 
         // Progress only one: not enough
-        stage.TryProgressPath(2, (int)TaskType.Kill);
-        Assert.False(stage.IsCompleted);
+        stagePath.TryProgressPath(2, (int)TaskType.Kill);
+        Assert.False(stagePath.IsCompleted);
 
         // Progress the other one
-        stage.TryProgressPath(3, (int)TaskType.Gather);
-        Assert.True(stage.IsCompleted);
+        stagePath.TryProgressPath(3, (int)TaskType.Gather);
+        Assert.True(stagePath.IsCompleted);
     }
 
     [Fact]
@@ -140,7 +140,7 @@ public class StagePathTests
         var obj1 = new Objective(5, (int)TaskType.Kill);
         var obj2 = new Objective(3, (int)TaskType.Gather);
 
-        var stage = new StagePath(false, obj1, obj2);
+        var stage = new StagePath(false,-1, obj1, obj2);
 
         var progressStrings = stage.ObjectiveProgress;
 
