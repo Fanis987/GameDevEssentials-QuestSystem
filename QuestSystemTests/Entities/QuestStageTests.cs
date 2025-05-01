@@ -25,7 +25,7 @@ public class QuestStageTests
         _taskKillSecond = new Objective(5, (int)TaskType.Kill, 20);
 
         // Create StagePaths
-        _pathInclusive = new StagePath(false,-1, _taskKill, _taskGather); // All objectives must be completed
+        _pathInclusive = new StagePath(false,7, _taskKill, _taskGather); // All objectives must be completed
         var pathSelective = new StagePath(true,-1, _taskKill, _taskGather);  // Any objective completion will suffice
         var pathInclusive2 = new StagePath(false,-1, _taskKillFirst, _taskKillSecond); // Specific kills for two enemies
 
@@ -50,6 +50,7 @@ public class QuestStageTests
         // Assert stage description and ids
         Assert.Equal("kill and gather", _questStageInclusive.StageDescription);
         Assert.Equal(1, _questStageInclusive.Id);
+        Assert.Equal(-1, _questStageInclusive.NextStageId);
         Assert.Equal("kill 2 things", _questStageInclusive2.StageDescription);
         Assert.Equal(2, _questStageInclusive2.Id);
         Assert.Equal("kill or gather", _questStageSelective.StageDescription);
@@ -94,6 +95,7 @@ public class QuestStageTests
         _questStageInclusive.TryProgressStage(3, (int)TaskType.Gather); // Progress the Gather objective
 
         Assert.True(_questStageInclusive.IsCompleted); // Both objectives should be completed, so the stage is complete
+        Assert.Equal(7,_questStageInclusive.NextStageId);
     }
 
     [Fact]
@@ -102,6 +104,7 @@ public class QuestStageTests
         _questStageSelective.TryProgressStage(5, (int)TaskType.Kill);  // Progress the Kill task
         
         Assert.True(_questStageSelective.IsCompleted); // The stage should be marked as completed as soon as one objective is completed
+        Assert.Equal(-1,_questStageInclusive.NextStageId);
     }
 
     [Fact]

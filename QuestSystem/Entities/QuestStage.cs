@@ -19,6 +19,8 @@ public class QuestStage
     public string StageDescription { get; }
     /// <summary> Whether this <see cref="QuestStage"/> is complete</summary>
     public bool IsCompleted { get; private set; }
+
+    public int NextStageId { get; private set; } = -1;
     /// <summary>The time left for this stage. Zero means the stage is NOT timed.</summary>
     public float TimeLeft { get; private set; }
     
@@ -55,8 +57,10 @@ public class QuestStage
     public void TryProgressStage(int progressValue, int taskTypeId, int assetId = 0) {
         foreach (var path in _paths) {
             path.TryProgressPath(progressValue, taskTypeId, assetId);
+            if(! path.IsCompleted) continue;
+            IsCompleted = true;
+            NextStageId = path.NextStageId;
         }
-        IsCompleted = _paths.Any(p => p.IsCompleted);
     }
 
     public string GetProgress()
