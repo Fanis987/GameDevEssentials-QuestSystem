@@ -15,7 +15,7 @@ public class StagePath
     public int CompletedObjectiveCount => _objectives.Count(objective => objective.IsCompleted);
     
     /// <summary> A simple progress indicator of the stage's objectives</summary>
-    public string StageProgress => $"{CompletedObjectiveCount}/{_objectives.Count}";
+    public string PathProgress => $"{CompletedObjectiveCount}/{_objectives.Count}";
     
     /// <summary> The list of individual progress of each <see cref="Objective"/> in this stage</summary>
     public IReadOnlyList<string> ObjectiveProgress => GetProgressOfStagePathObjectives();

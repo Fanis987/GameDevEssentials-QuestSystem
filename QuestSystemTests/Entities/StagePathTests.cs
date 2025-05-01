@@ -29,12 +29,12 @@ public class StagePathTests
     [Fact]
     public void StagePath_ShouldInitialize_WithValidObjectives() {
         Assert.NotNull(_stagePathInclusive);
-        Assert.Equal("0/2", _stagePathInclusive.StageProgress);
+        Assert.Equal("0/2", _stagePathInclusive.PathProgress);
         Assert.False(_stagePathInclusive.IsCompleted);
         Assert.False(_stagePathInclusive.IsSelective);
         
         Assert.NotNull(_stagePathSelective);
-        Assert.Equal("0/2", _stagePathSelective.StageProgress);
+        Assert.Equal("0/2", _stagePathSelective.PathProgress);
         Assert.False(_stagePathSelective.IsCompleted);
         Assert.True(_stagePathSelective.IsSelective);
     }

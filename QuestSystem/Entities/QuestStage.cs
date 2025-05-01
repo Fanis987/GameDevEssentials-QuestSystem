@@ -58,6 +58,23 @@ public class QuestStage
         }
         IsCompleted = _paths.Any(p => p.IsCompleted);
     }
+
+    public string GetProgress()
+    {
+        string result = "";
+        for (var i = 0; i < _paths.Count; i++)
+        {
+            var path = _paths[i];
+            result += $"Path {i}:\n";
+            var list = path.ObjectiveProgress;
+            for (var j = 0; j < list.Count; j++)
+            {
+                var objectiveProg = list[j];
+                result += $"objective {j}: {objectiveProg}\n";
+            }
+        }
+        return result;
+    }
     
     /// <summary>Marks the quest as timed</summary>
     public void MakeTimed(float newTime) => TimeLeft = newTime;
