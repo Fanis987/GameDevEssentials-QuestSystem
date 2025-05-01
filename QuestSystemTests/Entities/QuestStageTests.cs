@@ -90,8 +90,8 @@ public class QuestStageTests
     
     [Fact]
     public void QuestStage_ShouldBeCompleted_WhenAllObjectivesComplete_Inclusive() {
-        _questStageInclusive.TryProgressObjective(5, (int)TaskType.Kill);  // Progress the Kill objective
-        _questStageInclusive.TryProgressObjective(3, (int)TaskType.Gather); // Progress the Gather objective
+        _questStageInclusive.TryProgressStage(5, (int)TaskType.Kill);  // Progress the Kill objective
+        _questStageInclusive.TryProgressStage(3, (int)TaskType.Gather); // Progress the Gather objective
 
         Assert.True(_questStageInclusive.IsCompleted); // Both objectives should be completed, so the stage is complete
     }
@@ -99,7 +99,7 @@ public class QuestStageTests
     [Fact]
     public void QuestStage_ShouldBeCompleted_WhenAnyObjectiveComplete_Selective()
     {
-        _questStageSelective.TryProgressObjective(5, (int)TaskType.Kill);  // Progress the Kill task
+        _questStageSelective.TryProgressStage(5, (int)TaskType.Kill);  // Progress the Kill task
         
         Assert.True(_questStageSelective.IsCompleted); // The stage should be marked as completed as soon as one objective is completed
     }

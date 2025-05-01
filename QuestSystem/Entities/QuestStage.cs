@@ -52,9 +52,9 @@ public class QuestStage
     /// <param name="taskTypeId">The identifier of the action (e.g., Kill, Gather).</param>
     /// <param name="assetId">The id of the asset that was affected by the action (e.g., enemy ID)</param>
     /// <exception cref="InvalidOperationException"></exception>
-    public void TryProgressObjective(int progressValue, int taskTypeId, int assetId = 0) {
+    public void TryProgressStage(int progressValue, int taskTypeId, int assetId = 0) {
         foreach (var path in _paths) {
-            path.TryProgressObjective(progressValue, taskTypeId, assetId);
+            path.TryProgressPath(progressValue, taskTypeId, assetId);
         }
         IsCompleted = _paths.Any(p => p.IsCompleted);
     }

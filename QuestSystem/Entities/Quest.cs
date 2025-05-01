@@ -155,7 +155,7 @@ public class Quest
         if (currentStage.IsCompleted) {
             throw new InvalidOperationException("The current stage is already completed");
         }
-        currentStage.TryProgressObjective(progressValue, taskTypeId,  assetId);
+        currentStage.TryProgressStage(progressValue, taskTypeId,  assetId);
 
         // Stage not completed yet
         if (!currentStage.IsCompleted) return;

@@ -250,8 +250,8 @@ public class QuestTests
     public void TryProgressQuest_ShouldThrowExceptionForCurrentStageCompleted()
     {
         //complete the stage and THEN create the quest
-        _questStage1.TryProgressObjective(5,(int)TaskType.Kill);
-        _questStage1.TryProgressObjective(3,(int)TaskType.Gather);
+        _questStage1.TryProgressStage(5,(int)TaskType.Kill);
+        _questStage1.TryProgressStage(3,(int)TaskType.Gather);
         Assert.True(_questStage1.IsCompleted);
         
         var quest = new Quest(2,"myQuest2",true,_questStage1);

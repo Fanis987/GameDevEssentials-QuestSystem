@@ -59,7 +59,7 @@ public class StagePathTests
     
     [Fact]
     public void TryProgressObjective_ProgressesOnlyMatchingTaskTypes() {
-        _stagePathInclusive.TryProgressObjective(3, (int)TaskType.Kill);
+        _stagePathInclusive.TryProgressPath(3, (int)TaskType.Kill);
 
         Assert.Equal(3, _killTask.CurrValue);
         Assert.Equal(0, _gatherTask.CurrValue);
@@ -67,7 +67,7 @@ public class StagePathTests
 
     [Fact]
     public void TryProgressObjective_IgnoresWrongTaskTypes() {
-        _stagePathInclusive.TryProgressObjective(5, 999); // Nonexistent TaskType
+        _stagePathInclusive.TryProgressPath(5, 999); // Nonexistent TaskType
 
         Assert.Equal(0, _killTask.CurrValue);
         Assert.Equal(0, _gatherTask.CurrValue);
@@ -75,15 +75,15 @@ public class StagePathTests
 
     [Fact]
     public void TryProgressObjective_TriggersCompletion_Inclusive_AllObjectives() {
-        _stagePathInclusive.TryProgressObjective(5, (int)TaskType.Kill);
-        _stagePathInclusive.TryProgressObjective(3, (int)TaskType.Gather);
+        _stagePathInclusive.TryProgressPath(5, (int)TaskType.Kill);
+        _stagePathInclusive.TryProgressPath(3, (int)TaskType.Gather);
 
         Assert.True(_stagePathInclusive.IsCompleted);
     }
 
     [Fact]
     public void TryProgressObjective_TriggersCompletion_Selective_AnyObjective() {
-        _stagePathSelective.TryProgressObjective(5, (int)TaskType.Kill);
+        _stagePathSelective.TryProgressPath(5, (int)TaskType.Kill);
 
         Assert.True(_stagePathSelective.IsCompleted);
     }
@@ -95,7 +95,7 @@ public class StagePathTests
 
         var stage = new StagePath(false, objTargeted, objIgnored);
 
-        stage.TryProgressObjective(2, (int)TaskType.Kill, assetId: 42);
+        stage.TryProgressPath(2, (int)TaskType.Kill, assetId: 42);
 
         Assert.Equal(2, objTargeted.CurrValue);
         Assert.Equal(0, objIgnored.CurrValue);
@@ -110,7 +110,7 @@ public class StagePathTests
         var stage = new StagePath(true, obj1, obj2);
 
         // Progress only the first objective
-        stage.TryProgressObjective(3, (int)TaskType.Gather);
+        stage.TryProgressPath(3, (int)TaskType.Gather);
 
         Assert.True(obj1.IsCompleted);
         Assert.False(obj2.IsCompleted);
@@ -126,11 +126,11 @@ public class StagePathTests
         var stage = new StagePath(false, obj1, obj2);
 
         // Progress only one: not enough
-        stage.TryProgressObjective(2, (int)TaskType.Kill);
+        stage.TryProgressPath(2, (int)TaskType.Kill);
         Assert.False(stage.IsCompleted);
 
         // Progress the other one
-        stage.TryProgressObjective(3, (int)TaskType.Gather);
+        stage.TryProgressPath(3, (int)TaskType.Gather);
         Assert.True(stage.IsCompleted);
     }
 
