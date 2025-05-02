@@ -118,4 +118,22 @@ public class QuestStageTests
         _questStageInclusive.MakeTimed(120f);
         Assert.Equal(120f, _questStageInclusive.TimeLeft);
     }
+
+    [Fact]
+    public void GetProgress_ReturnsCorrectFormattedString()
+    {
+        var actual = _questStageInclusive.GetProgress();
+        
+        var expected = "Path 0:\n" +
+                       "objective 0: 0/5\n" +
+                       "objective 1: 0/3\n";
+        Assert.Equal(expected, actual);
+    }
+    
+    [Fact]
+    public void CompleteInstantly_ShouldComplete() {
+        Assert.False(_questStageInclusive.IsCompleted);
+        _questStageInclusive.CompleteInstantly();
+        Assert.True(_questStageInclusive.IsCompleted);
+    }
 }

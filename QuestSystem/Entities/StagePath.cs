@@ -25,12 +25,21 @@ public class StagePath
     /// <summary> The list of individual progress of each <see cref="Objective"/> in this stage</summary>
     public IReadOnlyList<string> ObjectiveProgress => GetProgressOfStagePathObjectives();
     
+    /// <summary>
+    /// A collection of objectives that represents a specific path in a quest stage
+    /// The path decides the next stage when completed.
+    /// </summary>
+    /// <param name="isSelective">If the path can be completed by completing ANY of the objectives</param>
+    /// <param name="nextStageId">The id of next stage. Equal to -1, if there is no next stage after compelting this path </param>
+    /// <param name="objectives">The objectives of this path</param>
+    /// <exception cref="ArgumentNullException">Some objectives were null</exception>
+    /// <exception cref="ArgumentException">No objectives were passed</exception>
+    /// <exception cref="ArgumentOutOfRangeException">invalid number passed for next stage Id</exception>
     public StagePath(bool isSelective,int nextStageId, params Objective[] objectives) {
         //Basic checks
         if (objectives == null) throw new ArgumentNullException(nameof(objectives),"Objectives cannot be null.");
         if (objectives.Length == 0) throw new ArgumentException("No objectives were passed");
-        if(nextStageId <= -2 || nextStageId == 0) 
-            throw new ArgumentOutOfRangeException(nameof(nextStageId),"The next stage id must be either positive or -1 for quest end.");
+        if(nextStageId <= -2) throw new ArgumentOutOfRangeException(nameof(nextStageId),"The next stage id must be over -1 ");
         
         IsSelective = isSelective;
         NextStageId = nextStageId;

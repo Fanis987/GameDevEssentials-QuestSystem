@@ -63,6 +63,10 @@ public class QuestStage
         }
     }
 
+    /// <summary>
+    /// Gives a string representation of the overall stage progress
+    /// </summary>
+    /// <returns>Progress Description</returns>
     public string GetProgress()
     {
         string result = "";
@@ -79,6 +83,9 @@ public class QuestStage
         }
         return result;
     }
+    
+    /// <summary>Completes the stage instantly. Useful for development </summary>
+    public void CompleteInstantly() => IsCompleted = true;
     
     /// <summary>Marks the quest as timed</summary>
     public void MakeTimed(float newTime) => TimeLeft = newTime;

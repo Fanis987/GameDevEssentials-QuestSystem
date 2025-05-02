@@ -44,6 +44,11 @@ public class StagePathTests
         Objective[] nullObjectives = null;
         Assert.Throws<ArgumentNullException>(() => new StagePath(false,-1, nullObjectives));
     }
+    
+    [Fact]
+    public void StagePath_Throws_IfIdUNderMinusOne() {
+        Assert.Throws<ArgumentOutOfRangeException>(() => new StagePath(false,-2, _killTask));
+    }
 
     [Fact]
     public void StagePath_Throws_IfObjectiveArrayIsEmpty() {
