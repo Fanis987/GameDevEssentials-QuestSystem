@@ -4,146 +4,136 @@ A collection of classes to create an in-game quest system.
 The package is compatible with **Godot 4.4 / .Net 8.0**  
 **Suggested use**: Get the nuget package or simply copy-paste-addProjectRef
 
-**Main Structure of the System**
-- A Quest is made from stages
-- A stage is made up from objectives
-- A stage can be inclusive (all objectives must be completed)
-- Or selective (one of the objectives must be competed)
+**Main Structure of the System**  
+Key entities: Objective, StagePath, QuestStage, Quest
+- A Quest is made from one or more stages.
+- Each stage is made up from one or more stage paths.
+- Each stage path indicates the next stage unlocked upon its completion. (aka quest branching)
+- A stage path consists of one or more objectives.
+- A stage path can be normal. (all objectives must be completed)
+- Or selective (only one objective must be competed)
 
-**Minimum Working Example in Godot 4.4**  
-**METHOD 1 : Create a quests via code**  
+**Assuming a 'QuestManager' Node, we can create quests in 2 ways:**  
+**METHOD 1 : Create a quests via code:**  
 ```csharp
-using Godot;
-//Assumes you have added the nuget package in your project
-using QuestSystem;
-using QuestSystem.Entities;
-using System;
+// Assume in-game action/ objective type Ids: 1: Gather 2: Hit  3:Talk  4: Kill etc.
+// Assume in-game item ids: 1: sword 2: red flower  3: grass etc.
+// Assume in-game enemy ids: 1: Toad 2: Rabbit 3:Wolf 4: Turtle etc.
 
-// We start with some kind of manager class 
-public partial class QuestManager : Node
-{
-    // Have collections to store your in-game quests
-    public List<Quest> AllQuests { get; private set; } = new();
-    public List<Quest> ActiveQuests { get; private set; } = new();
-
-    public override void _Ready()    {
-        // Method 1: Make a quest via code
-        CreateSimpleQuest();
-        
-        //Add it to active
-        var quest = AllQuests.FirstOrDefault( q => q.Id == 1 );
-        if(quest!= null) ActiveQuests.Add(quest);
-        GD.Print("Active Quests Count: " + ActiveQuests.Count);
-    }
+// A very simple quest: 2 objectives - 1 stage path - 1 stage
+private Quest CreateSimpleQuest(){
     
-    // Method 1: Make a quest via code
-    // Creating a quest follows the described structure
-    private void CreateSimpleQuest(){
-        // Assume in-game action/ objective type Ids: 1: Gather 2: Hit  3:Talk  4: Kill etc.
-        // Assume in-game item ids: 1: sword 2: red flower  3: grass etc.
-        // Assume in-game enemy ids: 1: Toad 2: Rabbit 3:Wolf 4: Turtle etc.
-        
-        // First we declare the objectives:
-        // Args: Goal value, Id of the action that progresses the quest, asset affected
-        // 3 gathering (id=1) of red flowers (assetId=2)
-        var gatherFlowerObjective = new Objective(3, 1, 2);
-        // 5 hits (id=2) on toads (assetId=1)
-        var hitToadObjective      = new Objective(5, 2, 1);
-        var objectiveList = new List<Objective>(){gatherFlowerObjective,hitToadObjective};
+    // First we declare the objectives:
+    // Args: Goal value, Id of the action that progresses the quest, asset affected
+    // 3 gathering (id=1) of red flowers (assetId=2)
+    var gatherFlowerObjective = new Objective(3, 1, 2);
+    // 5 hits (id=2) on toads (assetId=1)
+    var hitToadObjective      = new Objective(5, 2, 1);
 
-        // Then we must declare the stages
-        // In this case there is only one stage
-        string stageDescription = "Gather 3 red flowers AND hit 5 toads";
-        // Normal Stages: ALL objectives must be completed
-        // Selective Stages: ANY of the objectives must be completed
-        bool isSelective = false;
-        var stage = new QuestStage(stageDescription,isSelective, objectiveList);
-
-        //Finally, create the quest object and add it to the list
-        string questTitle = "Practicing the basics !";
-        bool isMainQuest = true;// Optional: Common quest discrimination
-        bool nextQuestId = 5;  //  Optional: For quest-chain support
-        Quest newQuest = new Quest(1, questTitle,isMainQuest,nextQuestId, stage);
-        //Note: there are also overloaded constructors with less args
-        
-        AllQuests.Add( newQuest );
-    }
+    // Then we combine them in a stage path
+    // Normal Path: ALL objectives must be completed to complete the path.
+    // Selective Path: ANY of the objectives must be completed to complete the path.
+    bool isSelective = false;
+    // Each path indicates the stage unlocked, upon its completion
+    // If completeing this path ends the quest, set to -1
+    int nextStageId = -1 // in this case there is no next stage
+    StagePath path = new StagePath(isSelective, nextStageId, gatherFlowerObjective,hitToadObjective)
     
-    // Then we need a progress function that will be called from other nodes (or connected to events/signals)
-    // Example Scenario: The player killed 3 wolf enemies, based on above convention:
-    // progressValue = 3 , taskId = 4 (kill action), assetId = 3 (wolf)
-    private void ProgressQuests( int progressValue,int taskId, int assetId = -1)
-    {
-        GD.Print($"\nReceived progress {progressValue} for taskId:{taskId}, for asset: {assetId}");
-        var activeQuestsCopy = new List<Quest>(ActiveQuests); //avoid mid-loop deletion issues
-        foreach(var quest in activeQuestsCopy)
-        {
-            quest.TryProgressQuest(progressValue, taskId, assetId);
-            if(quest.IsCompleted){
-                GD.Print($"\nQuest {quest.Id} COMPLETED");
-                // Here do sth like giving rewards based on how your game works
-                ActiveQuests.Remove(quest);
-                
-                // Can also use logic to start next quest in chain (if it exists)
-                if(quest.NextQuestId == 0) continue;
-                var nextQuest = AllQuests.FirstOrDefault( q => q.Id == quest.NextQuestId );
-                if(nextQuest== null) continue;
-                ActiveQuests.Add(nextQuest);
-                GD.Print($"Added Next quest in chain, with id: {nextQuest.Id}");
-                continue;
-            }
-            // Otherwise maybe update some UI or log sth with the quest progress
-            // You can use exposed properties of the quest object for this
-            PrintQuestProgress(quest);
-        }
-        
-        private void PrintQuestProgress(Quest quest)
-        {
-            GD.Print($"\nQuest {quest.Id}: '{quest.Title}'");
-            GD.Print($"Stage Description: {quest.CurrentStage?.StageDescription}");
-            GD.Print($"Objectives completed {quest.CurrentStage?.StageProgress}");
-            var i = 0;
-            foreach (var objProg in quest.CurrentStage?.ObjectiveProgress) {
-                i++;
-                GD.Print($"Objective {i} progress: {objProg}");
-            }
-        }
-    }    
+    //We combine the paths to a stage
+    int stageId = 1; //Should be unique per quest
+    string stageDescription = "Gather 3 red flowers AND hit 5 toads";
+    QuestStage stage = new QuestStage(stageId,stageDescription, path);
+
+    //Finally, create the quest object and add it to the list
+    int questId = 1; //Should be unique
+    string questTitle = "Practicing the basics !";
+    bool isMainQuest = true;// Optional: Common need to discriminate main and optional quests
+    bool nextQuestId = 5;  //  Optional: For quest-chain support
+    Quest newQuest = new Quest(questId, questTitle,isMainQuest,nextQuestId, stage);
+
+    }
 }
 ```
-**METHOD 2 : Read Quest details from a json file!**  
-Json Example (Stored somewhere your project directory):
+**METHOD 2 : Parse Quest details from a json file!**
 ```json
-{
-  "Id": 1,
-  "Title": "First Quest",
-  "IsMainQuest": true,
-  "NextQuestId" : 7,
-  "Stages": [
-    {
-      "Description": "This is stage 1",
-      "IsSelective": false,
-      "Objectives": [
-        {
-          "GoalValue": 3,
-          "TaskTypeId": 1,
-          "TargetAssetId": 2
-        },
-        {
-          "GoalValue": 3,
-          "TaskTypeId": 2,
-          "TargetAssetId": 7
-        }
-      ]
-    }
-  ]
-}
+[
+  {
+    "Id": 1,
+    "Title": "First Quest",
+    "Stages": [
+      {
+        "Id": 1,
+        "Description": "This is stage 1 of first quest",
+        "PathDtos": [
+          {
+            "IsSelective": false,
+            "NextStageId": 2,
+            "Objectives": [
+              {
+                "GoalValue": 5,
+                "TaskTypeId": 3,
+                "TargetAssetId": 2
+              },
+              {
+                "GoalValue": 7,
+                "TaskTypeId": 2
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "Id": 2,
+        "Description": "This is stage 2 of first quest",
+        "PathDtos": [
+          {
+            "IsSelective": true,
+            "NextStageId": -1,
+            "Objectives": [
+              {
+                "GoalValue": 5,
+                "TaskTypeId": 2,
+                "TargetAssetId": 8
+              },
+              {
+                "GoalValue": 6,
+                "TaskTypeId": 1
+              }
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "Id": 2,
+    "Title": "Second Quest",
+    "Stages": [
+      {
+        "Id": 1,
+        "Description": "This is stage 1 of the second quest",
+        "IsCompleted": false,
+        "PathDtos": [
+          {
+            "IsSelective": false,
+            "NextStageId": -1,
+            "Objectives": [
+              {
+                "GoalValue": 5,
+                "TaskTypeId": 3,
+                "TargetAssetId": 2
+              }
+            ]
+          }
+        ]
+      }
+    ]
+  }
+]
 ```
-Note: Json with array of quests also supported.
-
-Load multiple quests from minimal example with:
+Load the multiple quests in json as follows:
 ```csharp
-private void LoadQuestsFromJson(string jsonPath){
+private List<Quest> LoadQuestsFromJson(string jsonPath){
     // Load from your path of choice
     // Can also pass serializer options as 2nd arg
     MultiParseResult parseResult = QuestParser.LoadFromJsonFile(jsonPath);
@@ -151,16 +141,49 @@ private void LoadQuestsFromJson(string jsonPath){
     // Here you can access your parsed quests
     List<Quest> parsedQuestList = parseResult.Quests;
     
-    // Check for parsing errors (useful for many quests present in a json)
+    // Check for parsing errors (useful for many quests present in a single json)
     var errorsList = parseResult.ErrorMessages;
     if(errorsList.Count != 0){
-        foreach(var error in errorsList) GD.PrintErr(error)
+        foreach(var error in errorsList) GD.PrintErr(error);
     }
-    
-    AllQuests.AddRange( parsedQuestList );
+    return parsedQuestList;
 }
 ```
 
+Next we need a function to progress the active quests:
+```csharp
+// Example Scenario: The player killed 3 wolf enemies, based on above convention:
+// progressValue = 3 , taskId = 4 (kill action), assetId = 3 (wolf)
+private void ProgressQuests( int progressValue,int taskId, int assetId = -1)
+{
+    GD.Print($"\nReceived progress {progressValue} for taskId:{taskId}, for asset: {assetId}");
+    
+    // Asumming you store your active quests in a list:
+    var activeQuestsCopy = new List<Quest>(ActiveQuests); //avoid mid-loop deletion issues
+    foreach(var quest in activeQuestsCopy){
+        // progress using the in-package progress function
+        quest.TryProgressQuest(progressValue, taskId, assetId);
+        
+        // Check for completion and rewards
+        if(quest.IsCompleted){
+            GD.Print($"\nQuest {quest.Id} COMPLETED");
+            // Here do sth like giving rewards based on how your game works
+            ActiveQuests.Remove(quest);
+        
+            // Can also use logic to start next quest in chain (if it exists)
+            if(quest.NextQuestId == 0) continue;
+            // Asumming you store all game quests in a another list or class:
+            var nextQuest = AllQuests.FirstOrDefault( q => q.Id == quest.NextQuestId );
+            if(nextQuest== null) continue;
+            ActiveQuests.Add(nextQuest);
+            GD.Print($"Added Next quest in chain, with id: {nextQuest.Id}");
+            continue;
+        }
+        // Otherwise maybe update some UI or log sth with the quest progress
+    }
+}
+```
+**TIP**  
 To improve readability during use you can also declare enums, e.g.:
 ```csharp
 // Assume in-game action/ objective type Ids: 1: Gather 2: Hit  3:Talk  4: Kill etc.
