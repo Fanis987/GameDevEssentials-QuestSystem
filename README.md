@@ -53,7 +53,10 @@ public partial class QuestManager : Node
 }
 ```
 
-**we can create quests in 2 ways:**   
+**Let's assume we want to create the following simple quest, containing 2 (normal) stages and 3 objectives in total :**      
+Note: Stage 1 - Path 1 is 'normal', which means there is a logical **'AND'** between its two objectives  
+
+![Simple quest schemtics](images/quest-example.PNG)
 
 **METHOD 1 : Create a quests via code:**   
 Note: This approach is not practical for large-scale projects
