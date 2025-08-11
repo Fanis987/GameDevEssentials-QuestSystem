@@ -1,4 +1,6 @@
+**Work in progress**
 # GameDevEssentials-QuestSystem  
+## **Introduction**  
 (4-5 min read)  
 A collection of classes to create an in-game quest system.  
 The package is compatible with **Godot 4.4 / .Net 8.0**  
@@ -19,6 +21,8 @@ Key entities: Objective, StagePath, QuestStage, Quest
 ![Image showing the steps above](images/quest-sch.PNG)
 
 
+
+## **Basic Example** 
 **Begin by creating a 'QuestManager' Node**  
 
 ```csharp
@@ -211,7 +215,8 @@ private void ProgressQuests( int progressValue,int taskId, int assetId = -1)
     }
 }
 ```
-**TIP**  
+## **TIPS**  
+
 To improve readability during use you can also declare enums, e.g.:
 ```csharp
 // Assume in-game action/ objective type Ids: 1: Gather 2: Hit  3:Talk  4: Kill etc.
