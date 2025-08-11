@@ -16,7 +16,49 @@ Key entities: Objective, StagePath, QuestStage, Quest
 ![Image showing the steps above](images/quest-sch.PNG)
 
 
-**Assuming a 'QuestManager' Node, we can create quests in 2 ways:**  
+**Begin by creating a 'QuestManager' Node**  
+
+```csharp
+public partial class QuestManager : Node
+{
+    // Have collections to store your in-game quests
+    public List<Quest> AllQuests { get; private set; } = new();
+    public List<Quest> ActiveQuests { get; private set; } = new();
+    public List<Quest> CompletedQuests { get; private set; } = new();
+
+    public override void _Ready()    {       
+        // Method 1: Make a quest via code
+        CreateSimpleQuest();
+        
+        var quest = AllQuests.FirstOrDefault(q => q.Id == 1);
+        if(quest!= null) ActiveQuests.Add(quest);
+        PrintQuestProgress(quest);
+    }
+    
+    // Creating a quest follows the described structure
+    private void CreateSimpleQuest(){
+        //Check below
+    }
+    
+    // Method to be called when something that could progress a quest happens
+    // Can also be added as subcr to custom events: e.g. EnemyKilled, MapUnlocked, AreaDiscovered etc.
+    public void ProgressQuests( int progressValue,int taskId, int assetId = -1) {
+        //Check below
+    }
+
+    //Helper method for printing info on terminal
+    private void PrintQuestProgress(Quest quest)
+    {
+        GD.Print($"\nQuest {quest.Id}: '{quest.Title}'");
+        GD.Print($"Stage Description: {quest.CurrentStage?.StageDescription}");
+        GD.Print(quest.CurrentStage?.GetProgress());
+    }
+    
+}
+```
+
+**we can create quests in 2 ways:**   
+
 **METHOD 1 : Create a quests via code:**  
 ```csharp
 // Assume in-game action/ objective type Ids: 1: Gather 2: Hit  3:Talk  4: Kill etc.
