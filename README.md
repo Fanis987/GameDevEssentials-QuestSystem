@@ -2,16 +2,19 @@
 (4-5 min read)  
 A collection of classes to create an in-game quest system.  
 The package is compatible with **Godot 4.4 / .Net 8.0**  
-**Suggested use**: Get the nuget package or simply copy-paste-addProjectRef
+**Suggested use**: Package latest version into a nuget package or simply copy-paste the classes to your project
 
 **Main Structure of the System**  
 Key entities: Objective, StagePath, QuestStage, Quest
 - A Quest is made from one or more stages.
 - Each stage is made up from one or more stage paths.
-- Each stage path indicates the next stage unlocked upon its completion. (aka quest branching)
+- Each stage path indicates the next stage unlocked upon its completion. (aka branching)  
+  Note: Stage paths are connected with a logical 'OR', since they lead to different outcomes  
 - A stage path consists of one or more objectives.
-- A stage path can be normal. (all objectives must be completed)
-- Or selective (only one objective must be competed)
+- A stage path can be normal. (all its objectives must be completed)
+- Or selective (only one of its objectives must be completed)
+
+**Example schematic of a short quest with some branching:**
 
 ![Image showing the steps above](images/quest-sch.PNG)
 
@@ -19,6 +22,7 @@ Key entities: Objective, StagePath, QuestStage, Quest
 **Begin by creating a 'QuestManager' Node**  
 
 ```csharp
+// This is a singleton that will be handling all quest-related functionality
 public partial class QuestManager : Node
 {
     // Have collections to store your in-game quests
@@ -26,18 +30,10 @@ public partial class QuestManager : Node
     public List<Quest> ActiveQuests { get; private set; } = new();
     public List<Quest> CompletedQuests { get; private set; } = new();
 
-    public override void _Ready()    {       
-        // Method 1: Make a quest via code
-        CreateSimpleQuest();
-        
-        var quest = AllQuests.FirstOrDefault(q => q.Id == 1);
-        if(quest!= null) ActiveQuests.Add(quest);
-        PrintQuestProgress(quest);
-    }
-    
-    // Creating a quest follows the described structure
-    private void CreateSimpleQuest(){
-        //Check below
+    public override void _Ready()    {
+        // Load all the game quests from a library script (Method 1) OR from a JSON (Method 2) in the AllQuests list
+
+        // Check the player's save file to determine which are completed, which are active, their exact progress etc
     }
     
     // Method to be called when something that could progress a quest happens
@@ -59,43 +55,49 @@ public partial class QuestManager : Node
 
 **we can create quests in 2 ways:**   
 
-**METHOD 1 : Create a quests via code:**  
+**METHOD 1 : Create a quests via code:**   
+Note: This approach is not practical for large-scale projects
+
 ```csharp
-// Assume in-game action/ objective type Ids: 1: Gather 2: Hit  3:Talk  4: Kill etc.
-// Assume in-game item ids: 1: sword 2: red flower  3: grass etc.
-// Assume in-game enemy ids: 1: Toad 2: Rabbit 3:Wolf 4: Turtle etc.
-
-// A very simple quest: 2 objectives - 1 stage path - 1 stage
-private Quest CreateSimpleQuest(){
+// Helper class containing hard-coded info for all quests
+public class QuestLibrary
+{
+    // Assume in-game action/ objective type Ids: 1: Gather 2: Hit  3:Talk  4: Kill etc.
+    // Assume in-game item ids: 1: sword 2: red flower  3: grass etc.
+    // Assume in-game enemy ids: 1: Toad 2: Rabbit 3:Wolf 4: Turtle etc.
     
-    // First we declare the objectives:
-    // Args: Goal value, Id of the action that progresses the quest, asset affected
-    // 3 gathering (id=1) of red flowers (assetId=2)
-    var gatherFlowerObjective = new Objective(3, 1, 2);
-    // 5 hits (id=2) on toads (assetId=1)
-    var hitToadObjective      = new Objective(5, 2, 1);
-
-    // Then we combine them in a stage path
-    // Normal Path: ALL objectives must be completed to complete the path.
-    // Selective Path: ANY of the objectives must be completed to complete the path.
-    bool isSelective = false;
-    // Each path indicates the stage unlocked, upon its completion
-    // If completeing this path ends the quest, set to -1
-    int nextStageId = -1 // in this case there is no next stage
-    StagePath path = new StagePath(isSelective, nextStageId, gatherFlowerObjective,hitToadObjective)
+    // A very simple quest: 2 objectives - 1 stage path - 1 stage
+    private Quest CreateSimpleQuest(){
+        
+        // First we declare the objectives:
+        // Args: Goal value, Id of the action that progresses the quest, asset affected
+        // 3 gathering (id=1) of red flowers (assetId=2)
+        var gatherFlowerObjective = new Objective(3, 1, 2);
+        // 5 hits (id=2) on toads (assetId=1)
+        var hitToadObjective      = new Objective(5, 2, 1);
     
-    //We combine the paths to a stage
-    int stageId = 1; //Should be unique per quest
-    string stageDescription = "Gather 3 red flowers AND hit 5 toads";
-    QuestStage stage = new QuestStage(stageId,stageDescription, path);
-
-    //Finally, create the quest object and add it to the list
-    int questId = 1; //Should be unique
-    string questTitle = "Practicing the basics !";
-    bool isMainQuest = true;// Optional: Common need to discriminate main and optional quests
-    bool nextQuestId = 5;  //  Optional: For quest-chain support
-    Quest newQuest = new Quest(questId, questTitle,isMainQuest,nextQuestId, stage);
-
+        // Then we combine them in a stage path
+        // Normal Path: ALL objectives must be completed to complete the path.
+        // Selective Path: ANY of the objectives must be completed to complete the path.
+        bool isSelective = false;
+        // Each path indicates the stage unlocked, upon its completion
+        // If completeing this path ends the quest, set to -1
+        int nextStageId = -1 // in this case there is no next stage
+        StagePath path = new StagePath(isSelective, nextStageId, gatherFlowerObjective,hitToadObjective)
+        
+        //We combine the paths to a stage
+        int stageId = 1; //Should be unique per quest
+        string stageDescription = "Gather 3 red flowers AND hit 5 toads";
+        QuestStage stage = new QuestStage(stageId,stageDescription, path);
+    
+        //Finally, create the quest object and add it to the list
+        int questId = 1; //Should be unique
+        string questTitle = "Practicing the basics !";
+        bool isMainQuest = true;// Optional: Common need to discriminate main and optional quests
+        bool nextQuestId = 5;  //  Optional: For quest-chain support
+        Quest newQuest = new Quest(questId, questTitle,isMainQuest,nextQuestId, stage);
+    
+        }
     }
 }
 ```
