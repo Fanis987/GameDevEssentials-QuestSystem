@@ -58,49 +58,54 @@ Note: Stage 1 - Path 1 is 'normal', which means there is a logical **'AND'** bet
 
 ![Simple quest schemtics](images/quest-example.PNG)
 
-**METHOD 1 : Create a quests via code:**   
-Note: This approach is not practical for large-scale projects
+**METHOD 1 : Create quests via scripting**   
+Note: This approach is not practical for large-scale projects with many complex quests
 
 ```csharp
 // Helper class containing hard-coded info for all quests
 public class QuestLibrary
 {
-    // Assume in-game action/ objective type Ids: 1: Gather 2: Hit  3:Talk  4: Kill etc.
-    // Assume in-game item ids: 1: sword 2: red flower  3: grass etc.
-    // Assume in-game enemy ids: 1: Toad 2: Rabbit 3:Wolf 4: Turtle etc.
+    // Assume in-game action Ids: 1-Gather 2-Talk  3-Kill etc.
+    // Assume in-game NPC ids: 1-Villager Bob 2-Guard Jack 3-King etc.
+    // Assume in-game enemy ids: 1-Toad 2-Wolf 3-Orc etc.
     
-    // A very simple quest: 2 objectives - 1 stage path - 1 stage
     private Quest CreateSimpleQuest(){
         
-        // First we declare the objectives:
+        // First we declare the objectives of Stage 1 - Path 1:
         // Args: Goal value, Id of the action that progresses the quest, asset affected
-        // 3 gathering (id=1) of red flowers (assetId=2)
-        var gatherFlowerObjective = new Objective(3, 1, 2);
-        // 5 hits (id=2) on toads (assetId=1)
-        var hitToadObjective      = new Objective(5, 2, 1);
+        // 10 kills (action id = 3) of wolves ( asset/enemy id = 2)
+        var killWolvesObjective = new Objective(10, 3, 2);
+        // 1 Talk (action id = 2) to villager Bob (asset/NPC id = 1)
+        var TalkBobObjective      = new Objective(1, 2, 1);
     
         // Then we combine them in a stage path
         // Normal Path: ALL objectives must be completed to complete the path.
         // Selective Path: ANY of the objectives must be completed to complete the path.
         bool isSelective = false;
         // Each path indicates the stage unlocked, upon its completion
-        // If completeing this path ends the quest, set to -1
-        int nextStageId = -1 // in this case there is no next stage
-        StagePath path = new StagePath(isSelective, nextStageId, gatherFlowerObjective,hitToadObjective)
+        // If completing this path ends the quest, set to -1
+        int nextStageId = 2 // There is a next stage
+        StagePath path1_1 = new StagePath(isSelective, nextStageId, killWolvesObjective,TalkBobObjective)
         
         //We combine the paths to a stage
         int stageId = 1; //Should be unique per quest
-        string stageDescription = "Gather 3 red flowers AND hit 5 toads";
-        QuestStage stage = new QuestStage(stageId,stageDescription, path);
+        string stage1Description = "Kill 10 wolves AND talk to villager Bob";
+        QuestStage stage1 = new QuestStage(stageId,stage1Description, path1_1);
+
+        // Then we move to Stage 2 - Path 1:
+        var talkGuardJackObjective = new Objective(1, 2, 2); //Note: Notice the 3rd arg being '2' cause not it is about Guard Jack
+        StagePath path2_1 = new StagePath(false, -1, talkGuardJackObjective) // no next stage means '-1' in the 2nd arg
+        string stage2Description = "Talk to guard Jack"; 
+        QuestStage stage2 = new QuestStage(2,stage2Description, path2_1);
     
-        //Finally, create the quest object and add it to the list
+        //Finally, create the quest object
         int questId = 1; //Should be unique
         string questTitle = "Practicing the basics !";
         bool isMainQuest = true;// Optional: Common need to discriminate main and optional quests
         bool nextQuestId = 5;  //  Optional: For quest-chain support
-        Quest newQuest = new Quest(questId, questTitle,isMainQuest,nextQuestId, stage);
+        Quest newQuest = new Quest(questId, questTitle, isMainQuest, nextQuestId, stage1, stage2);
     
-        }
+        return newQuest
     }
 }
 ```
@@ -109,24 +114,25 @@ public class QuestLibrary
 [
   {
     "Id": 1,
-    "Title": "First Quest",
+    "Title": "Practicing the basics !",
     "Stages": [
       {
         "Id": 1,
-        "Description": "This is stage 1 of first quest",
+        "Description": "Kill 10 wolves AND talk to villager Bob",
         "PathDtos": [
           {
             "IsSelective": false,
             "NextStageId": 2,
             "Objectives": [
               {
-                "GoalValue": 5,
+                "GoalValue": 10,
                 "TaskTypeId": 3,
                 "TargetAssetId": 2
               },
               {
-                "GoalValue": 7,
-                "TaskTypeId": 2
+                "GoalValue": 1,
+                "TaskTypeId": 2,
+                "TargetAssetId": 1
               }
             ]
           }
@@ -134,43 +140,15 @@ public class QuestLibrary
       },
       {
         "Id": 2,
-        "Description": "This is stage 2 of first quest",
-        "PathDtos": [
-          {
-            "IsSelective": true,
-            "NextStageId": -1,
-            "Objectives": [
-              {
-                "GoalValue": 5,
-                "TaskTypeId": 2,
-                "TargetAssetId": 8
-              },
-              {
-                "GoalValue": 6,
-                "TaskTypeId": 1
-              }
-            ]
-          }
-        ]
-      }
-    ]
-  },
-  {
-    "Id": 2,
-    "Title": "Second Quest",
-    "Stages": [
-      {
-        "Id": 1,
-        "Description": "This is stage 1 of the second quest",
-        "IsCompleted": false,
+        "Description": "Talk to guard Jack",
         "PathDtos": [
           {
             "IsSelective": false,
             "NextStageId": -1,
             "Objectives": [
               {
-                "GoalValue": 5,
-                "TaskTypeId": 3,
+                "GoalValue": 1,
+                "TaskTypeId": 2,
                 "TargetAssetId": 2
               }
             ]
