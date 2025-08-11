@@ -13,6 +13,9 @@ Key entities: Objective, StagePath, QuestStage, Quest
 - A stage path can be normal. (all objectives must be completed)
 - Or selective (only one objective must be competed)
 
+![Image showing the steps above](images/quest-sch.PNG)
+
+
 **Assuming a 'QuestManager' Node, we can create quests in 2 ways:**  
 **METHOD 1 : Create a quests via code:**  
 ```csharp
