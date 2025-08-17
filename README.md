@@ -1,7 +1,6 @@
 **Work in progress**
 # GameDevEssentials-QuestSystem  
-## **Introduction**  
-(4-5 min read)  
+## **Introduction**   
 A collection of classes to create an in-game quest system.  
 The package is compatible with **Godot 4.4 / .Net 8.0**  
 **Suggested use**: Package latest version into a nuget package or simply copy-paste the classes to your project
@@ -30,25 +29,35 @@ Key entities: Objective, StagePath, QuestStage, Quest
 public partial class QuestManager : Node
 {
     // Have collections to store your in-game quests
-    public List<Quest> AllQuests { get; private set; } = new();
     public List<Quest> ActiveQuests { get; private set; } = new();
-    public List<Quest> CompletedQuests { get; private set; } = new();
 
     public override void _Ready()    {
-        // Load all the game quests from a library script (Method 1) OR from a JSON (Method 2) in the AllQuests list
+        // Load all the game quests
+        ActiveQuests.Add(QuestLibrary.CreateDemoQuestWithEnums()); //From a library script (Method 1) OR
+        ActiveQuests.AddRange(LoadQuestsFromJson("quest.json"));   //From a JSON file(Method 2)
 
-        // Check the player's save file to determine which are completed, which are active, their exact progress etc
+        // In a more realistic setup, you would check the player's save file here
+        // to determine active and completed quests, their exact progress etc
+
+        // Check what was loaded
+        if(ActiveQuests.Count == 0) return;
+        foreach (var quest in ActiveQuests) {
+            PrintQuestProgress(quest);
+        }
     }
     
     // Method to be called when something that could progress a quest happens
     // Can also be added as subcr to custom events: e.g. EnemyKilled, MapUnlocked, AreaDiscovered etc.
-    public void ProgressQuests( int progressValue,int taskId, int assetId = -1) {
-        //Check below
+    private void ProgressQuests( int progressValue,int taskId, int assetId = -1)    {
+        // READ BELOW
+    }
+    
+    private List<Quest> LoadQuestsFromJson(string jsonPath){
+        // READ BELOW
     }
 
     //Helper method for printing info on terminal
-    private void PrintQuestProgress(Quest quest)
-    {
+    private void PrintQuestProgress(Quest quest) {
         GD.Print($"\nQuest {quest.Id}: '{quest.Title}'");
         GD.Print($"Stage Description: {quest.CurrentStage?.StageDescription}");
         GD.Print(quest.CurrentStage?.GetProgress());
@@ -63,57 +72,84 @@ Note: Stage 1 - Path 1 is 'normal', which means there is a logical **'AND'** bet
 ![Simple quest schemtics](images/quest-example.PNG)
 
 **METHOD 1 : Create quests via scripting**   
-Note: This approach is not practical for large-scale projects with many complex quests
+Note: This approach is not practical for large-scale projects with many complex quests  
+
+**It is higly recommended that you create some helper enums for your specific game**  
+For our needs consider the following:  
+```csharp
+public enum TaskType {
+    None = 0,
+    Gather = 1,
+    Talk= 2,
+    Kill= 3
+}
+
+public enum EnemyType {
+    None = 0,
+    Toad = 1,
+    Wolf= 2,
+    Orc= 3
+}
+
+public enum NpcType {
+    None = 0,
+    VillagerBob = 1,
+    GuardJack= 2,
+    King = 3
+}
+```
+
+The quests of the game can be hardcoded into a Library with static methods:   
+Note: Enums improve the readability a lot here     
+
 
 ```csharp
-// Helper class containing hard-coded info for all quests
 public class QuestLibrary
 {
-    // Assume in-game action Ids: 1-Gather 2-Talk  3-Kill etc.
-    // Assume in-game NPC ids: 1-Villager Bob 2-Guard Jack 3-King etc.
-    // Assume in-game enemy ids: 1-Toad 2-Wolf 3-Orc etc.
-    
-    private Quest CreateSimpleQuest(){
+    public static Quest CreateDemoQuestWithEnums(){
         
         // First we declare the objectives of Stage 1 - Path 1:
-        // Args: Goal value, Id of the action that progresses the quest, asset affected
         // 10 kills (action id = 3) of wolves ( asset/enemy id = 2)
-        var killWolvesObjective = new Objective(10, 3, 2);
+        var killWolvesObjective = new Objective(10, (int)TaskType.Kill, (int)EnemyType.Wolf);
         // 1 Talk (action id = 2) to villager Bob (asset/NPC id = 1)
-        var TalkBobObjective      = new Objective(1, 2, 1);
+        var TalkBobObjective    = new Objective(1, (int)TaskType.Talk, (int)NpcType.VillagerBob);
     
         // Then we combine them in a stage path
         // Normal Path: ALL objectives must be completed to complete the path.
         // Selective Path: ANY of the objectives must be completed to complete the path.
         bool isSelective = false;
-        // Each path indicates the stage unlocked, upon its completion
-        // If completing this path ends the quest, set to -1
-        int nextStageId = 2 // There is a next stage
-        StagePath path1_1 = new StagePath(isSelective, nextStageId, killWolvesObjective,TalkBobObjective)
         
-        //We combine the paths to a stage
+        // Each stage path indicates the stage unlocked, upon its completion
+        // If completing this path ends the quest, set nextStageId to -1
+        int nextStageId = 2; // in this case there is a next stage.
+        StagePath path1_1 = new StagePath(isSelective, nextStageId, killWolvesObjective, TalkBobObjective);
+        
+        //We combine the stage paths to form stage 1
         int stageId = 1; //Should be unique per quest
         string stage1Description = "Kill 10 wolves AND talk to villager Bob";
         QuestStage stage1 = new QuestStage(stageId,stage1Description, path1_1);
 
         // Then we move to Stage 2 - Path 1:
-        var talkGuardJackObjective = new Objective(1, 2, 2); //Note: Notice the 3rd arg being '2' cause not it is about Guard Jack
-        StagePath path2_1 = new StagePath(false, -1, talkGuardJackObjective) // no next stage means '-1' in the 2nd arg
+        var talkGuardJackObjective = new Objective(1, (int)TaskType.Talk, (int)NpcType.GuardJack);
+        StagePath path2_1 = new StagePath(false, -1, talkGuardJackObjective); // no next stage means '-1' in the 2nd arg
         string stage2Description = "Talk to guard Jack"; 
         QuestStage stage2 = new QuestStage(2,stage2Description, path2_1);
     
         //Finally, create the quest object
         int questId = 1; //Should be unique
         string questTitle = "Practicing the basics !";
-        bool isMainQuest = true;// Optional: Common need to discriminate main and optional quests
-        bool nextQuestId = 5;  //  Optional: For quest-chain support
+        bool isMainQuest = true; // Optional: Common need to discriminate main and optional quests
+        int nextQuestId = 2;     // Optional: For quest-chain support
         Quest newQuest = new Quest(questId, questTitle, isMainQuest, nextQuestId, stage1, stage2);
-    
-        return newQuest
+
+        return newQuest;
     }
 }
 ```
-**METHOD 2 : Parse Quest details from a json file!**
+**METHOD 2 : Parse Quest details from a json file**  
+This method allows for clear seperation of the quest details and the code base  
+
+Below we have the same quest in the form of a quest.json file:  
 ```json
 [
   {
@@ -163,7 +199,10 @@ public class QuestLibrary
   }
 ]
 ```
-Load the multiple quests in json as follows:
+Load the quest(s) present in your json file(s) as follows:  
+Note: There are some logical checks in the serializer (e.g. no negative goal values)  
+
+  
 ```csharp
 private List<Quest> LoadQuestsFromJson(string jsonPath){
     // Load from your path of choice
@@ -182,56 +221,43 @@ private List<Quest> LoadQuestsFromJson(string jsonPath){
 }
 ```
 
-Next we need a function to progress the active quests:
+    
+**Next we need a function to progress the active quests:**
 ```csharp
-// Example Scenario: The player killed 3 wolf enemies, based on above convention:
-// progressValue = 3 , taskId = 4 (kill action), assetId = 3 (wolf)
+// Method to be called when something that could progress a quest happens
+// Can also be added as subcr to custom events: e.g. EnemyKilled, MapUnlocked, AreaDiscovered etc.
 private void ProgressQuests( int progressValue,int taskId, int assetId = -1)
 {
-    GD.Print($"\nReceived progress {progressValue} for taskId:{taskId}, for asset: {assetId}");
-    
-    // Asumming you store your active quests in a list:
-    var activeQuestsCopy = new List<Quest>(ActiveQuests); //avoid mid-loop deletion issues
-    foreach(var quest in activeQuestsCopy){
-        // progress using the in-package progress function
-        quest.TryProgressQuest(progressValue, taskId, assetId);
+        GD.Print($"\nReceived progress: {progressValue} for taskId:{taskId}, for asset: {assetId}");
         
-        // Check for completion and rewards
-        if(quest.IsCompleted){
-            GD.Print($"\nQuest {quest.Id} COMPLETED");
-            // Here do sth like giving rewards based on how your game works
-            ActiveQuests.Remove(quest);
+        var activeQuestsCopy = new List<Quest>(ActiveQuests); //avoid mid-loop deletion issues
+        foreach(var quest in activeQuestsCopy){
+            // try to progress quest using the in-package progress function
+            quest.TryProgressQuest(progressValue, taskId, assetId);
         
-            // Can also use logic to start next quest in chain (if it exists)
-            if(quest.NextQuestId == 0) continue;
-            // Asumming you store all game quests in a another list or class:
-            var nextQuest = AllQuests.FirstOrDefault( q => q.Id == quest.NextQuestId );
-            if(nextQuest== null) continue;
-            ActiveQuests.Add(nextQuest);
-            GD.Print($"Added Next quest in chain, with id: {nextQuest.Id}");
-            continue;
+            // Check for completion and rewards
+            if(quest.IsCompleted){
+                GD.Print($"\nQuest {quest.Id} COMPLETED");
+                // Here do sth like giving rewards based on how your game works
+                ActiveQuests.Remove(quest);
+        
+                // Can also use logic to start next quest in chain (if it exists) - UNDER TESTING
+            }
+            // Otherwise maybe update some UI or log sth with the quest progress
         }
-        // Otherwise maybe update some UI or log sth with the quest progress
-    }
 }
 ```
-## **TIPS**  
-
-To improve readability during use you can also declare enums, e.g.:
+  
+**TIP**  
+For easier quest progressing create overrides like:  
 ```csharp
-// Assume in-game action/ objective type Ids: 1: Gather 2: Hit  3:Talk  4: Kill etc.
-public enum TaskType
-{
-    Gather = 1,
-    Hit= 2,
-    Talk= 3,
-    Kill= 4
+private void ProgressQuests(int progressValue, TaskType taskType, EnemyType enemyType) {
+        ProgressQuests( progressValue, (int)taskType, (int)enemyType);
 }
-```
-And create overrides like:
-```csharp
-private void ProgressQuests( int progressValue,TaskType taskType, int assetId = -1){
-    ProgressQuests( int progressValue,(int) taskType, int assetId = -1)
+    
+    private void ProgressQuests(int progressValue, TaskType taskType, NpcType npcType) {
+        ProgressQuests( progressValue, (int)taskType, (int)npcType);
     }
 ```
+(once again the enums shine :) )
 
