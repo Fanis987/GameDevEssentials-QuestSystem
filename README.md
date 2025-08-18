@@ -20,6 +20,10 @@ Key entities: Objective, StagePath, QuestStage, Quest
 ![Image showing the steps above](images/quest-sch.PNG)
 
 
+## **How to use**  
+There are presently 2 options available:  
+- Copy the contents of the QuestSystem folder to your project  
+- Package QuestSystem project as a nuget and use locally  
 
 ## **Basic Example** 
 **Begin by creating a 'QuestManager' Node**  
@@ -71,7 +75,7 @@ Note: Stage 1 - Path 1 is 'normal', which means there is a logical **'AND'** bet
 
 ![Simple quest schemtics](images/quest-example.PNG)
 
-**METHOD 1 : Create quests via scripting**   
+## **LOAD METHOD 1 : Create quests via scripting**   
 Note: This approach is not practical for large-scale projects with many complex quests  
 
 **It is higly recommended that you create some helper enums for your specific game**  
@@ -146,7 +150,7 @@ public class QuestLibrary
     }
 }
 ```
-**METHOD 2 : Parse Quest details from a json file**  
+## **LOAD METHOD 2 : Parse Quest details from a json file**  
 This method allows for clear seperation of the quest details and the code base  
 
 Below we have the same quest in the form of a quest.json file:  
@@ -200,7 +204,7 @@ Below we have the same quest in the form of a quest.json file:
 ]
 ```
 Load the quest(s) present in your json file(s) as follows:  
-Note: There are some logical checks in the serializer (e.g. no negative goal values)  
+Note: There are some logical checks in the deserializer (e.g. no negative goal values)  
 
   
 ```csharp
@@ -221,7 +225,7 @@ private List<Quest> LoadQuestsFromJson(string jsonPath){
 }
 ```
 
-    
+## **Quest Progress**    
 **Next we need a function to progress the active quests:**
 ```csharp
 // Method to be called when something that could progress a quest happens
