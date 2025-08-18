@@ -3,10 +3,16 @@
 ## **Introduction**   
 A collection of classes to create an in-game quest system.  
 The package is compatible with **Godot 4.4 / .Net 8.0**  
-**Suggested use**: Package latest version into a nuget package or simply copy-paste the classes to your project
+Note: Should also be fine for Unity and console games but has not been checked  
 
-**Main Structure of the System**  
-Key entities: Objective, StagePath, QuestStage, Quest
+## **How to use**  
+There are presently 2 options available:  
+- Copy the contents of the QuestSystem folder to your project  
+- Package QuestSystem project as a nuget and use locally  
+
+## **Main Structure of the System**  
+**Key entities: Objective, StagePath, QuestStage, Quest**  
+  
 - A Quest is made from one or more stages.
 - Each stage is made up from one or more stage paths.
 - Each stage path indicates the next stage unlocked upon its completion. (aka branching)  
@@ -20,12 +26,7 @@ Key entities: Objective, StagePath, QuestStage, Quest
 ![Image showing the steps above](images/quest-sch.PNG)
 
 
-## **How to use**  
-There are presently 2 options available:  
-- Copy the contents of the QuestSystem folder to your project  
-- Package QuestSystem project as a nuget and use locally  
-
-## **Basic Example** 
+## **Basic Example (Godot 4.4)** 
 **Begin by creating a 'QuestManager' Node**  
 
 ```csharp
