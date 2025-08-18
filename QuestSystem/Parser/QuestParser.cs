@@ -23,20 +23,18 @@ public static class QuestParser {
     /// </summary>
     public static MultiParseResult LoadFromJsonFile(string jsonPath, JsonSerializerOptions? jsonOptions = null)
     {
-        try
-        {
+        try {
             var json = File.ReadAllText(jsonPath);
             return LoadFromJson(json, jsonOptions);
         }
-        catch(Exception e)
-        {
+        catch(Exception e) {
             return new MultiParseResult();
         }
     }
     
     /// <summary>
     /// Parses a json string into a list of quests.
-    /// The validity of the structure is also  checked.
+    /// The validity of the structure is also checked.
     /// Invalid quests will NOT be included in the returned list.
     /// </summary>
     /// <param name="json">The string containing the json</param>
@@ -56,7 +54,7 @@ public static class QuestParser {
         {
             try {
                 var questDto = JsonSerializer.Deserialize<QuestDto>(json, options);
-                if (questDto == null) return new MultiParseResult();;
+                if (questDto == null) return new MultiParseResult();
                 //check questDto
                 var result = IsValidQuestDto(questDto);
                 if (!result.IsSuccessful) {
@@ -67,7 +65,7 @@ public static class QuestParser {
                 return parseResult;
             }
             catch (JsonException jsonEx) {
-                parseResult.ErrorMessages.Add($"A JsonException occured"+ jsonEx.Message);
+                parseResult.ErrorMessages.Add($"A JsonException occured: "+ jsonEx.Message);
                 return parseResult;
             }
         }
@@ -96,7 +94,7 @@ public static class QuestParser {
     }
     
     /// <summary>
-    /// Checks the validity of a parsed quest.
+    /// Checks the validity of a parsed quest dto.
     /// </summary>
     /// <param name="questDto">The questDto extracted from a json</param>
     /// <returns>A <see cref="ParseResult"/> with the result of the evaluation.></returns>
@@ -117,11 +115,11 @@ public static class QuestParser {
             if(stageDto.PathDtos.Count == 0) return ParseResult.Fail(pre + "No paths Found");
             
             //stage path tests
-            foreach (var stagePathDto in stageDto.PathDtos)
-            {
+            foreach (var stagePathDto in stageDto.PathDtos) {
                 if(stagePathDto.Objectives.Count == 0) return ParseResult.Fail(pre + "No Objectives Found");
                 foreach (var objective in stagePathDto.Objectives) {
-                    if(objective.GoalValue == 0) return ParseResult.Fail(pre + "Goal value of 0 found");
+                    if(objective.GoalValue <= 0) return ParseResult.Fail(pre + "Goal value must be positive");
+                    if(objective.TaskTypeId <= 0) return ParseResult.Fail(pre + "Task Id value must be positive");
                 }
             }
             

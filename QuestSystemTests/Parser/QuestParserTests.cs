@@ -6,39 +6,40 @@ namespace QuestSystemTests.Parser;
 
 public class QuestParserTests
 {
+    [Fact]
+    public void LoadFromJson_CanParseSmallJson() {
+        var result = QuestParser.LoadFromJson(QuestJsons.SmallQuestJson);
+        Assert.NotNull(result);
+        
+        var questList = result.Quests;
+        Assert.NotNull(questList);
+        Assert.Single(questList);
+        
+        var quest = questList[0];
+        Assert.NotNull(quest);
+        Assert.Equal(1, quest.Id);
+        Assert.Equal(2, quest.NextQuestId);
+        Assert.Equal("First Quest", quest.Title);
+        Assert.True(quest.IsMainQuest);
+
+        var stage = quest.CurrentStage;
+        Assert.Equal("This is stage 1", stage.StageDescription);
+        Assert.False(stage.IsCompleted);
+    }
     
     [Fact]
-    public void CanParseSmallJson() {
-        var questDto = JsonSerializer.Deserialize<QuestDto>(QuestJsons.SmallQuestJson);
+    public void LoadFromJson_CanDetectJsonErrors() {
+        var multiParseResult = QuestParser.LoadFromJson(QuestJsons.StringAtIntPosJson);
+        Assert.NotNull(multiParseResult);
+        
+        var questList = multiParseResult.Quests;
+        Assert.NotNull(questList);
+        Assert.Empty(questList);
 
-        Assert.NotNull(questDto);
-        Assert.Equal(1, questDto.Id);
-        Assert.Equal(2, questDto.NextQuestId);
-        Assert.Equal("First Quest", questDto.Title);
-        Assert.True(questDto.IsMainQuest);
-
-        var stages = questDto.Stages;
-        Assert.NotNull(stages);
-        Assert.Single(stages);
-
-        var stage = stages[0];
-        Assert.Equal("This is stage 1", stage.Description);
-        Assert.False(stage.IsCompleted);
-
-        var pathDtos = stage.PathDtos;
-        Assert.NotNull(pathDtos);
-        Assert.Single(pathDtos);
-
-        var path = pathDtos[0];
-        Assert.False(path.IsSelective);
-        Assert.Single(path.Objectives);
-
-        var objective = path.Objectives[0];
-        Assert.Equal(5, objective.GoalValue);
-        Assert.Equal(3, objective.TaskTypeId);
-        Assert.Equal(2, objective.TargetAssetId);
+        var errorList = multiParseResult.ErrorMessages;
+        Assert.NotNull(errorList);
+        Assert.Single(errorList);
     }
-
     
      [Fact]
      public void IsValidDto_ShouldReturnOkForValidQuestDto() {
@@ -97,6 +98,7 @@ public class QuestParserTests
          Assert.Contains("Must have a title", result.ErrorMessage);
      }
      
+     
      [Fact]
      public void IsValidDto_ShouldFailWhenStageIsCompleted()
      {
@@ -127,7 +129,30 @@ public class QuestParserTests
          var result = QuestParser.IsValidQuestDto(questDto);
 
          Assert.False(result.IsSuccessful);
-         Assert.Contains("Goal value of 0 found", result.ErrorMessage);
+         Assert.Contains("Goal value must be positive", result.ErrorMessage);
+     }
+     
+     [Fact]
+     public void IsValidDto_ShouldFail_WhenStageHasNegativeGoalValue()
+     {
+         var questDto = JsonSerializer.Deserialize<QuestDto>(QuestJsons.QuestNegativeGoal);
+         Assert.NotNull(questDto);
+         var result = QuestParser.IsValidQuestDto(questDto);
+
+         Assert.False(result.IsSuccessful);
+         Assert.Contains("Goal value must be positive", result.ErrorMessage);
+     }     
+     
+     [Fact]
+     public void IsValidDto_ShouldFail_WhenStageHasNegativeTAskIdValue()
+     {
+         var questDto = JsonSerializer.Deserialize<QuestDto>(QuestJsons.QuestNegativeTAskId);
+         Assert.NotNull(questDto);
+         var result = QuestParser.IsValidQuestDto(questDto);
+
+         Assert.False(result.IsSuccessful);
+         Assert.Contains("Task Id value must be positive", result.ErrorMessage);
+         
      }
      
      [Fact]

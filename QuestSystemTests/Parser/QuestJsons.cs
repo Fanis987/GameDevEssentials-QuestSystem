@@ -33,6 +33,32 @@ public static class QuestJsons
   ]
 }";
   
+  public static readonly string StringAtIntPosJson = @"{
+  ""Id"": 1,
+  ""Title"": ""First Quest"",
+  ""NextQuestId"": 2,
+  ""IsMainQuest"": true,
+  ""Stages"": [
+    {
+      ""Id"": 1,
+      ""Description"": ""This is stage 1"",
+      ""IsCompleted"": false,
+      ""PathDtos"": [
+        {
+          ""IsSelective"": false,
+          ""Objectives"": [
+            {
+              ""GoalValue"": ""Bob"",
+              ""TaskTypeId"": 3,
+              ""TargetAssetId"": 2
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}";
+  
   public static readonly string QuestNoIdJson = @"{
       ""Title"": ""First Quest"",
       ""Stages"": [
@@ -194,6 +220,54 @@ public static class QuestJsons
           ""Objectives"": [
             {
               ""TaskTypeId"": 3,
+              ""TargetAssetId"": 2
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}";
+  
+  public static readonly string QuestNegativeGoal = @"{
+  ""Id"": 3,
+  ""Title"": ""First Quest"",
+  ""Stages"": [
+    {
+      ""Id"": 1,
+      ""Description"": ""This is stage 1"",
+      ""IsCompleted"": false,
+      ""PathDtos"": [
+        {
+          ""IsSelective"": false,
+          ""Objectives"": [
+            {
+              ""GoalValue"": -1,
+              ""TaskTypeId"": 3,
+              ""TargetAssetId"": 2
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}";
+  
+  public static readonly string QuestNegativeTAskId = @"{
+  ""Id"": 3,
+  ""Title"": ""First Quest"",
+  ""Stages"": [
+    {
+      ""Id"": 1,
+      ""Description"": ""This is stage 1"",
+      ""IsCompleted"": false,
+      ""PathDtos"": [
+        {
+          ""IsSelective"": false,
+          ""Objectives"": [
+            {
+              ""GoalValue"": 1,
+              ""TaskTypeId"": -3,
               ""TargetAssetId"": 2
             }
           ]
