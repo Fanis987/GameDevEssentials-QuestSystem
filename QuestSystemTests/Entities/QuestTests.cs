@@ -99,17 +99,6 @@ public class QuestTests
     }
     
     [Fact]
-    public void Quest_ShouldInitializeProperlyWithList()
-    {
-        //Alt Constructor assertions
-        var quest = new Quest(1,"myQuest",new List<QuestStage>(){_questStage2});
-        Assert.NotNull(quest);
-        Assert.Equal(1,quest.Id);
-        Assert.Equal("myQuest",quest.Title);
-        Assert.False(quest.IsCompleted);
-    }
-    
-    [Fact]
     public void Quest_ShouldThrowExceptionForNegativeId()
     {
         // Act & Assert

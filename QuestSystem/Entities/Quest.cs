@@ -90,9 +90,6 @@ public class Quest
         NextQuestId = nextQuestId;
     }
 
-    public Quest(int questId, string questTitle, List<QuestStage> stages)
-        :this(questId, questTitle, stages.ToArray() ?? throw new NullReferenceException(nameof(stages))) { }
-
     /// <summary>
     /// Constructs a quest with just one inclusive stage using the provided objectives
     /// </summary>
