@@ -1,7 +1,7 @@
 ﻿using QuestSystem.Entities;
-using QuestSystem.Parser;
+using QuestSystem.Parser.Util;
 
-namespace QuestSystemTests.Parser;
+namespace QuestSystemTests.Parser.Util;
 
 public class ParseResultTests
 {

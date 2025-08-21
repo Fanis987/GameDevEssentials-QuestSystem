@@ -1,6 +1,6 @@
 using QuestSystem.Entities;
 
-namespace QuestSystem.Parser;
+namespace QuestSystem.Parser.Util;
 
 public class MultiParseResult
 {

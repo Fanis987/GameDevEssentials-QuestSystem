@@ -1,7 +1,6 @@
-﻿using QuestSystem.Entities;
-using QuestSystem.Parser.Dtos;
+﻿using QuestSystem.Parser.Dtos;
 
-namespace QuestSystemTests.Parser;
+namespace QuestSystemTests.Parser.Dtos;
 
 public class DtoTests {
     
