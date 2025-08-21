@@ -141,11 +141,24 @@ public class QuestTests
     }
     
     [Fact]
-    public void Quest_ShouldThrowExceptionForEmptyTitle()
-    {
+    public void Quest_ShouldThrowExceptionForLongTitle() {
         // Act & Assert
-        Assert.Throws<ArgumentException>(() => new Quest(1,"",_questStage1));
-        Assert.Throws<ArgumentException>(() => new Quest(1,"",true,"stageDescr",_taskGather));
+        string longTitle = new string('a', 201);
+        Assert.Throws<ArgumentException>(() => new Quest(1,longTitle,_questStage1));
+        Assert.Throws<ArgumentException>(() => new Quest(1,longTitle,true,"stageDescr",_taskGather));
+    }
+    
+    [Fact]
+    public void Quest_ShouldThrowExceptionNoDescription() {
+        Assert.Throws<ArgumentException>(() => new Quest(1,"Title",true,"",_taskGather));
+        Assert.Throws<ArgumentException>(() => new Quest(1,"Title",true,null,_taskGather));
+    }
+    
+    [Fact]
+    public void Quest_ShouldThrowExceptionForLongDescr() {
+        // Act & Assert
+        string longDescr = new string('a', 2001);
+        Assert.Throws<ArgumentException>(() => new Quest(1,"Title",true,longDescr,_taskGather));
     }
     
     [Fact]

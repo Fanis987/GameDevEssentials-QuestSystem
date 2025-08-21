@@ -21,6 +21,8 @@ public class QuestParserTests
         Assert.Equal(2, quest.NextQuestId);
         Assert.Equal("First Quest", quest.Title);
         Assert.True(quest.IsMainQuest);
+        Assert.False(quest.IsCompleted);
+        Assert.False(quest.WasFailed);
 
         var stage = quest.CurrentStage;
         Assert.Equal("This is stage 1", stage.StageDescription);
@@ -30,6 +32,20 @@ public class QuestParserTests
     [Fact]
     public void LoadFromJson_CanDetectJsonErrors() {
         var multiParseResult = QuestParser.LoadFromJson(QuestJsons.StringAtIntPosJson);
+        Assert.NotNull(multiParseResult);
+        
+        var questList = multiParseResult.Quests;
+        Assert.NotNull(questList);
+        Assert.Empty(questList);
+
+        var errorList = multiParseResult.ErrorMessages;
+        Assert.NotNull(errorList);
+        Assert.Single(errorList);
+    }
+    
+    [Fact]
+    public void LoadFromJson_CanDetectJsonErrors2() {
+        var multiParseResult = QuestParser.LoadFromJson(QuestJsons.NumAtBoolPosJson);
         Assert.NotNull(multiParseResult);
         
         var questList = multiParseResult.Quests;
@@ -98,6 +114,16 @@ public class QuestParserTests
          Assert.Contains("Must have a title", result.ErrorMessage);
      }
      
+     [Fact]
+     public void IsValidDto_ShouldFailWithLongTitle() {
+         var questDto = JsonSerializer.Deserialize<QuestDto>(QuestJsons.QuestLongTitleJson);
+         Assert.NotNull(questDto);
+         var result = QuestParser.IsValidQuestDto(questDto);
+
+         Assert.False(result.IsSuccessful);
+         Assert.Contains("Title must be limited", result.ErrorMessage);
+     }
+     
      
      [Fact]
      public void IsValidDto_ShouldFailWhenStageIsCompleted()
@@ -163,7 +189,7 @@ public class QuestParserTests
          var result = QuestParser.IsValidQuestDto(questDto);
 
          Assert.False(result.IsSuccessful);
-         Assert.Contains("Stage ID is required, and should be positive integer", result.ErrorMessage);
+         Assert.Contains("Stage ID is required", result.ErrorMessage);
      }
      
      [Fact]
@@ -175,6 +201,28 @@ public class QuestParserTests
 
          Assert.False(result.IsSuccessful);
          Assert.Contains("No paths Found", result.ErrorMessage);
+     }
+     
+     [Fact]
+     public void IsValidDto_ShouldFail_WhenStageHasNoDescription()
+     {
+         var questDto = JsonSerializer.Deserialize<QuestDto>(QuestJsons.StageWithNoDescriptionJson);
+         Assert.NotNull(questDto);
+         var result = QuestParser.IsValidQuestDto(questDto);
+
+         Assert.False(result.IsSuccessful);
+         Assert.Contains("must have a description", result.ErrorMessage);
+     }
+     
+     [Fact]
+     public void IsValidDto_ShouldFail_WhenStageHasLongDescription()
+     {
+         var questDto = JsonSerializer.Deserialize<QuestDto>(QuestJsons.QuestLongDescriptionJson);
+         Assert.NotNull(questDto);
+         var result = QuestParser.IsValidQuestDto(questDto);
+
+         Assert.False(result.IsSuccessful);
+         Assert.Contains("Stage description must be limited", result.ErrorMessage);
      }
      
      [Fact]

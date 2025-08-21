@@ -149,8 +149,9 @@ public class QuestLibrary
 
         return newQuest;
     }
-}
-```
+}  
+```  
+**Note : The maximum title length is 200 characters and the maximum stage description length is 2000 characters**  
 ## **LOAD METHOD 2 : Parse Quest details from a json file**  
 This method allows for clear seperation of the quest details and the code base  
 

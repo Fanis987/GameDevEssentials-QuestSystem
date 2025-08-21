@@ -10,6 +10,7 @@ namespace QuestSystem.Parser;
 /// </summary>
 public static class QuestParser {
 
+    
     private static JsonSerializerOptions? _options = new JsonSerializerOptions  {
         PropertyNameCaseInsensitive = true
     };
@@ -104,15 +105,18 @@ public static class QuestParser {
         var pre = $"Error when parsing the quest id {questDto.Id}: ";
         
         // Quest Tests
-        if(questDto.Id <= 0 ) return ParseResult.Fail(pre + "Quest ID is required, and should be positive integer");
-        if(String.IsNullOrEmpty(questDto.Title)) return ParseResult.Fail(pre + "Must have a title");
-        if(questDto.Stages.Count == 0) return ParseResult.Fail(pre + "No Stages Found");
+        if(questDto.Id <= 0 ) return ParseResult.Fail(pre + "Quest ID is required, and should be a positive integer");
+        if(string.IsNullOrEmpty(questDto.Title)) return ParseResult.Fail(pre + "Must have a title");
+        if(questDto.Title.Length > Quest.TitleCharLimit) return ParseResult.Fail(pre + "Title must be limited to 200 chars");
+        if(questDto.Stages.Count == 0) return ParseResult.Fail(pre + "No Stages Found in quest");
         
         //Stage tests
         foreach (var stageDto in questDto.Stages) {
             //stages should not be completed when reading from json file
-            if(stageDto.Id < 0 ) return ParseResult.Fail(pre + "Stage ID is required, and should be positive integer");
+            if(stageDto.Id < 0 ) return ParseResult.Fail(pre + "Stage ID is required, should be positive integer");
             if(stageDto.IsCompleted) return ParseResult.Fail(pre + "Completed stage found");
+            if(string.IsNullOrEmpty(stageDto.Description)) return ParseResult.Fail(pre + "Stages must have a description");
+            if(stageDto.Description.Length > Quest.DescriptionCharLimit) return ParseResult.Fail(pre + "Stage description must be limited to 2000 chars");
             if(stageDto.PathDtos.Count == 0) return ParseResult.Fail(pre + "No paths Found");
             
             //stage path tests

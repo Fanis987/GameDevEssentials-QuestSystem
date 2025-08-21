@@ -5,6 +5,10 @@ namespace QuestSystem.Entities;
 /// </summary>
 public class Quest
 {
+    // Constants limiting field sizes
+    internal const int TitleCharLimit = 200;
+    internal const int DescriptionCharLimit = 2000;
+    
     // Main Properties (set in ctor)
     private readonly List<QuestStage> _allStages =  new();
     
@@ -40,12 +44,10 @@ public class Quest
     public Quest(int questId, string questTitle, params QuestStage[] stages)
     {
         //Arg checks
-        if (questId <= 0) {
-            throw new ArgumentException("Invalid quest id", nameof(questId));
-        }
-        if (string.IsNullOrEmpty(questTitle)) {
-            throw new ArgumentException("Title cannot be empty", nameof(questTitle));
-        }
+        if (questId <= 0) throw new ArgumentException("Invalid quest id", nameof(questId));
+        if (string.IsNullOrEmpty(questTitle)) throw new ArgumentException("Title cannot be empty", nameof(questTitle));
+        if(questTitle.Length > TitleCharLimit) throw new ArgumentException("Title cannot be over 200 chars", nameof(questTitle));
+        
         ArgumentNullException.ThrowIfNull(stages, nameof(stages));
         foreach (var stage in stages) {
             ArgumentNullException.ThrowIfNull(stage, $"{nameof(stages)} must not be null");
@@ -104,12 +106,13 @@ public class Quest
         string stageDescription, params Objective[] objectives)
     {
         // Argument checks
-        if (questId <= 0) {
-            throw new ArgumentException("Invalid quest id", nameof(questId));
-        }
-        if (string.IsNullOrEmpty(questTitle)) {
-            throw new ArgumentException("Title cannot be empty", nameof(questTitle));
-        }
+        if (questId <= 0) throw new ArgumentException("Invalid quest id", nameof(questId));
+        if (string.IsNullOrEmpty(questTitle)) throw new ArgumentException("Title cannot be empty", nameof(questTitle));
+        if(questTitle.Length > TitleCharLimit) throw new ArgumentException("Title cannot be over 200 chars", nameof(questTitle));
+        
+        if (string.IsNullOrEmpty(stageDescription)) throw new ArgumentException("Stage description cannot be empty", nameof(questTitle));
+        if(stageDescription.Length > DescriptionCharLimit) throw new ArgumentException("Stage description cannot be over 2000 chars", nameof(questTitle));
+        
         ArgumentNullException.ThrowIfNull(objectives, nameof(objectives));
         foreach (var objective in objectives)
         {
