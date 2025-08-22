@@ -123,8 +123,12 @@ public static class QuestParser {
             foreach (var stagePathDto in stageDto.PathDtos) {
                 if(stagePathDto.Objectives.Count == 0) return ParseResult.Fail(pre + "No Objectives Found");
                 foreach (var objective in stagePathDto.Objectives) {
-                    if(objective.GoalValue <= 0) return ParseResult.Fail(pre + "Goal value must be positive");
-                    if(objective.TaskTypeId <= 0) return ParseResult.Fail(pre + "Task Id value must be positive");
+                    if(objective.GoalValue <= 0)       return ParseResult.Fail(pre + "Goal value must be positive");
+                    if(objective.GoalValue > Objective.GoalValueLimit)     return ParseResult.Fail(pre + "Goal value must be lower than 1000000.");
+                    if(objective.TaskTypeId < 0)      return ParseResult.Fail(pre + "Task Type Id value must not be negative");
+                    if(objective.TaskTypeId > Objective.TaskTypeIdValueLimit)    return ParseResult.Fail(pre + "Task Type Id value must be lower than 10000.");
+                    if(objective.TargetAssetId < 0)    return ParseResult.Fail(pre + "Asset id must not be negative.");
+                    if(objective.TargetAssetId > Objective.AssetIdValueLimit) return ParseResult.Fail(pre + "Asset id must must be lower than 10000.");
                 }
             }
             

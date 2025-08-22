@@ -303,6 +303,79 @@ public static class QuestJsons
   ]
 }";
   
+  public static readonly string QuestLargeTaskId = @"{
+  ""Id"": 3,
+  ""Title"": ""First Quest"",
+  ""Stages"": [
+    {
+      ""Id"": 1,
+      ""Description"": ""This is stage 1"",
+      ""IsCompleted"": false,
+      ""PathDtos"": [
+        {
+          ""IsSelective"": false,
+          ""Objectives"": [
+            {
+              ""GoalValue"": 1,
+              ""TaskTypeId"": 10000,
+              ""TargetAssetId"": 2
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}";
+  
+  
+  public static readonly string QuestLargeAssetId = @"{
+  ""Id"": 3,
+  ""Title"": ""First Quest"",
+  ""Stages"": [
+    {
+      ""Id"": 1,
+      ""Description"": ""This is stage 1"",
+      ""IsCompleted"": false,
+      ""PathDtos"": [
+        {
+          ""IsSelective"": false,
+          ""Objectives"": [
+            {
+              ""GoalValue"": 1,
+              ""TaskTypeId"": 2,
+              ""TargetAssetId"": 10000
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}";
+  
+  public static readonly string QuestLargeGoalValue = @"{
+  ""Id"": 3,
+  ""Title"": ""First Quest"",
+  ""Stages"": [
+    {
+      ""Id"": 1,
+      ""Description"": ""This is stage 1"",
+      ""IsCompleted"": false,
+      ""PathDtos"": [
+        {
+          ""IsSelective"": false,
+          ""Objectives"": [
+            {
+              ""GoalValue"": 1000000,
+              ""TaskTypeId"": 10,
+              ""TargetAssetId"": 2
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}";
+  
   public static readonly string QuestLongTitleJson = @"{
   ""Id"": 3,
   ""Title"": ""First Quest: The Ancient Prophecy of the Fallen Ancient Stars and the Eternal Guardians Who Wander the Forgotten Lands Seeking Redemption in the Shadow of the Moonlit Citadel of Everlasting Twilight and Beyond The Abyss"",

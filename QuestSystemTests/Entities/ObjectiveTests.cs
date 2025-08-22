@@ -37,11 +37,29 @@ public class ObjectiveTests
     }
 
     [Fact]
-    public void ShouldThrow_WhenAssetIdIsNegative() {
+    public void Objective_ShouldThrow_WhenAssetIdIsNegative() {
         // Act & Assert
         Assert.Throws<ArgumentException>(() => new Objective(10, 1, -3));
     }
+    
+    [Fact]
+    public void Objective_ShouldThrow_WhenGoalValueExceeds10000()
+    {
+        // Act & Assert
+        Assert.Throws<ArgumentException>(() => new Objective(1000000, 1, 1));
+    }
 
+    [Fact]
+    public void Objective_ShouldThrowWhenTaskTypeIdExceeds10000() {
+        // Act & Assert
+        Assert.Throws<ArgumentException>(() => new Objective(10, 10000, 1));
+    }
+
+    [Fact]
+    public void Objective_ShouldThrowWhenAssetIdExceeds10000() {
+        // Act & Assert
+        Assert.Throws<ArgumentException>(() => new Objective(10, 1, 10000));
+    }
     
     [Fact]
     public void TryProceed_CanShowProgress() {

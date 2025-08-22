@@ -167,23 +167,41 @@ public class QuestParserTests
 
          Assert.False(result.IsSuccessful);
          Assert.Contains("Goal value must be positive", result.ErrorMessage);
+     }  
+     
+     
+     [Fact]
+     public void IsValidDto_ShouldFail_WhenStageHasLargeGoalValue() {
+         var questDto = JsonSerializer.Deserialize<QuestDto>(QuestJsons.QuestLargeGoalValue);
+         Assert.NotNull(questDto);
+         var result = QuestParser.IsValidQuestDto(questDto);
+
+         Assert.False(result.IsSuccessful);
+         Assert.Contains("Goal value must be lower than", result.ErrorMessage);
      }     
      
      [Fact]
-     public void IsValidDto_ShouldFail_WhenStageHasNegativeTAskIdValue()
-     {
+     public void IsValidDto_ShouldFail_WhenStageHasNegativeTaskIdValue() {
          var questDto = JsonSerializer.Deserialize<QuestDto>(QuestJsons.QuestNegativeTAskId);
          Assert.NotNull(questDto);
          var result = QuestParser.IsValidQuestDto(questDto);
 
          Assert.False(result.IsSuccessful);
-         Assert.Contains("Task Id value must be positive", result.ErrorMessage);
-         
+         Assert.Contains("must not be negative", result.ErrorMessage);
      }
      
      [Fact]
-     public void IsValidDto_ShouldFail_WhenStageIdIsNegative()
-     {
+     public void IsValidDto_ShouldFail_WhenStageHasLargeTaskIdValue() {
+         var questDto = JsonSerializer.Deserialize<QuestDto>(QuestJsons.QuestLargeTaskId);
+         Assert.NotNull(questDto);
+         var result = QuestParser.IsValidQuestDto(questDto);
+
+         Assert.False(result.IsSuccessful);
+         Assert.Contains("Task Type Id value must be lower than", result.ErrorMessage);
+     }
+     
+     [Fact]
+     public void IsValidDto_ShouldFail_WhenStageIdIsNegative() {
          var questDto = JsonSerializer.Deserialize<QuestDto>(QuestJsons.StageWithNegativeIdJson);
          Assert.NotNull(questDto);
          var result = QuestParser.IsValidQuestDto(questDto);

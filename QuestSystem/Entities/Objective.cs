@@ -5,6 +5,12 @@ namespace QuestSystem.Entities;
 /// </summary>
 public class Objective
 {
+    //Consts
+    internal const int GoalValueLimit = 999999;
+    internal const int TaskTypeIdValueLimit = 9999;
+    internal const int AssetIdValueLimit = 9999;
+    
+    // Main fields
     private readonly int _taskTypeId;
     private readonly int _assetId;
     private readonly int _goalValue;
@@ -36,8 +42,11 @@ public class Objective
     public Objective(int goalValue, int taskTypeId, int assetId = 0) {
         // Arg Checks
         if(goalValue <= 0) throw new ArgumentException("Goal value must be greater than zero.");
+        if(goalValue > GoalValueLimit) throw new ArgumentException("Goal value must be lower than 9999.");
         if(taskTypeId < 0) throw new ArgumentException("Task type id must not be negative.");
+        if(taskTypeId > TaskTypeIdValueLimit) throw new ArgumentException("Task type id value must be lower than 9999.");
         if(assetId < 0) throw new ArgumentException("Asset id must not be negative.");
+        if(assetId > AssetIdValueLimit) throw new ArgumentException("Asset id value must be lower than 9999.");
         //Init vals
         _taskTypeId = taskTypeId;
         _goalValue = goalValue;
