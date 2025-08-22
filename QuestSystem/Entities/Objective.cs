@@ -28,11 +28,17 @@ public class Objective
 
     /// <summary>
     /// Initializes a new instance of the <see cref="Objective"/> class with the specified value and type.
+    /// Note: AssetId  = 0 is a wildcard, meaning ANY asset (e.g. orc, toad, dragon), affected by the task performed (e.g. killed) can progress this objective
     /// </summary>
     /// <param name="goalValue">The required value to complete the objective.</param>
     /// <param name="taskTypeId">The id of the type of the task.</param>
     /// <param name="assetId">The specific asset that proceeds the objective</param>
     public Objective(int goalValue, int taskTypeId, int assetId = 0) {
+        // Arg Checks
+        if(goalValue <= 0) throw new ArgumentException("Goal value must be greater than zero.");
+        if(taskTypeId < 0) throw new ArgumentException("Task type id must not be negative.");
+        if(assetId < 0) throw new ArgumentException("Asset id must not be negative.");
+        //Init vals
         _taskTypeId = taskTypeId;
         _goalValue = goalValue;
         _targetAssetId = assetId;

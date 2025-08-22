@@ -59,7 +59,7 @@ public class StagePath
     /// <param name="taskTypeId">The id of the type of the action.</param>
     /// <param name="assetId">The id of the asset that was affected by the action</param>
     /// <exception cref="InvalidOperationException"></exception>
-    public void TryProgressPath(int progressValue, int taskTypeId, int assetId = 0) {
+    public void TryProgressPath(int progressValue, int taskTypeId, int assetId) {
         //Try Advance some of the objectives
         foreach (var objective in _objectives) {
             if(objective.TaskTypeId != taskTypeId) continue;

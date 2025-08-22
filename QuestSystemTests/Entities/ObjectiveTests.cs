@@ -7,8 +7,7 @@ public class ObjectiveTests
     //SUT
     private readonly Objective _objective,_assetObjective;
 
-    public ObjectiveTests()
-    {
+    public ObjectiveTests() {
         _objective = new Objective(10, (int)TaskType.Kill);
         //proceeds with specific assetId
         //COllect 5 instances of assetId=4
@@ -16,27 +15,36 @@ public class ObjectiveTests
     }
     
     [Fact]
-    public void ShouldInitializeUncompleted()
-    {
+    public void ShouldInitializeUncompleted() {
         // Assert
         Assert.Equal(0,_objective.CurrValue);
         Assert.Equal(10,_objective.GoalValue);
         Assert.False(_objective.IsCompleted);
     }
-
-    [Fact]
-    public void ShouldNonReduceProgressBelowZero()
-    {
-       _assetObjective.TryProceed(-2);
-       
-       Assert.Equal(0,_objective.CurrValue);
-       Assert.Equal(10,_objective.GoalValue);
-       Assert.False(_objective.IsCompleted);
-    }
     
     [Fact]
-    public void CanShowProgress()
+    public void Objective_ShouldThrowWhenGoalValueIsZeroOrNegative()
     {
+        // Act & Assert
+        Assert.Throws<ArgumentException>(() => new Objective(0, 1));
+        Assert.Throws<ArgumentException>(() => new Objective(-5, 1));
+    }
+
+    [Fact]
+    public void Objective_ShouldThrowWhenTaskTypeIdIsNegative() {
+        // Act & Assert
+        Assert.Throws<ArgumentException>(() => new Objective(10, -1));
+    }
+
+    [Fact]
+    public void ShouldThrow_WhenAssetIdIsNegative() {
+        // Act & Assert
+        Assert.Throws<ArgumentException>(() => new Objective(10, 1, -3));
+    }
+
+    
+    [Fact]
+    public void TryProceed_CanShowProgress() {
         // Start with zero
         Assert.Equal(0,_assetObjective.CurrValue);
         Assert.Equal(5,_assetObjective.GoalValue);

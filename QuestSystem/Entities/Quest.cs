@@ -126,7 +126,6 @@ public class Quest
         _allStages.Add(questStage);
     }
     
-    
     /// <summary>
     /// Helper method that detects stages with duplicate ids
     /// </summary>
@@ -143,8 +142,14 @@ public class Quest
     }
 
     #region Quest Progressing
-    
-    public void TryProgressQuest(int progressValue, int taskTypeId, int assetId = -1)
+    /// <summary>
+    /// Attempts to progress the quest based on the provided arguments.
+    /// </summary>
+    /// <param name="progressValue">The progress units to apply (e.g. 5 (enemies killed), 3 (berries collected))</param>
+    /// <param name="taskTypeId">The action that occured (e.g. 'enemies killed', 'berries collected')</param>
+    /// <param name="assetId">The asset this action affected (e.g. 1: killed orc, 2: killed toad etc.)</param>
+    /// <exception cref="InvalidOperationException"></exception>
+    public void TryProgressQuest(int progressValue, int taskTypeId, int assetId = 0)
     {
         // A completed or failed quest cannot be progressed
         if(IsCompleted) return;
