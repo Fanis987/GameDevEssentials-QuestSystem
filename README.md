@@ -150,8 +150,13 @@ public class QuestLibrary
         return newQuest;
     }
 }  
-```  
-**Note : The maximum title length is 200 characters and the maximum stage description length is 2000 characters**  
+```    
+### Notes on the values of the Objective args:  
+- **The maximum quest title length is 200 characters**  
+- **The maximum stage description length is 2000 characters**  
+- **The maximum goal value is 999,999**  
+- **The maximum taskTypeId value & assetId value is 9999**
+
 ## **LOAD METHOD 2 : Parse Quest details from a json file**  
 This method allows for clear seperation of the quest details and the code base  
 
