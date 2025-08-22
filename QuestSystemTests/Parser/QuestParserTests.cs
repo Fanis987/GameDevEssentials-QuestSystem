@@ -25,7 +25,7 @@ public class QuestParserTests
         Assert.False(quest.WasFailed);
 
         var stage = quest.CurrentStage;
-        Assert.Equal("This is stage 1", stage.StageDescription);
+        Assert.Equal("This is stage 1", stage.Description);
         Assert.False(stage.IsCompleted);
     }
     
@@ -293,7 +293,7 @@ public class QuestParserTests
          var stage = quest.CurrentStage;
          Assert.NotNull(stage);
          Assert.False(stage.IsCompleted);
-         Assert.Equal("This is stage 1",stage.StageDescription);
+         Assert.Equal("This is stage 1",stage.Description);
          //Assert.Equal(0,stage.CompletedObjectiveCount);
      }
      

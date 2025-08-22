@@ -48,12 +48,12 @@ public class QuestStageTests
         Assert.NotNull(_questStageSelective);
 
         // Assert stage description and ids
-        Assert.Equal("kill and gather", _questStageInclusive.StageDescription);
+        Assert.Equal("kill and gather", _questStageInclusive.Description);
         Assert.Equal(1, _questStageInclusive.Id);
         Assert.Equal(-1, _questStageInclusive.NextStageId);
-        Assert.Equal("kill 2 things", _questStageInclusive2.StageDescription);
+        Assert.Equal("kill 2 things", _questStageInclusive2.Description);
         Assert.Equal(2, _questStageInclusive2.Id);
-        Assert.Equal("kill or gather", _questStageSelective.StageDescription);
+        Assert.Equal("kill or gather", _questStageSelective.Description);
         Assert.Equal(3, _questStageSelective.Id);
     }
     [Fact]

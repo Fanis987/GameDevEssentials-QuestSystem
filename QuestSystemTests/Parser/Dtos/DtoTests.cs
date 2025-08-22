@@ -97,7 +97,7 @@ public class DtoTests {
         
         Assert.Equal(10, objective.GoalValue);
         Assert.Equal(1, objective.TaskTypeId);
-        Assert.Equal(1, objective.TargetAssetId);
+        Assert.Equal(1, objective.AssetId);
     }
     
     [Fact]
@@ -121,10 +121,10 @@ public class DtoTests {
         var stageInclusive = _stageInclusiveDto.ToQuestStage();
         var stageSelective = _stageSelectiveDto.ToQuestStage();
         
-        Assert.Equal("inclusive descr", stageInclusive.StageDescription);
+        Assert.Equal("inclusive descr", stageInclusive.Description);
         Assert.False(stageInclusive.IsCompleted);
 
-        Assert.Equal("selective descr", stageSelective.StageDescription);
+        Assert.Equal("selective descr", stageSelective.Description);
         Assert.False(stageSelective.IsCompleted);
     }
     
@@ -147,7 +147,7 @@ public class DtoTests {
 
         // Check selective stage
         Assert.False(stage.IsCompleted);
-        Assert.Equal("inclusive descr", stage.StageDescription);
+        Assert.Equal("inclusive descr", stage.Description);
  }
     
     

@@ -38,15 +38,15 @@ public class Quest
     /// Represents a quest in a game.
     /// </summary>
     /// <param name="questId">The id of the quest</param>
-    /// <param name="questTitle">The title of the quest</param>
+    /// <param name="title">The title of the quest</param>
     /// <param name="stages"> The stages of the quest, in order.</param>
     /// <exception cref="ArgumentException"></exception>
-    public Quest(int questId, string questTitle, params QuestStage[] stages)
+    public Quest(int questId, string title, params QuestStage[] stages)
     {
         //Arg checks
         if (questId <= 0) throw new ArgumentException("Invalid quest id", nameof(questId));
-        if (string.IsNullOrEmpty(questTitle)) throw new ArgumentException("Title cannot be empty", nameof(questTitle));
-        if(questTitle.Length > TitleCharLimit) throw new ArgumentException("Title cannot be over 200 chars", nameof(questTitle));
+        if (string.IsNullOrEmpty(title)) throw new ArgumentException("Title cannot be empty", nameof(title));
+        if(title.Length > TitleCharLimit) throw new ArgumentException("Title cannot be over 200 chars", nameof(title));
         
         ArgumentNullException.ThrowIfNull(stages, nameof(stages));
         foreach (var stage in stages) {
@@ -56,7 +56,7 @@ public class Quest
         
         // Setting properties
         Id = questId;
-        Title = questTitle;
+        Title = title;
         
         // Fill queue
         foreach (var stage in stages) {
@@ -69,11 +69,11 @@ public class Quest
     /// Represents a quest in a game.
     /// </summary>
     /// <param name="questId">The id of the quest</param>
-    /// <param name="questTitle">The title of the quest</param>
+    /// <param name="title">The title of the quest</param>
     /// <param name="isMainQuest">Whether the quest is part of the main quest line</param>
     /// <param name="stages"> The stages of the quest, in order.</param>
-    public Quest(int questId, string questTitle,bool isMainQuest, params QuestStage[] stages)
-    :this(questId,questTitle,stages) {
+    public Quest(int questId, string title,bool isMainQuest, params QuestStage[] stages)
+    :this(questId,title,stages) {
         IsMainQuest = isMainQuest;
     }
 
@@ -174,9 +174,7 @@ public class Quest
     }
     
     /// <summary>  Forces a quest to complete instantly. Useful for debugging.  </summary>
-    public void CompleteInstantly() {
-        IsCompleted = true;
-    }
+    public void CompleteInstantly() => IsCompleted = true;
 
     /// <summary>Fails a quest. Useful for cases like timed quest </summary>
     public void Fail() => WasFailed = true;

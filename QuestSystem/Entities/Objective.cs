@@ -6,7 +6,7 @@ namespace QuestSystem.Entities;
 public class Objective
 {
     private readonly int _taskTypeId;
-    private readonly int _targetAssetId;
+    private readonly int _assetId;
     private readonly int _goalValue;
     private int _currValue;
     
@@ -18,13 +18,13 @@ public class Objective
     /// <summary> The id of the action of this objective </summary>
     public int TaskTypeId => _taskTypeId;
     /// <summary> OPTIONAL: The id of the asset that must be interacted-with, for the objective to progress</summary>
-    public int TargetAssetId => _targetAssetId;
+    public int AssetId => _assetId;
     
     // Complex Getters
-    /// <summary> A simple progress indicator</summary>
-    public string ProgressPrint => $"{_currValue}/{_goalValue}";
     /// <summary> Whether this <see cref="Objective"/> is complete</summary>
     public bool IsCompleted => _currValue >= _goalValue;
+    /// <summary> A simple progress indicator</summary>
+    public string ProgressPrint => $"{_currValue}/{_goalValue}";
 
     /// <summary>
     /// Initializes a new instance of the <see cref="Objective"/> class with the specified value and type.
@@ -41,7 +41,7 @@ public class Objective
         //Init vals
         _taskTypeId = taskTypeId;
         _goalValue = goalValue;
-        _targetAssetId = assetId;
+        _assetId = assetId;
         _currValue = 0;
     }
 
@@ -58,7 +58,7 @@ public class Objective
         if (IsCompleted) return;
         
         // When assetId is set, the objective can only proceed with the correct interaction
-        if (_targetAssetId > 0 && _targetAssetId != assetId) return;
+        if (_assetId > 0 && _assetId != assetId) return;
 
         var newCurrentValue = _currValue + progressValue;
         

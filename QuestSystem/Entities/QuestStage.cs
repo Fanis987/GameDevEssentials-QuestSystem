@@ -16,7 +16,7 @@ public class QuestStage
     /// <summary> The id of the <see cref="QuestStage"/>. Must be positive.</summary>
     public int Id { get; }
     /// <summary> The description of the <see cref="QuestStage"/> </summary>
-    public string StageDescription { get; }
+    public string Description { get; }
     /// <summary> Whether this <see cref="QuestStage"/> is complete</summary>
     public bool IsCompleted { get; private set; }
 
@@ -28,21 +28,21 @@ public class QuestStage
     /// Initializes a quest stage with one or more custom stage paths.
     /// </summary>
     /// <param name="id">Stage identifier (must be positive)</param>
-    /// <param name="stageDescription">Description of the <see cref="QuestStage"/></param>
+    /// <param name="description">Description of the <see cref="QuestStage"/></param>
     /// <param name="paths">One or more predefined stage paths</param>
-    public QuestStage(int id, string stageDescription, params StagePath[] paths) {
+    public QuestStage(int id, string description, params StagePath[] paths) {
         // Argument checks
-        ArgumentNullException.ThrowIfNull(stageDescription);
+        ArgumentNullException.ThrowIfNull(description);
         ArgumentNullException.ThrowIfNull(paths);
 
         if (id <= 0) throw new ArgumentOutOfRangeException(nameof(id), "Id must be positive");
-        if (string.IsNullOrWhiteSpace(stageDescription)) throw new ArgumentException("Must have a stage description", nameof(stageDescription));
+        if (string.IsNullOrWhiteSpace(description)) throw new ArgumentException("Must have a stage description", nameof(description));
         if (paths.Length == 0) throw new ArgumentException("At least one StagePath must be provided", nameof(paths));
         if (paths.Any(path => path == null)) throw new ArgumentException("Null StagePath found in input", nameof(paths));
 
         // Set fields
         Id = id;
-        StageDescription = stageDescription;
+        Description = description;
         _paths.AddRange(paths);
     }
     
