@@ -6,9 +6,9 @@ The package is compatible with **Godot 4.4 / .Net 8.0**
 Note: Not compatible with Unity
 
 ## **How to use**  
-There are presently 2 alternatives available:  
-- Copy the contents of the QuestSystem folder to your project  
-- Download nupkg file from 'Releases' section and use with a local nuget repo.
+There are presently 2 alternatives available:   
+- Download latest nupkg file from 'Releases' section and use with a local NuGet repo. (Recommended)  
+- Copy the contents of the QuestSystem folder to your project
 
 ## **Main Structure of the System**  
 **Key entities: Objective, StagePath, QuestStage, Quest**  
@@ -30,16 +30,24 @@ There are presently 2 alternatives available:
 **Begin by creating a 'QuestManager' Node**  
 
 ```csharp
+//Your namespace here 
+
+using Godot;
+using System.Collections.Generic;
+using QuestSystem.Entities;
+using QuestSystem.Parser;
+using QuestSystem.Parser.Util;
+
 // This is a singleton that will be handling all quest-related functionality
 public partial class QuestManager : Node
 {
     // Have collections to store your in-game quests
-    public List<Quest> ActiveQuests { get; private set; } = new();
+    public List<Quest> ActiveQuests { get; } = new();
 
     public override void _Ready()    {
-        // Load all the game quests
-        ActiveQuests.Add(QuestLibrary.CreateDemoQuestWithEnums()); //From a library script (Method 1) OR
-        ActiveQuests.AddRange(LoadQuestsFromJson("quest.json"));   //From a JSON file(Method 2)
+        // Load all the game quests (opt1 requires a QuestLibrary.cs)
+        //ActiveQuests.Add(QuestLibrary.CreateDemoQuestWithEnums()); //From a library script (Method 1) OR
+        //ActiveQuests.AddRange(LoadQuestsFromJson("quest.json"));   //From a JSON file(Method 2)
 
         // In a more realistic setup, you would check the player's save file here
         // to determine active and completed quests, their exact progress etc
@@ -54,17 +62,18 @@ public partial class QuestManager : Node
     // Method to be called when something that could progress a quest happens
     // Can also be added as subcr to custom events: e.g. EnemyKilled, MapUnlocked, AreaDiscovered etc.
     private void ProgressQuests( int progressValue,int taskId, int assetId = -1)    {
-        // READ BELOW
+        // READ BELOW for function body
     }
     
     private List<Quest> LoadQuestsFromJson(string jsonPath){
-        // READ BELOW
+        // READ BELOW for function body
+        return[];
     }
 
     //Helper method for printing info on terminal
     private void PrintQuestProgress(Quest quest) {
         GD.Print($"\nQuest {quest.Id}: '{quest.Title}'");
-        GD.Print($"Stage Description: {quest.CurrentStage?.StageDescription}");
+        GD.Print($"Stage Description: {quest.CurrentStage?.Description}");
         GD.Print(quest.CurrentStage?.GetProgress());
     }
     
@@ -105,12 +114,19 @@ public enum NpcType {
 ```
 
 The quests of the game can be hardcoded into a Library with static methods:   
-Note: Enums improve the readability a lot here     
-
+(After adding questLIbrary.cs, uncomment corresponding line on QuestManager._Ready)  
+Note: Enums improve the readability a lot here
 
 ```csharp
+//Your namespace
+
+using QuestSystem.Entities;
+
+// This is a demo class which contains one hardcoded quest
 public class QuestLibrary
 {
+    // Megthod to create a demo quest
+    // Uses the enums defined above
     public static Quest CreateDemoQuestWithEnums(){
         
         // First we declare the objectives of Stage 1 - Path 1:
@@ -158,14 +174,14 @@ public class QuestLibrary
 - **The maximum taskTypeId value & assetId value is 9999**
 
 ## **LOAD METHOD 2 : Parse Quest details from a json file**  
-This method allows for clear seperation of the quest details and the code base  
+This method allows for clear separation of the quest details and the code base  
 
 Below we have the same quest in the form of a quest.json file:  
 ```json
 [
   {
     "Id": 1,
-    "Title": "Practicing the basics !",
+    "Title": "Practicing the basics - JSON VER !",
     "Stages": [
       {
         "Id": 1,
@@ -210,10 +226,10 @@ Below we have the same quest in the form of a quest.json file:
   }
 ]
 ```
-Load the quest(s) present in your json file(s) as follows:  
 Note: There are some logical checks in the deserializer (e.g. no negative goal values)  
-
   
+To load quest(s) present in json file(s), update the body of the QuestManager.LoadQuestsFromJson as follows:  
+
 ```csharp
 private List<Quest> LoadQuestsFromJson(string jsonPath){
     // Load from your path of choice
@@ -270,5 +286,3 @@ private void ProgressQuests(int progressValue, TaskType taskType, EnemyType enem
         ProgressQuests( progressValue, (int)taskType, (int)npcType);
     }
 ```
-(once again the enums shine :) )
-
