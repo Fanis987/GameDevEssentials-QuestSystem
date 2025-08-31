@@ -73,6 +73,8 @@ public partial class QuestManager : Node
     //Helper method for printing info on terminal
     private void PrintQuestProgress(Quest quest) {
         GD.Print($"\nQuest {quest.Id}: '{quest.Title}'");
+        GD.Print($"Completed: {quest.IsCompleted}");
+        GD.Print($"Active Stage Id: {quest.CurrentStage?.Id}");
         GD.Print($"Stage Description: {quest.CurrentStage?.Description}");
         GD.Print(quest.CurrentStage?.GetProgress());
     }
@@ -125,7 +127,7 @@ using QuestSystem.Entities;
 // This is a demo class which contains one hardcoded quest
 public class QuestLibrary
 {
-    // Megthod to create a demo quest
+    // Method to create a demo quest
     // Uses the enums defined above
     public static Quest CreateDemoQuestWithEnums(){
         
@@ -176,11 +178,11 @@ public class QuestLibrary
 ## **LOAD METHOD 2 : Parse Quest details from a json file**  
 This method allows for clear separation of the quest details and the code base  
 
-Below we have the same quest in the form of a quest.json file:  
+Below we have the same quest in the form of a 'quest.json' file:  
 ```json
 [
   {
-    "Id": 1,
+    "Id": 2,
     "Title": "Practicing the basics - JSON VER !",
     "Stages": [
       {
@@ -282,7 +284,7 @@ private void ProgressQuests(int progressValue, TaskType taskType, EnemyType enem
         ProgressQuests( progressValue, (int)taskType, (int)enemyType);
 }
     
-    private void ProgressQuests(int progressValue, TaskType taskType, NpcType npcType) {
-        ProgressQuests( progressValue, (int)taskType, (int)npcType);
-    }
+private void ProgressQuests(int progressValue, TaskType taskType, NpcType npcType) {
+    ProgressQuests( progressValue, (int)taskType, (int)npcType);
+}
 ```
