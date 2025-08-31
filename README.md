@@ -3,12 +3,12 @@
 ## **Introduction**   
 A collection of classes to create an in-game quest system.  
 The package is compatible with **Godot 4.4 / .Net 8.0**  
-Note: Should also be fine for Unity and console games but has not been checked  
+Note: Not compatible with Unity
 
 ## **How to use**  
-There are presently 2 options available:  
+There are presently 2 alternatives available:  
 - Copy the contents of the QuestSystem folder to your project  
-- Package QuestSystem project as a nuget and use locally  
+- Download nupkg file from 'Releases' section and use with a local nuget repo.
 
 ## **Main Structure of the System**  
 **Key entities: Objective, StagePath, QuestStage, Quest**  
