@@ -1,4 +1,6 @@
 using QuestSystem.Entities;
+using QuestSystem.Parser;
+using QuestSystem.Parser.Util;
 
 namespace QuestSystemTests.GodotExamples;
 
@@ -44,6 +46,36 @@ public class TestsFromGodot
         int nextQuestId = 2;     // Optional: For quest-chain support
         Quest newQuest = new Quest(questId, questTitle, isMainQuest, nextQuestId, stage1, stage2);
         
+        Assert.False(newQuest.IsCompleted);
+        
+        newQuest.TryProgressQuest(5,(int)TaskType.Kill,(int)EnemyType.Wolf);
+        Assert.False(newQuest.IsCompleted);
+        
+        newQuest.TryProgressQuest(5,(int)TaskType.Kill,(int)EnemyType.Wolf);
+        Assert.False(newQuest.IsCompleted);
+        Assert.NotNull(newQuest.CurrentStage);
+        Assert.Equal(1,newQuest.CurrentStage.Id);
+        
+        newQuest.TryProgressQuest(1,(int)TaskType.Talk,(int)NpcType.VillagerBob);
+        Assert.False(newQuest.IsCompleted);
+        Assert.NotNull(newQuest.CurrentStage);
+        Assert.Equal(2,newQuest.CurrentStage.Id);
+        
+        newQuest.TryProgressQuest(1,(int)TaskType.Talk,(int)NpcType.GuardJack);
+        Assert.True(newQuest.IsCompleted);
+
+    }
+
+    [Fact]
+    public void ExampleFromGodot2()
+    {
+        MultiParseResult parseResult = QuestParser.LoadFromJsonFile("GodotExamples/quest2.json");
+        
+        List<Quest> parsedQuestList = parseResult.Quests;
+        var errorsList = parseResult.ErrorMessages;
+        Assert.Single(parsedQuestList);
+        
+        var newQuest = parsedQuestList[0];
         Assert.False(newQuest.IsCompleted);
         
         newQuest.TryProgressQuest(5,(int)TaskType.Kill,(int)EnemyType.Wolf);

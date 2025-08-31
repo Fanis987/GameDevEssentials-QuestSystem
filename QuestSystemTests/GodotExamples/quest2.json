@@ -1,0 +1,47 @@
+[
+  {
+    "Id": 2,
+    "Title": "Practicing the basics - JSON VER !",
+    "Stages": [
+      {
+        "Id": 1,
+        "Description": "Kill 10 wolves AND talk to villager Bob",
+        "PathDtos": [
+          {
+            "IsSelective": false,
+            "NextStageId": 2,
+            "Objectives": [
+              {
+                "GoalValue": 10,
+                "TaskTypeId": 3,
+                "TargetAssetId": 2
+              },
+              {
+                "GoalValue": 1,
+                "TaskTypeId": 2,
+                "TargetAssetId": 1
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "Id": 2,
+        "Description": "Talk to guard Jack",
+        "PathDtos": [
+          {
+            "IsSelective": false,
+            "NextStageId": -1,
+            "Objectives": [
+              {
+                "GoalValue": 1,
+                "TaskTypeId": 2,
+                "TargetAssetId": 2
+              }
+            ]
+          }
+        ]
+      }
+    ]
+  }
+]

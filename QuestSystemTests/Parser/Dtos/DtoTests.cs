@@ -19,8 +19,8 @@ public class DtoTests {
     {
         var objDtoList = new List<ObjectiveDto>() { _objectiveDto1,_objectiveDto2 };
         
-        _stagePathDtoNormal    = new StagePathDto(false, objDtoList);
-        _stagePathDtoSelective = new StagePathDto(true , objDtoList);
+        _stagePathDtoNormal    = new StagePathDto(false,8, objDtoList);
+        _stagePathDtoSelective = new StagePathDto(true ,9, objDtoList);
         
         _stageInclusiveDto = new QuestStageDto(1,"inclusive descr",false,new(){_stagePathDtoNormal});
         _stageSelectiveDto = new QuestStageDto(2,"selective descr",false,new(){_stagePathDtoSelective});
