@@ -2,6 +2,9 @@
 /shelf/
 /workspace.xml
 
+#packages
+/nupkg
+
 # Rider ignored files
 *.DotSettings.user
 /.idea/
