@@ -11,7 +11,7 @@ public class ObjectiveTests
         _objective = new Objective(10, (int)TaskType.Kill);
         //proceeds with specific assetId
         //COllect 5 instances of assetId=4
-        _assetObjective = new Objective(5, (int)TaskType.Collect, 4); 
+        _assetObjective = new Objective(5, (int)TaskType.Gather, 4); 
     }
     
     [Fact]
