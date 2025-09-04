@@ -2,7 +2,7 @@ namespace QuestSystem.Entities;
 
 public class StagePath
 {
-    //Fields
+    //=========== Fields ===========
     /// <summary>The objectives of the stage path.</summary>
     private readonly List<Objective> _objectives = new();
     
@@ -10,10 +10,10 @@ public class StagePath
     /// <summary> Whether this <see cref="StagePath"/> can completed, by finishing ANY of its objectives</summary>
     public bool IsSelective { get;}
 
-    /// <summary> Whether this <see cref="StagePath"/> can completed, by finishing ANY of its objectives</summary>
+    /// <summary> Whether this <see cref="StagePath"/> can be completed, by finishing ANY of its objectives</summary>
     public int NextStageId { get; }
     
-    // Complex properties
+    //=========== Complex properties ===========
     /// <summary> Whether this <see cref="StagePath"/> is complete</summary>
     public bool IsCompleted { get; private set; }
     /// <summary> The number of objectives completed in this <see cref="StagePath"/></summary>
@@ -35,7 +35,7 @@ public class StagePath
     /// <exception cref="ArgumentNullException">Some objectives were null</exception>
     /// <exception cref="ArgumentException">No objectives were passed</exception>
     /// <exception cref="ArgumentOutOfRangeException">invalid number passed for next stage Id</exception>
-    public StagePath(bool isSelective,int nextStageId, params Objective[] objectives) {
+    public StagePath(bool isSelective, int nextStageId, params Objective[] objectives) {
         //Basic checks
         if (objectives == null) throw new ArgumentNullException(nameof(objectives),"Objectives cannot be null.");
         if (objectives.Length == 0) throw new ArgumentException("No objectives were passed");
@@ -89,5 +89,4 @@ public class StagePath
     private List<string> GetProgressOfStagePathObjectives() {
         return _objectives.Select(objective => objective.ProgressPrint).ToList();
     }
-    
 }

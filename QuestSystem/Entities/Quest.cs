@@ -52,7 +52,7 @@ public class Quest
         foreach (var stage in stages) {
             ArgumentNullException.ThrowIfNull(stage, $"{nameof(stages)} must not be null");
         }
-        if(HasDuplicateStageId(stages.ToList())) throw new QuestException("Duplicate stage ids found", nameof(stages));
+        if(HasDuplicateStageId(stages.ToList())) throw new QuestException("Duplicate stage ids found");
         
         // Setting properties
         Id = questId;
@@ -166,11 +166,11 @@ public class Quest
 
         // Stage not completed yet - move to the next stage or finish
         if (!currentStage.IsCompleted) return;
-        if (currentStage.NextStageId == -1) {//quest done
+        if (currentStage.GetNextStageId() == -1) {//quest done
             IsCompleted = true;
             return;
         }
-        CurrentStageId = currentStage.NextStageId;
+        CurrentStageId = currentStage.GetNextStageId();
     }
     
     /// <summary>  Forces a quest to complete instantly. Useful for debugging.  </summary>

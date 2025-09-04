@@ -2,15 +2,13 @@ using ArgumentException = System.ArgumentException;
 
 namespace QuestSystem.Entities;
 
-/// <summary>
-/// Abstract class representing a completable stage of a quest.
-/// </summary>
+/// <summary>Represents a completable stage of a quest.</summary>
 public class QuestStage
 {
-    /// <summary>
-    /// The objectives of the quest stage.
-    /// </summary>
+    /// <summary> The objectives of the quest stage. </summary>
     private readonly List<StagePath> _paths = new();
+    /// <summary>The id of the next stage, will be decided when one of the stage paths is completed </summary>
+    private int _nextStageId;
     
     //Getter properties
     /// <summary> The id of the <see cref="QuestStage"/>. Must be positive.</summary>
@@ -19,8 +17,7 @@ public class QuestStage
     public string Description { get; }
     /// <summary> Whether this <see cref="QuestStage"/> is complete</summary>
     public bool IsCompleted { get; private set; }
-
-    public int NextStageId { get; private set; } = -1;
+    
     /// <summary>The time left for this stage. Zero means the stage is NOT timed.</summary>
     public float TimeLeft { get; private set; }
     
@@ -59,7 +56,7 @@ public class QuestStage
             path.TryProgressPath(progressValue, taskTypeId, assetId);
             if(! path.IsCompleted) continue;
             IsCompleted = true;
-            NextStageId = path.NextStageId;
+            _nextStageId= path.NextStageId; // the completed stage path decides the next stage
         }
     }
 
@@ -82,6 +79,17 @@ public class QuestStage
             }
         }
         return result;
+    }
+
+    /// <summary>
+    /// Returns the id of the stage tha comes after this one.
+    /// An id of -1 means there is no next stage
+    /// </summary>
+    /// <returns>The id of the next stage in the quest</returns>
+    /// <exception cref="QuestException">Thrown when the next stage has not been decided yet (i.e., when <c>_nextStageId</c> is 0).</exception>
+    public int GetNextStageId() {
+        if (_nextStageId == 0) throw new QuestException("Next stage has not been decided yet");
+        return _nextStageId;
     }
     
     /// <summary>Completes the stage instantly. Useful for development </summary>
