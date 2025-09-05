@@ -10,7 +10,7 @@ public class Quest
     internal const int DescriptionCharLimit = 2000;
     
     // Main Properties (set in ctor)
-    private readonly List<QuestStage> _allStages =  new();
+    private readonly List<QuestStage> _allStages = new();
     
     /// <summary> The id of the quest. Must be positive </summary>
     public int Id {get;}
