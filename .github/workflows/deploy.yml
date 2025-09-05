@@ -42,15 +42,14 @@ jobs:
 
       - name: Pack library into NuGet package and store locally
         run: dotnet pack QuestSystem/QuestSystem.csproj --configuration Release --no-build -o ./artifacts
-
-      - name: Create GitHub Release
-        id: create_release
-        uses: actions/create-release@v1
+       
+      - name: Create GitHub Release and upload NuGet package
+        uses: softprops/action-gh-release@v2
         with:
-          tag_name: ${{ github.ref_name }}    # Uses the tag that triggered the workflow
-          release_name: Release ${{ github.ref_name }}
-          draft: true
+          tag_name: ${{ github.ref_name }}
+          name: Release ${{ github.ref_name }}
+          draft: false
           prerelease: true
+          files: ./artifacts/*.nupkg
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          
