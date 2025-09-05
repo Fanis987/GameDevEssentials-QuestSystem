@@ -1,14 +1,15 @@
-# .github/workflows/ci.yml
-name: .NET CI
+name: Deployment to NuGet
 
-# triggers
+# triggers (tag based)
 on:
   push:
-    branches: [ "main" ]
-  pull_request:
-    branches: [ "main" ]
-  # manual
+    tags: 'v*.*.*'
+
+  # manual option
   workflow_dispatch:
+
+permissions:
+  contents: write
 
 jobs:
   build:
@@ -23,11 +24,33 @@ jobs:
         with:
           dotnet-version: '8.0.x' # Adjust to your .NET version
 
+      - name: Show tag name
+        run: echo ${{ github.ref_name }}
+
       - name: Restore dependencies
         run: dotnet restore
 
       - name: Build
-        run: dotnet build --configuration Release --no-restore
+        run: dotnet build --configuration Release --no-restore  --verbosity minimal
 
-      - name: Run tests
-        run: dotnet test --no-build --verbosity normal
+      - name: Run unit tests
+        run: dotnet test --configuration Release --verbosity minimal
+
+      # Checking inside the repo for debugging
+      #- name: List repo files
+      #  run: ls -R
+
+      - name: Pack library into NuGet package and store locally
+        run: dotnet pack QuestSystem/QuestSystem.csproj --configuration Release --no-build -o ./artifacts
+
+      - name: Create GitHub Release
+        id: create_release
+        uses: actions/create-release@v1
+        with:
+          tag_name: ${{ github.ref_name }}    # Uses the tag that triggered the workflow
+          release_name: Release ${{ github.ref_name }}
+          draft: true
+          prerelease: true
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          
